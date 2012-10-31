@@ -1,0 +1,9 @@
+[submodule "os"]
+	path = os
+	url = git@github.com:jonatanolofsson/helios.git
+[submodule "sys"]
+	path = sys
+	url = git@github.com:jonatanolofsson/helisys.git
+[submodule "doc"]
+	path = doc
+	url = git@github.com:jonatanolofsson/helidoc.git
