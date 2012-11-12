@@ -1,0 +1,3 @@
+make_test(DifferentiationTests)
+make_test(ConstantVelocityModelTests)
+make_test(EKFTests)
