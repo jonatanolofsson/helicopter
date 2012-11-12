@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 2.8)
+project(Heliosys)
+include(common/CMake/common.cmake)
+include_directories(sys/include os/include)
+add_subdirectory(common)
+add_subdirectory(os)
+add_subdirectory(sys)
