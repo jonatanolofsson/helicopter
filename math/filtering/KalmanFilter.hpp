@@ -2,7 +2,7 @@
 #define SYS_MATH_FILTERING_KALMAN_FILTER_HPP_
 
 #include <sys/math/filtering/types.hpp>
-#include <os/shared/ProtectedData.hpp>
+#include <os/mem/ProtectedData.hpp>
 
 namespace sys {
     namespace math {

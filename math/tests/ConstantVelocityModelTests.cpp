@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <sys/math/models/models.hpp>
-#include <sys/observer/observer.hpp>
-#include <os/shared/ProtectedData.hpp>
+#include <os/mem/ProtectedData.hpp>
 #include <sys/math/filtering/KalmanFilter.hpp>
 #include <cmath>
 #include <Eigen/Core>
@@ -10,7 +9,7 @@
 using namespace sys;
 using namespace Eigen;
 
-typedef state_description::S6DOFQ StateDescription;
+typedef math::S6DOFQ StateDescription;
 typedef StateDescription states;
 typedef math::KalmanFilter<StateDescription> KF;
 typedef models::motion::ConstantVelocities  MotionModel;

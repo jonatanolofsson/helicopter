@@ -2,7 +2,7 @@
 #define SYS_MODELS_S6DOFQ_HPP_
 
 namespace sys {
-    namespace state_description {
+    namespace math {
         struct S6DOFQ {
             enum state {
                 x = 0,
@@ -39,10 +39,11 @@ namespace sys {
 
             template<typename T>
             static void initialize(T& filter) {
-                filter.lock();
-                    filter.state.setZero();
-                    filter.state[qw] = 1.0;
-                filter.unlock();
+                auto l = filter.retrieve_lock();
+                filter.state.setZero();
+                filter.state[qw] = 1.0;
+
+                filter.covariance.setIdentity();
             }
         };
 
