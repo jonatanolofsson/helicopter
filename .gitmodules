@@ -7,3 +7,6 @@
 [submodule "doc"]
 	path = doc
 	url = git@github.com:jonatanolofsson/helidoc.git
+[submodule "ac"]
+	path = ac
+	url = git@github.com:jonatanolofsson/heliac.git
