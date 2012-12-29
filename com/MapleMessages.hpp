@@ -7,12 +7,13 @@ namespace sys {
     using namespace os;
     template<int ID> struct MapleMessage;
     struct MapleMessages {
-        static const int numberOfMessages = 3;
+        static const int numberOfMessages = 4;
 
         enum Id {
             sensorMessage = 0,
             controlMessage = 1,
-            cameraControlMessage = 2
+            cameraControlMessage = 2,
+            ioctlMessage = 3
         };
         template<Id MID>
         struct Message { typedef typename MapleMessage<MID>::Type Type; };
@@ -41,8 +42,19 @@ namespace sys {
         U16 vertical;
     };
 
+    struct IoctlMessage {
+        static const MapleMessages::Id ID = MapleMessages::ioctlMessage;
+        U16 message;
+        enum Bits {
+            SEND_SENSOR_DATA = (1 << 0),
+            RESPONSETEST = (1 << 1),
+            STRESSTEST = (1 << 2)
+        };
+    };
+
     template<> struct MapleMessage<MapleMessages::sensorMessage> { typedef SensorMessage Type; };
     template<> struct MapleMessage<MapleMessages::controlMessage> { typedef ControlMessage Type; };
     template<> struct MapleMessage<MapleMessages::cameraControlMessage> { typedef CameraControlMessage Type; };
+    template<> struct MapleMessage<MapleMessages::ioctlMessage> { typedef IoctlMessage Type; };
 }
 #endif

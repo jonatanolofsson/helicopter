@@ -21,13 +21,14 @@ template<typename T>
 void responseHandler(const U8* msg, const std::size_t len) {
     ASSERT_EQ(msg > 0, true);
     ASSERT_EQ(len, sizeof(T));
+    std::unique_lock<std::mutex> l(responseGuard);
     receivedResponse = true;
     responseCondition.notify_all();
 }
 
 class ActuatorTests : public ::testing::Test {
     public:
-        typedef SerialCommunication<MapleMessages, 100, 10, B38400> Serial;
+        typedef SerialCommunication<MapleMessages, 100, 10> Serial;
         Serial maple;
         Actuator<Serial> actuator;
         ActuatorTests()
@@ -40,9 +41,11 @@ class ActuatorTests : public ::testing::Test {
 };
 
 TEST_F(ActuatorTests, SetServoOutput) {
-    MotionControlSignal m;
-
+    IoctlMessage ioctlMsg = { IoctlMessage::RESPONSETEST };
+    maple.send<>(ioctlMsg);
     receivedResponse = false;
+
+    MotionControlSignal m;
 
     m[control::servo[0]]    = 0;
     m[control::servo[1]]    = 0;
