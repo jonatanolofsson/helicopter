@@ -28,6 +28,6 @@ class SerialCommunication : public IoCommunication<M, MAX_MESSAGE_SIZE> {
         }
 };
 
-typedef SerialCommunication<sys::MapleMessages, 50, 38400> ComputerLink;
+typedef SerialCommunication<sys::MapleMessages, 50> ComputerLink;
 
 #endif
