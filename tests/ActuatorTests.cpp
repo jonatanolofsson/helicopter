@@ -28,7 +28,7 @@ void responseHandler(const U8* msg, const std::size_t len) {
 
 class ActuatorTests : public ::testing::Test {
     public:
-        typedef SerialCommunication<MapleMessages, 100, 10> Serial;
+        typedef SerialCommunication<MapleMessages, 100, 10, B460800> Serial;
         Serial maple;
         Actuator<Serial> actuator;
         ActuatorTests()

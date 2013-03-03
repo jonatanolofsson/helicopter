@@ -2,14 +2,17 @@
 #define OS_SYS_OBSERVER_GPS_HPP_
 
 #include <sys/math/constants.hpp>
+#include <sys/math/filtering/GaussianFilter.hpp>
 #include <Eigen/Core>
 #include <os/com/Dispatcher.hpp>
 
 namespace sys {
     namespace observer {
+        using namespace Eigen;
         template<typename S = Scalar>
         struct GPS {
             typedef S Scalar;
+            typedef GPS<S> Self;
             enum state {
                 x = 0,
                 y = 1,
@@ -19,7 +22,7 @@ namespace sys {
                 vy = 4,
                 vz = 5,
 
-                number_of_measurements = 6
+                nofMeasurements = 6
             };
 
             enum states {
@@ -27,11 +30,11 @@ namespace sys {
                 velocity = vx
             };
 
-            typedef Matrix<Scalar, number_of_measurements, 1> MeasurementVector;
-            typedef Matrix<Scalar, number_of_measurements, number_of_measurements> CovarianceMatrix;
+            typedef Matrix<Scalar, nofMeasurements, 1> MeasurementVector;
+            typedef Matrix<Scalar, nofMeasurements, nofMeasurements> CovarianceMatrix;
             template<typename T>
             static MeasurementVector predict(const T& filter) {
-                typedef typename T::StateDescription states;
+                typedef typename T::Model::StateDescription states;
                 MeasurementVector m;
                 auto l = filter.retrieve_lock();
                 m[x] = filter.state[states::x];
@@ -46,9 +49,9 @@ namespace sys {
             }
 
             template<typename T>
-            static Matrix<typename T::Scalar, number_of_measurements, T::StateDescription::number_of_states> jacobian(const T&) {
-                typedef typename T::StateDescription states;
-                typedef Matrix<Scalar, number_of_measurements, states::number_of_states> JacobianMatrix;
+            static Matrix<typename T::Scalar, nofMeasurements, T::Model::nofStates> jacobian(const T&) {
+                typedef typename T::Model::StateDescription states;
+                typedef Matrix<Scalar, nofMeasurements, states::nofStates> JacobianMatrix;
                 JacobianMatrix J;
                 J.setZero();
 
@@ -66,7 +69,6 @@ namespace sys {
 
             template<typename PostOffice>
             static void packager(const typename PostOffice::Message& msg) {
-                typedef GPS<S> sensor;
                 USING_XYZ
                 struct gpsOverlay {
                     float pos[3];
@@ -74,13 +76,13 @@ namespace sys {
                 };
                 if(msg.size == sizeof(gpsOverlay)) {
                     gpsOverlay* gps = (gpsOverlay*)&msg.msg;
-                    Measurement<GPS> m;
-                    m.z[sensor::x] = gps.pos[X];
-                    m.z[sensor::y] = gps.pos[Y];
-                    m.z[sensor::z] = gps.pos[Z];
-                    m.z[sensor::vx] = gps.vel[X];
-                    m.z[sensor::vy] = gps.vel[Y];
-                    m.z[sensor::vz] = gps.vel[Z];
+                    math::Measurement<Self> m;
+                    m.z[x] = gps.pos[X];
+                    m.z[y] = gps.pos[Y];
+                    m.z[z] = gps.pos[Z];
+                    m.z[vx] = gps.vel[X];
+                    m.z[vy] = gps.vel[Y];
+                    m.z[vz] = gps.vel[Z];
                     os::yield(m);
                 }
             }

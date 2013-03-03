@@ -3,7 +3,7 @@
 #include <sys/Observer/gps.hpp>
 
 namespace sys {
-    namespace observer {
+    namespace Observer {
         os::Dispatcher<Measurement<GPS<>>> e(measurementUpdate<GPS<Scalar>>);
         //~ i2c<0>::registerPackager(TestMessages::MY_MSG, gpsPackager);
     }
