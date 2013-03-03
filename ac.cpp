@@ -1,24 +1,53 @@
+#include <errno.h>
 #include <stdlib.h>
 #include <wirish/wirish.h>
 
-// Force init to be called *first*, i.e. before static object allocation.
-// Otherwise, statically allocated objects that need libmaple may fail.
-__attribute__((constructor)) void premain() {init();}
+void print(int v, int base = 10);
+void print(int v, int base) {
+    if (v < 0) {
+        Serial3.write('-');
+        v = -v;
+    }
+    if (v >= base) {
+        print(v/base, base);
+    }
+    int p = v%base;
+    if(p < 10) {
+        Serial3.write('0'+p);
+    } else {
+        Serial3.write('A'+p);
+    }
+}
+
 
 #include <syrup/comm/i2c.hpp>
-
+#include <syrup/isr.hpp>
+//~
 #include "Serial.hpp"
+#include <libmaple/i2c.h>
 #include <Servo/Servo.h>
-
+#include "types.hpp"
+//~
 #include <syrup/drivers/sensors/MPU6050.hpp>
-#include <syrup/drivers/sensors/TCS230.hpp>
 #include <syrup/drivers/sensors/MS5611.hpp>
 #include <syrup/drivers/sensors/HMC5883L.hpp>
-#include <syrup/drivers/sensors/Button.hpp>
-#include <syrup/drivers/sensors/SRF04.hpp>
-#include <syrup/drivers/sensors/AnalogSensor.hpp>
+//~ #include <syrup/drivers/sensors/TCS230.hpp>
+//~ #include <syrup/drivers/sensors/Button.hpp>
+//~ #include <syrup/drivers/sensors/SRF04.hpp>
+//~ #include <syrup/drivers/sensors/AnalogSensor.hpp>
+//~
+//~ #define WATCHDOG                (12)
 
-#define WATCHDOG                (12)
+
+// Force init to be called *first*, i.e. before static object allocation.
+// Otherwise, statically allocated objects that need libmaple may fail.
+__attribute__((constructor)) void premain() {
+    init();
+    pinMode(BOARD_LED_PIN, OUTPUT);
+    //~ Serial3.begin(115200);
+
+    i2c_master_enable(I2C1, I2C_FAST_MODE | I2C_BUS_RESET);
+}
 
 sys::SensorMessage message;
 
@@ -27,21 +56,17 @@ using namespace os;
 using namespace sys;
 U16 ioctl;
 
-HardWire HWI2C(1, I2C_FAST_MODE);
-I2CPeripheral i2cMPU6050(&HWI2C, MPU6050::I2C_ADDRESS_LOW);
-//~ MPU6050 IMU(&i2cMPU6050, 18);
-//~ I2CPeripheral i2cMS5611(&HWI2C, MS5611::I2C_ADDRESS_LOW);
-//~ MS5611 pressureSensor(&i2cMS5611, false);
-//~ I2CPeripheral i2cHMC5883(&HWI2C, HMC5883L::I2C_ADDRESS);
-//~ HMC5883L magnetometer(&i2cHMC5883, 17);
+MPU6050 IMU(I2C1, 17);
+MS5611 pressureSensor(I2C1);
+HMC5883L magnetometer(I2C1, 18);
 //~ SRF04 groundDistance[4] = {{4, Timer3, true},{5, Timer3},{6, Timer3},{7, Timer3}};
 //~ TCS230 RPMSensor(19, Timer4); // Verify args
-
+//~
 //~ Button<6>  btn0;
 //~ Button<7>  btn1;
 //~ Button<13> btn2;
 //~ Button<14> btn3;
-//~
+//~ //~
 //~ AnalogSensor powerSensor(3);
 //~ AnalogSensor windSensor[2] = {{4}, {5}};
 //~
@@ -51,13 +76,15 @@ I2CPeripheral i2cMPU6050(&HWI2C, MPU6050::I2C_ADDRESS_LOW);
 
 ComputerLink computer(&Serial3);
 
-void timer10msInterrupt() {
+void timerISR(void*) {
     static int N = 0;
+
+    //~ digitalWrite(BOARD_LED_PIN, N%2);
 
     // Feed the watchdog
     //~ digitalWrite(WATCHDOG, (N % 5) == 0);
 
-    //~ pressureSensor.timer_sample();
+    //~ pressureSensor.sample();
 
     //~ if(!(N % 5)) {
         //~ for(int i = 0; i < 4; ++i) {
@@ -65,9 +92,10 @@ void timer10msInterrupt() {
         //~ }
     //~ }
 
-    //~ IMU.measure(message.imu);
+    IMU.measure(message.imu);
+    //~ digitalWrite(BOARD_LED_PIN, message.imu[2] != 0);
     //~ pressureSensor.measure(&message.pressure);
-    //~ magnetometer.measure(message.magnetometer);
+    magnetometer.measure(message.magnetometer);
     //~ message.buttons = (btn3.pressed() << 3)
                     //~ | (btn2.pressed() << 2)
                     //~ | (btn1.pressed() << 1)
@@ -75,13 +103,19 @@ void timer10msInterrupt() {
 
     //~ windSensor[0].measure(&message.wind[0]);
     //~ windSensor[1].measure(&message.wind[1]);
+    //~ Serial3.println('a');
+    //~ for(int i = 0; i < 3; ++i) {
+        //~ print((int)message.imu[i]);
+        //~ Serial3.print("        ");
+    //~ }
+    //~ Serial3.println("");
 
     //~ //~// powerSensor.measure(&message.power);
     //~ RPMSensor.measure(&message.rpm);
 
-    //~ if(ioctl & IoctlMessage::SEND_SENSOR_DATA) {
-        //~ computer.send<>(message);
-    //~ }
+    if(ioctl & IoctlMessage::SEND_SENSOR_DATA) {
+        computer.send<>(message);
+    }
 
     // Wrap each second
     N = (N+1) % 100;
@@ -89,9 +123,10 @@ void timer10msInterrupt() {
 
 
 void actuateControl(const U8* msg, const std::size_t len) {
-    //~ static bool a = true;
+    //~ static bool a = true; a = !a;
+    //~ digitalWrite(BOARD_LED_PIN, a);
     if(len == sizeof(sys::ControlMessage)) {
-        sys::ControlMessage *m = (sys::ControlMessage*)msg; // Safe because of requested alignment of msg
+        sys::ControlMessage *m = (sys::ControlMessage*)msg; // FIXME
         //~ digitalWrite(BOARD_LED_PIN, a);
         //~ a = !a;
         //~ delay(500);
@@ -105,32 +140,48 @@ void actuateControl(const U8* msg, const std::size_t len) {
     }
 }
 void actuateCamera(const U8* msg, const std::size_t len) {
-    //~ if(len == sizeof(sys::CameraControlMessage)) {
-        //~ sys::CameraControlMessage *m = (sys::CameraControlMessage*)msg; // Safe because of requested alignment of msg
+    if(len == sizeof(sys::CameraControlMessage)) {
+        sys::CameraControlMessage *m = (sys::CameraControlMessage*)msg; // Safe because of requested alignment of msg
         //~ cameraServo[0].set(m->horizontal);
         //~ cameraServo[1].set(m->vertical);
-    //~ }
+    }
 }
 void setIoctl(const U8* msg, const std::size_t len) {
     ioctl = *(U16*)msg;
+    static bool k = 0;
 
     if(ioctl & IoctlMessage::STRESSTEST) {
-        //~ digitalWrite(BOARD_LED_PIN, 1);
         for(int i = 0; i < 1000; ++i) {
             computer.send<>(message);
         }
         ioctl ^= IoctlMessage::STRESSTEST;
-        //~ digitalWrite(BOARD_LED_PIN, 0);
     }
 }
 
-void computerSetup() {
-    Serial3.setup_dma_tx();
-    computer.registerPackager<MapleMessages::controlMessage>(actuateControl);
-    computer.registerPackager<MapleMessages::cameraControlMessage>(actuateCamera);
-    computer.registerPackager<MapleMessages::ioctlMessage>(setIoctl);
+namespace Computer {
+    void readBytes(void*) {
+        if(computer.readBytes() == -EAGAIN) {
+            isr::queue(Computer::readBytes);
+        }
+    }
+    void rxCallback(dma_message*, dma_irq_cause cause) {
+        isr::queue(Computer::readBytes);
+    }
+    void setup() {
+        Serial3.setup_dma();
+        computer.device.rxCallback = Computer::rxCallback;
+        computer.registerPackager<MapleMessages::controlMessage>(actuateControl);
+        computer.registerPackager<MapleMessages::cameraControlMessage>(actuateCamera);
+        computer.registerPackager<MapleMessages::ioctlMessage>(setIoctl);
+        isr::queue(Computer::readBytes);
+    }
 }
 
+void timer10msInterrupt() {
+    //~ static bool a = true; a = !a;
+    //~ digitalWrite(BOARD_LED_PIN, 1);
+    isr::queue(timerISR);
+}
 void timerSetup() {
     Timer4.setPeriod(10000);
     Timer4.attachInterrupt(1, &timer10msInterrupt);
@@ -138,9 +189,9 @@ void timerSetup() {
 }
 
 int main(void) {
-    pinMode(BOARD_LED_PIN, OUTPUT);
-    computerSetup();
-    //~ timerSetup();
-    computer.readerLoop();
+    Computer::setup();
+    timerSetup();
+    isr::serviceLoop();
+    while(1);
     return 0;
 }
