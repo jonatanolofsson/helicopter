@@ -9,9 +9,10 @@
 using namespace sys;
 using namespace Eigen;
 
-typedef math::S6DOFQ StateDescription;
+typedef math::S6CARTQ StateDescription;
 typedef StateDescription states;
-typedef math::KalmanFilter<StateDescription> KF;
+typedef math::NoControl ControlDescription;
+typedef math::KalmanFilter<StateDescription, ControlDescription> KF;
 typedef models::motion::ConstantVelocities  MotionModel;
 
 void initializeObserver(KF& system_state) {

@@ -77,7 +77,8 @@ namespace sys {
 
 
         template<typename T, typename A, T(*FN)(const T&, const A&)>
-        Matrix<typename T::Scalar, T::RowsAtCompileTime, T::RowsAtCompileTime> differentiate(const T& x, const T& dx, const A& arg) {
+        Matrix<typename T::Scalar, T::RowsAtCompileTime, T::RowsAtCompileTime>
+        differentiate(const T& x, const T& dx, const A& arg) {
             typedef DifferentiationThread<T, A, FN> DThread;
             static DThread threads[T::RowsAtCompileTime];
 

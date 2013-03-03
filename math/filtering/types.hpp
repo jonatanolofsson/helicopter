@@ -6,8 +6,9 @@
 
 namespace sys {
     namespace math {
-        template<typename S, int N> struct Covariance   { typedef Eigen::Matrix<S, N, N> type; };
-        template<typename S, int N> struct StateVector  { typedef Eigen::Matrix<S, N, 1> type; };
+        template<typename S, int N> struct Covariance       { typedef Eigen::Matrix<S, N, N> type; };
+        template<typename S, int N> struct StateVector      { typedef Eigen::Matrix<S, N, 1> type; };
+        template<typename S, int N> struct ControlVector    { typedef Eigen::Matrix<S, N, 1> type; };
     }
 }
 

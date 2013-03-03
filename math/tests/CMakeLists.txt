@@ -1,3 +1,7 @@
 make_test(DifferentiationTests)
-make_test(ConstantVelocityModelTests)
+#~ make_test(ConstantVelocityModelTests)
+#~ target_link_libraries(ConstantVelocityModelTests models)
 make_test(EKFTests)
+target_link_libraries(EKFTests models)
+make_test(LqTests)
+target_link_libraries(LqTests models)
