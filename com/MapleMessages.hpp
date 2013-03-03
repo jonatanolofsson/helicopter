@@ -28,18 +28,41 @@ namespace sys {
         U16 distance[4];
         U16 rpm;
         U8 buttons;
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & imu;
+            ar & pressure;
+            ar & magnetometer;
+            ar & wind;
+            ar & distance;
+            ar & rpm;
+            ar & buttons;
+        }
     };
 
     struct ControlMessage {
         static const MapleMessages::Id ID = MapleMessages::controlMessage;
         U16 servo[3];
         U16 rpm;
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & servo;
+            ar & rpm;
+        }
     };
 
     struct CameraControlMessage {
         static const MapleMessages::Id ID = MapleMessages::cameraControlMessage;
         U16 horizontal;
         U16 vertical;
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & horizontal;
+            ar & vertical;
+        }
     };
 
     struct IoctlMessage {
@@ -50,6 +73,11 @@ namespace sys {
             RESPONSETEST = (1 << 1),
             STRESSTEST = (1 << 2)
         };
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int version)
+        {
+            ar & message;
+        }
     };
 
     template<> struct MapleMessage<MapleMessages::sensorMessage> { typedef SensorMessage Type; };
