@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 #include <os/com/SerialCommunication.hpp>
-#include <sys/Actuator.hpp>
 #include <sys/com/MapleMessages.hpp>
 #include <sys/com/MotionControlSignal.hpp>
 #include <sys/com/CameraControlSignal.hpp>

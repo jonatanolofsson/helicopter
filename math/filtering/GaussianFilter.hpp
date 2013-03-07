@@ -24,15 +24,15 @@ namespace sys {
                 covariance.setZero();
             }
 
-            GaussianFilter(const Self& f)
-                : covariance(f.covariance)
-                , state(f.state)
-                , controls(f.controls)
+            GaussianFilter(const Self& c)
+                : covariance(c.covariance)
+                , state(c.state)
+                , controls(c.controls)
             {}
         };
 
         template<typename Sensor>
-        struct Measurement : public Sensor {
+        struct GaussianMeasurement : public Sensor {
             typedef Sensor Model;
             Matrix<typename Sensor::Scalar, Sensor::nofMeasurements, 1> z;
             Matrix<typename Sensor::Scalar, Sensor::nofMeasurements, Sensor::nofMeasurements> R;

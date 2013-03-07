@@ -28,8 +28,8 @@ namespace sys {
                 static typename T::States diffControl(const T& filter, const D& du) {
                     T positive(filter);
                     T negative(filter);
-                    positive.controls += du;
-                    negative.controls -= du;
+                    positive.controls = du;
+                    negative.controls =- du;
                     return predict<T>(positive, 1e-2) - predict<T>(negative, 1e-2);
                 }
                 template<typename T>

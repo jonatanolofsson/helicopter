@@ -1,7 +1,6 @@
 project(Observer)
 
 make_module(
-    Observer.cpp
     gps.cpp
 )
 

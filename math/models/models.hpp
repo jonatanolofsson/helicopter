@@ -4,6 +4,7 @@
 #include "ConstantVelocities3D.hpp"
 #include "DirectVelocities3D.hpp"
 
+#include "SCart3DAccQuat.hpp"
 #include "SCart3DQuat.hpp"
 #include "SCart3D.hpp"
 #include "CVel3.hpp"

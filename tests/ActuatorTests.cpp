@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <os/com/SerialCommunication.hpp>
-#include <sys/Actuator.hpp>
+#include <sys/actuator/API.hpp>
 #include <sys/com/MapleMessages.hpp>
 #include <sys/com/MotionControlSignal.hpp>
 #include <sys/com/CameraControlSignal.hpp>
@@ -12,6 +12,7 @@
 #include <termios.h>
 
 using namespace sys;
+using actuator::Actuator;
 
 std::condition_variable responseCondition;
 std::mutex responseGuard;

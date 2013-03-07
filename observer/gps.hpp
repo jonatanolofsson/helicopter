@@ -76,7 +76,7 @@ namespace sys {
                 };
                 if(msg.size == sizeof(gpsOverlay)) {
                     gpsOverlay* gps = (gpsOverlay*)&msg.msg;
-                    math::Measurement<Self> m;
+                    math::GaussianMeasurement<Self> m;
                     m.z[x] = gps.pos[X];
                     m.z[y] = gps.pos[Y];
                     m.z[z] = gps.pos[Z];

@@ -3,9 +3,13 @@
 
 #include <boost/statechart.hpp>
 #include <sys/states/Top.hpp>
+#include <sys/motioncontrol/API.hpp>
+#include <sys/actuator/API.hpp>
 
 namespace sys {
     namespace sc = boost::statechart;
+    using actuator::Actuator;
+    using motioncontrol::MotionControl;
 
     struct TakeOff;
 

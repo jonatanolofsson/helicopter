@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <sys/math/models/models.hpp>
-#include <sys/Observer/gps.hpp>
+#include <sys/observer/gps.hpp>
 #include <sys/math/filtering/GaussianFilter.hpp>
 #include <sys/math/filtering/EKF.hpp>
 #include <Eigen/Core>
@@ -80,7 +80,7 @@ TEST(EKFTests, MeasurementUpdateGPS) {
     auto reference = system_state.state;
     reference[states::x] = reference[states::y] = reference[states::z] = 0.5;
 
-    math::Measurement<observer::GPS<>> m;
+    math::GaussianMeasurement<observer::GPS<>> m;
     m.z << 1, 1, 1, 0, 0, 0;
     m.R.setIdentity();
 
