@@ -20,7 +20,7 @@ bool receivedResponse = false;
 
 template<typename T>
 void responseHandler(const U8* msg, const std::size_t len) {
-    ASSERT_EQ(msg > 0, true);
+    ASSERT_NE(msg, nullptr);
     ASSERT_EQ(len, sizeof(T));
     std::unique_lock<std::mutex> l(responseGuard);
     receivedResponse = true;

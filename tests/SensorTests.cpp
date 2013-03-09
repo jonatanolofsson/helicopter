@@ -22,7 +22,7 @@ int receivedResponse = 0;
 bool printResponse = false;
 
 void sensorResponseHandler(const U8* msg, const std::size_t len) {
-    ASSERT_EQ(msg > 0, true);
+    ASSERT_NE(msg, nullptr);
     ASSERT_EQ(len, sizeof(SensorMessage));
     ++receivedResponse;
     if(receivedResponse >= 1000) {
