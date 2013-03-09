@@ -1,30 +1,31 @@
-#ifndef OS_SYS_OBSERVER_HPP_
-#define OS_SYS_OBSERVER_HPP_
+#ifndef SYS_OBSERVER_HPP_
+#define SYS_OBSERVER_HPP_
 
 #include <os/com/Dispatcher.hpp>
+#include <sys/observer/API.hpp>
 
 namespace sys {
     namespace observer {
         template<typename Filter, typename Model, typename FilterState, typename Trigger>
         class Observer {
+            public:
+                typedef Observer<Filter, Model, FilterState, Trigger> Self;
             private:
                 os::Dispatcher<Observer, Trigger> dispatcher;
+
+                /* Sensors */
+                os::Dispatcher<Observer, sensors::GPS> gps;
 
             public:
                 FilterState state;
 
-                Observer() : dispatcher(&Observer::timeUpdate, this) {
-                    FilterState::Model::StateDescription::initialize(state);
-                }
+                Observer();
 
-                void timeUpdate(const Trigger) {
-                    Filter::template timeUpdate<Model>(state, 1e-2);
-                    os::yield(state.state);
-                }
+                void timeUpdate(const Trigger);
 
-                template<typename Sensor, typename Measurement, typename MUFilter = Filter>
+                template<typename Measurement, typename MUFilter = Filter>
                 void measurementUpdate(const Measurement m) {
-                    MUFilter::template measurementUpdate<Model::States, Measurement>(state, m);
+                    MUFilter::template measurementUpdate<FilterState, Measurement>(state, m);
                 }
         };
     }

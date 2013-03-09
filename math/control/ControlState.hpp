@@ -15,6 +15,7 @@ namespace sys {
             typedef M Model;
             typedef ControlState<M,S> Self;
             States state;
+            Controls controls;
 
             explicit ControlState() {
                 state.setZero();
@@ -22,11 +23,12 @@ namespace sys {
 
             ControlState(const Self& c)
                 : state(c.state)
+                , controls(c.controls)
             {}
 
             template<typename T>
             explicit ControlState(const T& c)
-                : state(c.state.template segment<M::nofStates>(0))
+                : state(c.template segment<M::nofStates>(0))
             {}
         };
     }

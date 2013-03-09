@@ -16,10 +16,10 @@ namespace sys {
                 filter.covariance = A*filter.covariance*A.transpose() + MotionModel::template covariance<T>(dT);
             }
 
-            template<typename GaussianFilter, typename Measurement>
-            static void measurementUpdate(GaussianFilter& filter, const Measurement& measurement) {
-                auto h = Measurement::Model::predict(filter);
-                auto H = Measurement::Model::jacobian(filter);
+            template<typename GaussianFilter, typename GaussianMeasurement>
+            static void measurementUpdate(GaussianFilter& filter, const GaussianMeasurement& measurement) {
+                auto h = GaussianMeasurement::Model::predict(filter);
+                auto H = GaussianMeasurement::Model::jacobian(filter);
 
                 auto KA = filter.covariance * H.transpose();
 

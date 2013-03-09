@@ -1,10 +1,19 @@
-project(sys)
 find_package(Eigen3)
 include_directories(${Eigen3_INCLUDE_DIR})
 
-add_subdirectory(math)
-add_subdirectory(tests)
-add_subdirectory(states)
+set(libraries
+    math
+    states
+    actuator
+    observer
+    motioncontrol
+)
+
+foreach(lib ${libraries})
+    add_subdirectory(${lib})
+endforeach()
 
 add_executable(heli main.cpp)
-target_link_libraries(heli math states)
+target_link_libraries(heli libraries)
+
+add_subdirectory(tests)
