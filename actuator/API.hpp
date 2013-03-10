@@ -6,9 +6,9 @@
 
 namespace sys {
     namespace actuator {
-        typedef Maple InstatiationArgument;
+        typedef Maple SerialLink;
     }
-    typedef actuator::Actuator<actuator::InstatiationArgument> Actuator;
+    typedef actuator::Actuator<actuator::SerialLink> Actuator;
 }
 
 #endif

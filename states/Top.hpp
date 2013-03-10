@@ -3,34 +3,42 @@
 
 #include <boost/statechart/state_machine.hpp>
 #include <boost/statechart/simple_state.hpp>
-#include <sys/motioncontrol/API.hpp>
-#include <sys/observer/API.hpp>
-#include <os/com/NetworkServer.hpp>
-#include <os/com/SerialCommunication.hpp>
+#include <boost/statechart/transition.hpp>
+#include <boost/statechart/custom_reaction.hpp>
 
-#include <sys/com/MapleMessages.hpp>
-#include <sys/com/ImageProcessorMessages.hpp>
+#include <sys/observer/API.hpp>
+#include <sys/com/Maple.hpp>
+#include <sys/states/events.hpp>
+
+#include <boost/mpl/list.hpp>
 
 namespace sys {
+    namespace mpl = boost::mpl;
     namespace sc = boost::statechart;
 
-    struct Top;
-    struct Idle;
+    namespace states {
+        struct Top;
+    }
 
-    struct Helicopter : sc::state_machine<Helicopter, Top>
-    {};
+    struct Firefighter : sc::state_machine<Firefighter, states::Top> {};
 
-    struct Top : sc::simple_state<Top, Helicopter, Idle>
-    {
-        observer::ObserverType observer;
-        os::NetworkServer<8810, ImageProcessorMessages, 100, 10> imageProcessor;
-        os::SerialCommunication<MapleMessages, 100, 10> maple;
 
-        Top();
-    };
+    namespace states {
+        struct Init;
+        struct Top : sc::simple_state<Top, Firefighter, Init>
+        {
+            Observer observer;
+            Maple maple;
+
+            Top();
+        };
+    }
 }
 
+#include <sys/states/Init.hpp>
 #include <sys/states/Idle.hpp>
+#include <sys/states/moving/Moving.hpp>
+#include <sys/states/Stop.hpp>
 
 #endif
 

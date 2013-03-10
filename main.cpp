@@ -1,11 +1,16 @@
 #include <sys/states/Top.hpp>
+#include <os/com/getSignal.hpp>
+#include <os/clock.hpp>
+
+INSTANTIATE_SIGNAL(os::SystemTime);
 
 using namespace sys;
 
-Helicopter helicopterStateMachine;
+Firefighter stateMachine;
 
 int main(int, char*[]) {
-    helicopterStateMachine.initiate();
+    stateMachine.initiate();
+    while(true) sleep(1000);
 
     return 0;
 }

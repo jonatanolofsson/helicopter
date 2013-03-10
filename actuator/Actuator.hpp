@@ -18,6 +18,8 @@ namespace sys {
                 os::Dispatcher<Actuator, MotionControlSignal> controlActuator;
                 os::Dispatcher<Actuator, CameraControlSignal> cameraActuator;
 
+                Actuator();
+
             public:
                 explicit Actuator(Serial& maple_);
         };

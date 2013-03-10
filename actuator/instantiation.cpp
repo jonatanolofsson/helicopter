@@ -10,6 +10,6 @@ INSTANTIATE_SIGNAL(sys::CameraControlSignal);
 
 namespace sys {
     namespace actuator {
-        template class Actuator<InstatiationArgument>;
+        template class Actuator<SerialLink>;
     }
 }

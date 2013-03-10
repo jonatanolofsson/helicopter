@@ -11,6 +11,14 @@
 namespace sys {
     namespace actuator {
         template<typename Serial>
+        Actuator<Serial>::Actuator(Serial& maple_)
+        : maple(maple_)
+        , controlActuator(&Actuator<Serial>::actuateControl, this)
+        , cameraActuator(&Actuator<Serial>::actuateCamera, this)
+        {}
+
+
+        template<typename Serial>
         void Actuator<Serial>::actuateControl(const MotionControlSignal u) {
             MapleMessages::Message<MapleMessages::controlMessage>::Type msg = {
                 {
@@ -31,13 +39,6 @@ namespace sys {
             };
             maple.template send<>(msg);
         }
-
-        template<typename Serial>
-        Actuator<Serial>::Actuator(Serial& maple_)
-        : maple(maple_)
-        , controlActuator(&Actuator<Serial>::actuateControl, this)
-        , cameraActuator(&Actuator<Serial>::actuateCamera, this)
-        {}
     }
 }
 

@@ -1,0 +1,7 @@
+add_library(states_running
+    Running.cpp
+    Search.cpp
+    Return.cpp
+    Extinguish.cpp
+)
+target_link_libraries(states_running motioncontrol)

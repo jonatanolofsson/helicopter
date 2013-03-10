@@ -1,5 +1,5 @@
-#ifndef OS_SYS_OBSERVER_IMPLEMENTATION_HPP_
-#define OS_SYS_OBSERVER_IMPLEMENTATION_HPP_
+#ifndef SYS_OBSERVER_IMPLEMENTATION_HPP_
+#define SYS_OBSERVER_IMPLEMENTATION_HPP_
 
 #include <os/com/Dispatcher.hpp>
 #include <sys/observer/API.hpp>
