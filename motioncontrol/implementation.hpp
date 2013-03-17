@@ -7,8 +7,8 @@
 #include <sys/math/control/LqController.hpp>
 
 #include <sys/math/filtering/GaussianFilter.hpp>
-#include <sys/math/models/SCart3DAccQuat.hpp>
-#include <sys/math/models/ConstantVelocities3D.hpp>
+#include <sys/math/states.hpp>
+#include <sys/math/models.hpp>
 
 #include <sys/observer/API.hpp>
 #include <sys/motioncontrol/API.hpp>

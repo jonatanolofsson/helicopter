@@ -2,8 +2,8 @@
 #define SYS_MOTIONCONTROL_API_HPP_
 
 #include <sys/motioncontrol/MotionControl.hpp>
-#include <sys/math/models/models.hpp>
-#include <sys/math/control/ControlState.hpp>
+#include <sys/math/models.hpp>
+#include <sys/math/states.hpp>
 #include <sys/math/control/LqController.hpp>
 #include <sys/observer/API.hpp>
 
