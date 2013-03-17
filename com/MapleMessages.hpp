@@ -21,6 +21,19 @@ namespace sys {
 
     struct SensorMessage {
         static const MapleMessages::Id ID = MapleMessages::sensorMessage;
+        enum ImuStates {
+            ax = 0,
+            ay = 1,
+            az = 2,
+            wx = 3,
+            wy = 4,
+            wz = 5
+        };
+        enum MagnetometerStates {
+            mx = 0,
+            my = 1,
+            mz = 2
+        };
         U16 imu[6];
         U16 pressure;
         U16 magnetometer[3];

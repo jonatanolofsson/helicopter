@@ -6,6 +6,8 @@
 namespace sys {
     typedef os::Scalar Scalar;
 
+    typedef os::F64 F64;
+    typedef os::F32 F32;
     typedef os::U64 U64;
     typedef os::S64 S64;
     typedef os::U32 U32;
