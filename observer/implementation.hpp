@@ -3,20 +3,23 @@
 
 #include <os/com/Dispatcher.hpp>
 #include <sys/observer/API.hpp>
+#include <sys/settings.hpp>
 
 namespace sys {
     namespace observer {
         template<typename Filter, typename Model, typename FilterState, typename Trigger>
         Observer<Filter, Model, FilterState, Trigger>::Observer()
         : dispatcher(&Self::timeUpdate, this)
-        , gps(&Self::measurementUpdate<sensors::GPS>, this)
+        //~ , gps(&Self::measurementUpdate<sensors::Gps>, this)
+        , imu(&Self::measurementUpdate<sensors::Imu>, this)
         {
             FilterState::Model::StateDescription::initialize(state);
         }
 
         template<typename Filter, typename Model, typename FilterState, typename Trigger>
         void Observer<Filter, Model, FilterState, Trigger>::timeUpdate(const Trigger) {
-            Filter::template timeUpdate<Model>(state, 1e-2);
+            auto l = state.retrieve_lock();
+            Filter::template timeUpdate<Model>(state, settings::dT);
             os::yield(state.state);
         }
     }

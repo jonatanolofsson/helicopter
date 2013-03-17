@@ -11,10 +11,11 @@ namespace sys {
             public:
                 typedef Observer<Filter, Model, FilterState, Trigger> Self;
             private:
-                os::Dispatcher<Observer, Trigger> dispatcher;
+                os::Dispatcher<Self, Trigger> dispatcher;
 
                 /* Sensors */
-                os::Dispatcher<Observer, sensors::GPS> gps;
+                //~ os::Dispatcher<Observer, sensors::Gps> gps;
+                os::Dispatcher<Self, sensors::Imu> imu;
 
             public:
                 FilterState state;
@@ -25,6 +26,7 @@ namespace sys {
 
                 template<typename Measurement, typename MUFilter = Filter>
                 void measurementUpdate(const Measurement m) {
+                    auto l = state.retrieve_lock();
                     MUFilter::template measurementUpdate<FilterState, Measurement>(state, m);
                 }
         };
