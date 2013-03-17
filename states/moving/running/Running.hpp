@@ -2,6 +2,7 @@
 #define SYS_STATES_RUNNING_HPP_
 #include <sys/states/moving/Moving.hpp>
 #include <sys/motioncontrol/API.hpp>
+#include <sys/localplanner/API.hpp>
 
 namespace sys {
     namespace states {
@@ -10,6 +11,7 @@ namespace sys {
         : sc::simple_state<Running, Moving, Search>
         {
             MotionControl motionControl;
+            LocalPlanner localPlanner;
 
             Running();
         };

@@ -6,7 +6,9 @@
 #include <boost/statechart/transition.hpp>
 #include <boost/statechart/custom_reaction.hpp>
 
+#include <sys/clock/API.hpp>
 #include <sys/observer/API.hpp>
+#include <sys/sensorhub/API.hpp>
 #include <sys/com/Maple.hpp>
 #include <sys/states/events.hpp>
 
@@ -29,6 +31,8 @@ namespace sys {
         {
             Observer observer;
             Maple maple;
+            Clock clock;
+            Sensorhub sensorhub;
 
             Top();
         };

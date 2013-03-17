@@ -4,4 +4,7 @@ add_library(states_running
     Return.cpp
     Extinguish.cpp
 )
-target_link_libraries(states_running motioncontrol)
+target_link_libraries(states_running
+    motioncontrol
+    localplanner
+)
