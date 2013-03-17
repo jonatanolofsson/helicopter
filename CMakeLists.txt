@@ -2,12 +2,16 @@ find_package(Eigen3)
 include_directories(${Eigen3_INCLUDE_DIR})
 
 set(libraries
+    math
+    com
     motioncontrol
     actuator
     observer
+    simulator
+    localplanner
+    sensorhub
     states
-    com
-    math
+    clock
 )
 
 foreach(lib ${libraries})
@@ -15,6 +19,6 @@ foreach(lib ${libraries})
 endforeach()
 
 add_executable(firefighter main.cpp)
-target_link_libraries(firefighter ${libraries})
+target_link_libraries(firefighter ${libraries} ${libraries} os)
 
 add_subdirectory(tests)
