@@ -1,15 +1,9 @@
-#ifndef SYS_MATH_MODELS_MODELS_HPP_
-#define SYS_MATH_MODELS_MODELS_HPP_
+#ifndef SYS_MATH_MODELS_MOTION_HPP_
+#define SYS_MATH_MODELS_MOTION_HPP_
 
-#include "ConstantVelocities3D.hpp"
-#include "DirectVelocities3D.hpp"
+#include <sys/math/models/motion/ConstantVelocities3D.hpp>
+#include <sys/math/models/motion/DirectVelocities3D.hpp>
 
-#include "SCart3DAccQuat.hpp"
-#include "SCart3DQuat.hpp"
-#include "SCart3D.hpp"
-#include "CVel3.hpp"
-#include "C6VW.hpp"
-#include "NoControl.hpp"
 
 namespace sys {
     namespace math {

@@ -9,7 +9,6 @@ namespace sys {
         struct EKF {
             template<typename MotionModel, typename T>
             static void timeUpdate(T& filter, typename T::Scalar dT) {
-                auto l = filter.retrieve_lock();
                 auto A = MotionModel::systemJacobian(filter);
 
                 filter.state = MotionModel::predict(filter, dT);
@@ -18,7 +17,7 @@ namespace sys {
 
             template<typename GaussianFilter, typename GaussianMeasurement>
             static void measurementUpdate(GaussianFilter& filter, const GaussianMeasurement& measurement) {
-                auto h = GaussianMeasurement::Model::predict(filter);
+                auto h = GaussianMeasurement::Model::measurement(filter);
                 auto H = GaussianMeasurement::Model::jacobian(filter);
 
                 auto KA = filter.covariance * H.transpose();

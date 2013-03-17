@@ -1,8 +1,10 @@
 #ifndef SYS_MATH_CONTROL_CONTROLSTATE_HPP_
 #define SYS_MATH_CONTROL_CONTROLSTATE_HPP_
 
-#include <sys/math/filtering/types.hpp>
 #include <os/mem/ProtectedData.hpp>
+#include <sys/types.hpp>
+#include <sys/math/control.hpp>
+#include <sys/math/filtering.hpp>
 
 namespace sys {
     namespace math {

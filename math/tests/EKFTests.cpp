@@ -1,9 +1,8 @@
 #include <gtest/gtest.h>
 
-#include <sys/math/models/models.hpp>
-#include <sys/observer/gps.hpp>
-#include <sys/math/filtering/GaussianFilter.hpp>
-#include <sys/math/filtering/EKF.hpp>
+#include <sys/math/models.hpp>
+#include <sys/math/filtering.hpp>
+#include <sys/math/states.hpp>
 #include <Eigen/Core>
 
 
@@ -11,7 +10,7 @@ using namespace Eigen;
 using namespace sys;
 
 typedef math::models::SCart3DQuat states;
-typedef math::models::NoControl controls;
+typedef math::models::C0 controls;
 typedef math::models::Description<states, controls> ModelDescription;
 typedef math::GaussianFilter<ModelDescription> SystemState;
 typedef models::motion::ConstantVelocities3D MotionModel;
@@ -80,7 +79,7 @@ TEST(EKFTests, MeasurementUpdateGPS) {
     auto reference = system_state.state;
     reference[states::x] = reference[states::y] = reference[states::z] = 0.5;
 
-    math::GaussianMeasurement<observer::GPS<>> m;
+    math::GaussianMeasurement<sys::models::sensors::Gps> m;
     m.z << 1, 1, 1, 0, 0, 0;
     m.R.setIdentity();
 

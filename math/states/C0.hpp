@@ -1,10 +1,10 @@
-#ifndef SYS_MODELS_NOCONTROL_HPP_
-#define SYS_MODELS_NOCONTROL_HPP_
+#ifndef SYS_MODELS_C0_HPP_
+#define SYS_MODELS_C0_HPP_
 
 namespace sys {
     namespace math {
         namespace models {
-            struct NoControl {
+            struct C0 {
                 template<typename T>
                 static void initialize(T& filter) {}
 

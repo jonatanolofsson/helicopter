@@ -1,8 +1,9 @@
 #include <gtest/gtest.h>
 #include <iostream>
-#include <sys/math/control/LqController.hpp>
-#include <sys/math/models/models.hpp>
-#include <sys/math/filtering/GaussianFilter.hpp>
+#include <sys/math/control.hpp>
+#include <sys/math/states.hpp>
+#include <sys/math/models.hpp>
+#include <sys/math/filtering.hpp>
 #include <Eigen/Core>
 
 using namespace Eigen;

@@ -1,4 +1,4 @@
-#include <sys/math/models/SCart3DAccQuat.hpp>
+#include <sys/math/states/SCart3DAccQuat.hpp>
 
 namespace sys {
     namespace math {

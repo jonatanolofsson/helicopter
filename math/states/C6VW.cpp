@@ -1,4 +1,4 @@
-#include <sys/math/models/C6VW.hpp>
+#include <sys/math/states/C6VW.hpp>
 
 namespace sys {
     namespace math {

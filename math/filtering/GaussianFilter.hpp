@@ -1,8 +1,11 @@
 #ifndef SYS_MATH_FILTERING_GAUSSIAN_FILTER_HPP_
 #define SYS_MATH_FILTERING_GAUSSIAN_FILTER_HPP_
 
-#include <sys/math/filtering/types.hpp>
 #include <os/mem/ProtectedData.hpp>
+#include <sys/math/statistics.hpp>
+#include <sys/math/filtering.hpp>
+#include <sys/math/control.hpp>
+#include <sys/types.hpp>
 
 namespace sys {
     namespace math {
@@ -29,6 +32,10 @@ namespace sys {
                 , state(c.state)
                 , controls(c.controls)
             {}
+
+            States noise() {
+                return math::normalSample(covariance);
+            }
         };
 
         template<typename Sensor>
