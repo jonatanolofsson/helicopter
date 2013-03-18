@@ -1,3 +1,4 @@
+#pragma once
 #ifndef AC_SERIAL_HPP_
 #define AC_SERIAL_HPP_
 

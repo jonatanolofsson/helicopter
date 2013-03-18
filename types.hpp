@@ -1,3 +1,4 @@
+#pragma once
 #ifndef AC_TYPES_HPP_
 #define AC_TYPES_HPP_
 
