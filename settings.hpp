@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_SETTINGS_HPP_
 #define SYS_SETTINGS_HPP_
 

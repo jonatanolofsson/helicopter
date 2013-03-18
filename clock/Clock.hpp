@@ -1,7 +1,10 @@
+#pragma once
 #ifndef SYS_CLOCK_HPP_
 #define SYS_CLOCK_HPP_
 
 #include <thread>
+#include <chrono>
+#include <sys/clock/API.hpp>
 #include <os/clock.hpp>
 #include <os/com/Dispatcher.hpp>
 
@@ -9,17 +12,13 @@ namespace sys {
     namespace clock {
         class Clock : os::Via<os::Jiffy> {
             private:
-                std::thread t;
+                os::Dispatcher<Clock, os::Jiffy> d;
                 void tick(const os::Jiffy);
-                void run();
                 os::SystemTime time;
-                bool dying;
+                SystemClock::time_point nextInvokation;
 
             public:
                 Clock();
-                ~Clock();
-                void start();
-                void stop();
         };
     }
 }

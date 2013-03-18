@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_STATES_MOVING_HPP_
 #define SYS_STATES_MOVING_HPP_
 #include <sys/states/Top.hpp>

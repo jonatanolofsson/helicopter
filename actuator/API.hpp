@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_ACTUATOR_API_HPP_
 #define SYS_ACTUATOR_API_HPP_
 

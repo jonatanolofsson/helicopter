@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_SIMULATOR_HPP_
 #define SYS_SIMULATOR_HPP_
 

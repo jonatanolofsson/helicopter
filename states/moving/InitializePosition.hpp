@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_STATES_INITIALIZEPOSITION_HPP_
 #define SYS_STATES_INITIALIZEPOSITION_HPP_
 #include <sys/states/moving/Moving.hpp>

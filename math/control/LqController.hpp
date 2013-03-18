@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_MATH_LQ_CONTROLLER_HPP_
 #define SYS_MATH_LQ_CONTROLLER_HPP_
 

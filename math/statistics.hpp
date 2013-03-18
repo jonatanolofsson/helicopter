@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_MATH_STATISTICS_HPP_
 #define SYS_MATH_STATISTICS_HPP_
 #include <Eigen/Dense>

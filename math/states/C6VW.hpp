@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_MODELS_C6VW_HPP_
 #define SYS_MODELS_C6VW_HPP_
 

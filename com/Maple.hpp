@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_COM_MAPLE_HPP_
 #define SYS_COM_MAPLE_HPP_
 

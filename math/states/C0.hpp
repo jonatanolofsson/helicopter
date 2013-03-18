@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_MODELS_C0_HPP_
 #define SYS_MODELS_C0_HPP_
 

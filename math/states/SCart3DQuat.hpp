@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_MODELS_SCART3DQUAT_HPP_
 #define SYS_MODELS_SCART3DQUAT_HPP_
 

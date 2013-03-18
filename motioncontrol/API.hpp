@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_MOTIONCONTROL_API_HPP_
 #define SYS_MOTIONCONTROL_API_HPP_
 

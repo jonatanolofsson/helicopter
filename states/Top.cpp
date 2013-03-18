@@ -8,8 +8,6 @@ namespace sys {
             maple.registerPackager<MapleMessages::controlMessage>(&os::messageDispatcher<ControlMessage>);
             maple.registerPackager<MapleMessages::cameraControlMessage>(&os::messageDispatcher<CameraControlMessage>);
             maple.registerPackager<MapleMessages::ioctlMessage>(&os::messageDispatcher<IoctlMessage>);
-
-            clock.start();
         }
     }
 }

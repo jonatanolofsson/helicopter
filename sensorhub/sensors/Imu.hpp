@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_SENSORHUB_SENSORS_IMU_HPP_
 #define SYS_SENSORHUB_SENSORS_IMU_HPP_
 

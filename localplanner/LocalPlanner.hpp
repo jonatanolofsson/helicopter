@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_LOCALPLANNER_HPP_
 #define SYS_LOCALPLANNER_HPP_
 

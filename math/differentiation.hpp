@@ -1,3 +1,7 @@
+#pragma once
+#include SYS_MATH_DIFFERENTIATION_HPP_
+#define SYS_MATH_DIFFERENTIATION_HPP_
+
 #include <Eigen/Core>
 #include <atomic>
 #include <mutex>
@@ -99,3 +103,5 @@ namespace sys {
         }
     }
 }
+
+#endif

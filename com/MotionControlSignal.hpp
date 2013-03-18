@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_MOTIONCONTROLSIGNAL_HPP_
 #define SYS_MOTIONCONTROLSIGNAL_HPP_
 

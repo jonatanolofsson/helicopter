@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_MATH_STATES_STATES_HPP_
 #define SYS_MATH_STATES_STATES_HPP_
 

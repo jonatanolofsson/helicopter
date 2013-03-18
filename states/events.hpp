@@ -1,3 +1,6 @@
+#pragma once
+#ifndef SYS_STATES_EVENTS_HPP_
+#define SYS_STATES_EVENTS_HPP_
 #include <boost/statechart/event.hpp>
 
 #define CREATE_EVENT(name)      struct name : sc::event< name > {}
@@ -15,3 +18,5 @@ namespace sys {
         CREATE_EVENT(FireExtinguished);
     }
 }
+
+#endif

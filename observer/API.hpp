@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_OBSERVER_API_HPP_
 #define SYS_OBSERVER_API_HPP_
 

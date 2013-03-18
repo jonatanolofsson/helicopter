@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_MATH_MODELS_SENSORS_GPS_HPP_
 #define SYS_MATH_MODELS_SENSORS_GPS_HPP_
 

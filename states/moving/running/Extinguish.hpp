@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_STATES_RUNNING_EXTINGUISH_HPP_
 #define SYS_STATES_RUNNING_EXTINGUISH_HPP_
 #include <sys/states/moving/running/Running.hpp>

@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_STATES_TOP_HPP_
 #define SYS_STATES_TOP_HPP_
 
@@ -31,10 +32,10 @@ namespace sys {
         {
             Observer observer;
             Maple maple;
-            Clock clock;
             Sensorhub sensorhub;
 
             Top();
+            Clock clock;
         };
     }
 }
