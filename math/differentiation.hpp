@@ -1,5 +1,5 @@
 #pragma once
-#include SYS_MATH_DIFFERENTIATION_HPP_
+#ifndef SYS_MATH_DIFFERENTIATION_HPP_
 #define SYS_MATH_DIFFERENTIATION_HPP_
 
 #include <Eigen/Core>
