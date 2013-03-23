@@ -114,6 +114,7 @@ void timerISR(void*) {
     //~ RPMSensor.measure(&message.rpm);
 
     if(ioctl & IoctlMessage::SEND_SENSOR_DATA) {
+        //~ digitalWrite(BOARD_LED_PIN, N%2);
         computer.send<>(message);
     }
 
@@ -146,15 +147,20 @@ void actuateCamera(const U8* msg, const std::size_t len) {
         //~ cameraServo[1].set(m->vertical);
     }
 }
+
+void stresstest(void*) {
+    for(int i = 0; i < 1000; ++i) {
+        computer.send<>(message);
+    }
+    ioctl ^= IoctlMessage::STRESSTEST;
+}
+
 void setIoctl(const U8* msg, const std::size_t len) {
     ioctl = *(U16*)msg;
-    static bool k = 0;
+    digitalWrite(BOARD_LED_PIN, 1);
 
     if(ioctl & IoctlMessage::STRESSTEST) {
-        for(int i = 0; i < 1000; ++i) {
-            computer.send<>(message);
-        }
-        ioctl ^= IoctlMessage::STRESSTEST;
+        isr::queue(stresstest);
     }
 }
 
