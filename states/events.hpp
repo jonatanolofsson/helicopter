@@ -16,6 +16,10 @@ namespace sys {
         CREATE_EVENT(ReachedObjective);
         CREATE_EVENT(FinishedAction);
         CREATE_EVENT(FireExtinguished);
+        CREATE_EVENT(Dying);
+
+        CREATE_EVENT(FlippedUp);
+        CREATE_EVENT(FlippedDown);
     }
 }
 

@@ -19,6 +19,6 @@ foreach(lib ${libraries})
 endforeach()
 
 add_executable(firefighter main.cpp)
-target_link_libraries(firefighter ${libraries} ${libraries} os)
+target_link_libraries(firefighter ${libraries} ${libraries} os pthread)
 
 add_subdirectory(tests)

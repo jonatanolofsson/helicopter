@@ -6,8 +6,9 @@
 namespace sys {
     namespace states {
         struct Idle;
+        struct ImuTest1;
         struct Init
-        : sc::simple_state<Init, Top>
+        : sc::simple_state<Init, Top, ImuTest1>
         {
             typedef mpl::list<
                 sc::transition< events::Initialized, Idle >
@@ -15,5 +16,8 @@ namespace sys {
         };
     }
 }
+
+#include <sys/states/ImuTest1.hpp>
+#include <sys/states/ImuTest2.hpp>
 
 #endif

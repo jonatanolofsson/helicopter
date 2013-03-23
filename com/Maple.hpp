@@ -6,7 +6,7 @@
 #include <sys/com/MapleMessages.hpp>
 
 namespace sys {
-    typedef os::SerialCommunication<MapleMessages, 100, 10, B115200> Maple;
+    typedef os::SerialCommunication<MapleMessages, 100, 10, B460800> Maple;
 }
 
 #endif

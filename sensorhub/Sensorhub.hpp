@@ -6,9 +6,8 @@
 
 namespace sys {
     namespace sensorhub {
-        class Sensorhub {
-            private:
-                Imu imu;
+        struct Sensorhub {
+            Imu imu;
         };
     }
 }

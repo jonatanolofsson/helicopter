@@ -8,10 +8,10 @@ namespace sys {
     namespace states {
         struct InitializePosition;
         struct Moving
-        : sc::simple_state<Moving, Top, InitializePosition>
+        : sc::state<Moving, Top, InitializePosition>
         {
             Actuator actuator;
-            Moving();
+            Moving(my_context ctx);
         };
     }
 }

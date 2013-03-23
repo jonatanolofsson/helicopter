@@ -54,13 +54,18 @@ class SensorTests : public ::testing::Test {
             receivedResponse = 0;
             printResponse = false;
         }
+
+        ~SensorTests() {
+            IoctlMessage ioctlMsg = { 0 };
+            maple.send<>(ioctlMsg);
+        }
 };
 
 TEST_F(SensorTests, GetSensorData) {
     IoctlMessage ioctlMsg = { IoctlMessage::SEND_SENSOR_DATA };
     maple.send<>(ioctlMsg);
 
-    printResponse = true;
+    //~ printResponse = true;
 
     std::unique_lock<std::mutex> l(responseGuard);
     responseCondition.wait_for(l, std::chrono::milliseconds(1000), [](){return (receivedResponse > 10);});

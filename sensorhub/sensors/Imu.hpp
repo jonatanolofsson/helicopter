@@ -5,6 +5,8 @@
 #include <os/com/Dispatcher.hpp>
 #include <sys/com/Maple.hpp>
 
+#include <string>
+
 namespace sys {
     namespace sensorhub {
         class Imu {
@@ -14,6 +16,9 @@ namespace sys {
             public:
                 Imu();
                 void handleMessage(const SensorMessage);
+
+                // Remove after testing
+                bool up;
         };
     }
 }

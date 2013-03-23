@@ -1,4 +1,4 @@
-#include <sys/states/Top.hpp>
+#include <sys/states/API.hpp>
 #include <os/com/getSignal.hpp>
 #include <os/clock.hpp>
 
@@ -6,11 +6,9 @@ INSTANTIATE_SIGNAL(os::SystemTime);
 
 using namespace sys;
 
-Firefighter stateMachine;
 
 int main(int, char*[]) {
-    stateMachine.initiate();
-    while(true) sleep(1000);
+    runStateMachine();
 
     return 0;
 }

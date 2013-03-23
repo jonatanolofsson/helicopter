@@ -2,8 +2,9 @@
 
 namespace sys {
     namespace states {
-        Moving::Moving()
-        : actuator(context<Top>().maple)
+        Moving::Moving(my_context ctx)
+        : my_base(ctx)
+        , actuator(context<Top>().maple)
         {}
     }
 }
