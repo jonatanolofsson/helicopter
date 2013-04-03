@@ -9,14 +9,14 @@
 
 namespace sys {
     namespace math {
-        template<typename M, typename S = Scalar>
+        template<typename ModelDescription>
         struct ControlState {
-            typedef S Scalar;
-            typedef typename StateVector<Scalar, M::nofStates>::type States;
-            typedef typename ControlVector<Scalar, M::nofControls>::type Controls;
+            typedef ControlState<ModelDescription> Self;
+            typedef typename ModelDescription::Scalar Scalar;
+            typedef typename ModelDescription::States States;
+            typedef typename ModelDescription::Controls Controls;
             typedef States Reference;
-            typedef M Model;
-            typedef ControlState<M,S> Self;
+
             States state;
             Controls controls;
 
@@ -31,7 +31,7 @@ namespace sys {
 
             template<typename T>
             explicit ControlState(const T& c)
-                : state(c.template segment<M::nofStates>(0))
+                : state(c.template segment<ModelDescription::nofStates>(0))
             {}
         };
     }

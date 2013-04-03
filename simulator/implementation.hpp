@@ -8,17 +8,16 @@
 
 namespace sys {
     namespace simulator {
-        template<typename MotionModel_, typename FilterState_>
-        Simulator<MotionModel_, FilterState_>::Simulator()
+        template<typename MotionModel_, typename Filter_>
+        Simulator<MotionModel_, Filter_>::Simulator()
         : dispatcher(&Self::simulate, this)
         {
-            FilterState::Model::StateDescription::initialize(state);
+            MotionModel::ModelDescription::StateDescription::initialize(filter);
         }
 
-        template<typename MotionModel_, typename FilterState_>
-        void Simulator<MotionModel_, FilterState_>::simulate(const ControlState u) {
-            state.controls = u;
-            state.state = MotionModel::predict(state, settings::dT) + state.noise();
+        template<typename MotionModel_, typename Filter_>
+        void Simulator<MotionModel_, Filter_>::simulate(const Controls u) {
+            filter.state = MotionModel::predict(filter.state, u, settings::dT) + filter.noise();
         }
     }
 }

@@ -6,23 +6,32 @@
 #include <sys/observer/API.hpp>
 #include <sys/settings.hpp>
 
+#include <iostream>
+
 namespace sys {
     namespace observer {
-        template<typename Filter, typename Model, typename FilterState, typename Trigger>
-        Observer<Filter, Model, FilterState, Trigger>::Observer()
+        template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger>
+        Observer<Algorithm, Filter, MotionModel, Trigger>::Observer()
         : dispatcher(&Self::timeUpdate, this)
         //~ , gps(&Self::measurementUpdate<sensors::Gps>, this)
-        , imu(&Self::measurementUpdate<sensors::Imu>, this)
+        //~ , imu(&Self::measurementUpdate<sensors::Imu>, this)
         {
-            FilterState::Model::StateDescription::initialize(state);
+            MotionModel::ModelDescription::StateDescription::initialize(filter);
         }
 
-        template<typename Filter, typename Model, typename FilterState, typename Trigger>
-        void Observer<Filter, Model, FilterState, Trigger>::timeUpdate(const Trigger) {
-            auto l = state.retrieve_lock();
-            Filter::template timeUpdate<Model>(state, settings::dT);
-            os::yield(state.state);
+        template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger>
+        void Observer<Algorithm, Filter, MotionModel, Trigger>::timeUpdate(const Trigger) {
+            auto l = filter.retrieve_lock();
+            Algorithm::template timeUpdate<MotionModel>(filter, settings::dT);
+            os::yield(filter.state);
         }
+
+        //~ template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger>
+        //~ void Observer<Algorithm, Filter, MotionModel, Trigger>::timeUpdate(const Trigger, const typename MotionModel::Controls u) {
+            //~ auto l = filter.retrieve_lock();
+            //~ Algorithm::template timeUpdate<MotionModel>(filter, u, settings::dT);
+            //~ os::yield(filter.state);
+        //~ }
     }
 }
 

@@ -22,13 +22,13 @@ namespace sys {
         struct Init;
         struct Top : sc::simple_state<Top, Firefighter, Init>
         {
-            //~ Observer observer;
+            Observer observer;
             Maple maple;
             Sensorhub sensorhub;
 
             Top();
             ~Top();
-            //~ Clock clock;
+            Clock clock;
         };
     }
 }

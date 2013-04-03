@@ -9,20 +9,20 @@
 
 namespace sys {
     namespace observer {
-        typedef math::models::SCart3DAccQuat                States;
-        typedef math::models::CVel3                         Controls;
-        typedef math::models::Description<States, Controls> StateDescription;
+        typedef math::models::SCT2D                         StateDescription;
+        typedef math::models::C0                            ControlDescription;
+        typedef math::models::Description<StateDescription, ControlDescription> ModelDescription;
 
-        typedef math::EKF                                   FilterType;
-        typedef models::motion::ConstantVelocities3D        MotionModel;
-        typedef math::GaussianFilter<StateDescription>      FilterState;
+        typedef math::EKF                                   Algorithm;
+        typedef math::GaussianFilter<ModelDescription>      Filter;
+        typedef math::models::CoordinatedTurn2D<ModelDescription> MotionModel;
         typedef os::SystemTime                              TriggerType;
 
-        typedef FilterState::States                         SystemState;
+        typedef ModelDescription::States                    SystemState;
 
         namespace sensors {
-            //~ typedef math::GaussianMeasurement<models::sensors::Gps>        Gps;
-            typedef math::GaussianMeasurement<models::sensors::Imu>        Imu;
+            typedef math::GaussianMeasurement<math::models::Gps<ModelDescription>>        Gps;
+            typedef math::GaussianMeasurement<math::models::Imu<ModelDescription>>        Imu;
         }
     }
 }
@@ -30,7 +30,7 @@ namespace sys {
 #include <sys/observer/Observer.hpp>
 
 namespace sys {
-    typedef observer::Observer<observer::FilterType, observer::MotionModel, observer::FilterState, observer::TriggerType> Observer;
+    typedef observer::Observer<observer::Algorithm, observer::Filter, observer::MotionModel, observer::TriggerType> Observer;
 }
 
 #endif

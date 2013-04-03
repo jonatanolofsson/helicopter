@@ -3,14 +3,14 @@
 #include <sys/sensorhub/filtering.hpp>
 #include <os/com/getSignal.hpp>
 
-INSTANTIATE_SIGNAL(sys::math::GaussianMeasurement<models::Gps>);
+INSTANTIATE_SIGNAL(sys::sensorhub::sensors::Gps);
 
 namespace sys {
     namespace sensorhub {
         Gps::Gps() : d(&Gps::handleMessage, this) {}
 
         void Gps::handleMessage(const SensorMessage) {
-            typedef math::GaussianMeasurement<models::Gps> Measurement;
+            typedef sys::sensorhub::sensors::Imu Measurement;
             Measurement m;
 
             yield(m);

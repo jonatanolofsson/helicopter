@@ -11,8 +11,8 @@ using namespace sys;
 typedef math::models::SCart3D states;
 typedef math::models::CVel3 controls;
 typedef math::models::Description<states, controls> ModelDescription;
-typedef math::GaussianFilter<ModelDescription> SystemState;
-typedef models::motion::DirectVelocities3D MotionModel;
+typedef math::GaussianFilter<ModelDescription> Filter;
+typedef math::models::DirectVelocities3D<ModelDescription> MotionModel;
 
 IOFormat HeavyFmt(FullPrecision, 0, ", ", ";\n", "[", "]", "[", "]");
 
@@ -25,22 +25,24 @@ class LqTests : public ::testing::Test {
 
 
 TEST_F(LqTests, OutputControl) {
-    SystemState systemState;
-    ModelDescription::StateDescription::initialize(systemState);
-    systemState.state[states::x] = 10.0;
+    Filter filter;
+    ModelDescription::StateDescription::initialize(filter);
+    ModelDescription::Controls u; u.setZero();
+    filter.state[states::x] = 10.0;
 
-    controller.updateModel<MotionModel::CD>(MotionModel::systemJacobian<>(systemState), MotionModel::controlJacobian<>(systemState));
-    controller(systemState.state);
+    controller.updateModel<MotionModel::isDiscrete>(MotionModel::systemJacobian(filter.state, u), MotionModel::controlJacobian(filter.state, u));
+    controller(filter.state);
 }
 
 
 TEST_F(LqTests, StressTest3D) {
-    SystemState systemState;
-    ModelDescription::StateDescription::initialize(systemState);
-    systemState.state[states::x] = 10.0;
+    Filter filter;
+    ModelDescription::StateDescription::initialize(filter);
+    filter.state[states::x] = 10.0;
+    ModelDescription::Controls u; u.setZero();
 
     for(int i = 0; i < 10000; ++i) {
-        controller.updateModel<MotionModel::CD>(MotionModel::systemJacobian<>(systemState), MotionModel::controlJacobian<>(systemState));
-        controller(systemState.state);
+        controller.updateModel<MotionModel::isDiscrete>(MotionModel::systemJacobian(filter.state, u), MotionModel::controlJacobian(filter.state, u));
+        controller(filter.state);
     }
 }

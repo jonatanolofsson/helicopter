@@ -4,4 +4,4 @@ make_test(SensorTests)
 make_test(ControllerTests)
 
 add_executable(ImuPrint ImuPrint.cpp)
-target_link_libraries(ImuPrint pthread cpplot)
+target_link_libraries(ImuPrint pthread cpplot boost_system)

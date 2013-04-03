@@ -16,12 +16,6 @@ namespace sys {
                 enum states {
                     velocity = vx
                 };
-
-                template<typename T>
-                static void initialize(T& filter) {
-                    auto l = filter.retrieve_lock();
-                    filter.control.setZero();
-                }
             };
         }
     }

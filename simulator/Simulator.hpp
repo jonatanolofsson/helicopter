@@ -4,26 +4,26 @@
 
 #include <os/com/Dispatcher.hpp>
 #include <sys/simulator/API.hpp>
+#include <sys/motioncontrol/API.hpp>
 
 namespace sys {
     namespace simulator {
-        template<typename MotionModel_, typename FilterState_>
+        template<typename MotionModel_, typename Filter_>
         class Simulator {
             public:
+                typedef ModelDescription::Controls Controls;
                 typedef MotionModel_ MotionModel;
-                typedef FilterState_ FilterState;
-                typedef typename FilterState::Controls ControlState;
-                typedef typename FilterState::States SystemState;
-                typedef Simulator<MotionModel, FilterState> Self;
+                typedef Filter_ Filter;
+                typedef Simulator<MotionModel, Filter> Self;
 
             private:
-                os::Dispatcher<Self, ControlState> dispatcher;
-                FilterState state;
+                os::Dispatcher<Self, Controls> dispatcher;
+                Filter filter;
 
             public:
                 Simulator();
 
-                void simulate(const ControlState u);
+                void simulate(const Controls u);
         };
     }
 }

@@ -6,19 +6,20 @@
 #include <sys/math/models.hpp>
 #include <sys/math/filtering.hpp>
 #include <os/clock.hpp>
+#include <sys/motioncontrol/API.hpp>
 
 namespace sys {
     namespace simulator {
-        typedef math::models::SCart3DAccQuat                States;
-        typedef math::models::CVel3                         Controls;
-        typedef math::models::Description<States, Controls> StateDescription;
+        typedef math::models::SCart3DAccQuat                StateDescription;
+        typedef motioncontrol::ControlDescription           ControlDescription;
+        typedef math::models::Description<StateDescription, ControlDescription> ModelDescription;
 
-        typedef models::motion::DirectVelocities3D          MotionModel;
-        typedef math::GaussianFilter<StateDescription>      FilterState;
+        typedef math::models::DirectVelocities3D<ModelDescription> MotionModel;
+        typedef math::GaussianFilter<ModelDescription>      Filter;
 
         namespace sensors {
-            typedef models::sensors::Gps                    Gps;
-            typedef models::sensors::Imu                    Imu;
+            typedef math::models::Gps<ModelDescription>     Gps;
+            typedef math::models::Imu<ModelDescription>     Imu;
         }
     }
 }
@@ -26,7 +27,7 @@ namespace sys {
 #include <sys/simulator/Simulator.hpp>
 
 namespace sys {
-    typedef simulator::Simulator<simulator::MotionModel, simulator::FilterState> Simulator;
+    typedef simulator::Simulator<simulator::MotionModel, simulator::Filter> Simulator;
 }
 
 #endif

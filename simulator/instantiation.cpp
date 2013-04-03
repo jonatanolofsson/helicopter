@@ -3,6 +3,6 @@
 
 namespace sys {
     namespace simulator {
-        template class Simulator<MotionModel, FilterState>;
+        template class Simulator<MotionModel, Filter>;
     }
 }

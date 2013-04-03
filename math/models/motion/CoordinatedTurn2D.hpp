@@ -1,6 +1,6 @@
 #pragma once
-#ifndef SYS_MATH_MODELS_CONSTANT_VELOCITY_HPP_
-#define SYS_MATH_MODELS_CONSTANT_VELOCITY_HPP_
+#ifndef SYS_MATH_MODELS_COORDINATEDTURN2D_HPP_
+#define SYS_MATH_MODELS_COORDINATEDTURN2D_HPP_
 
 #include <Eigen/Core>
 #include <sys/types.hpp>
@@ -8,43 +8,31 @@
 #include <sys/math/algorithm.hpp>
 #include <cmath>
 
-#include <iostream>
-
 namespace sys {
     namespace math {
         namespace models {
             using namespace Eigen;
             template<typename ModelDescription_>
-            struct ConstantVelocities3D {
+            struct CoordinatedTurn2D {
                 typedef ModelDescription_ ModelDescription;
-                typedef ConstantVelocities3D<ModelDescription> Self;
+                typedef CoordinatedTurn2D<ModelDescription> Self;
                 typedef typename ModelDescription::Scalar Scalar;
                 typedef typename ModelDescription::States States;
+                typedef typename ModelDescription::Controls Controls;
                 static const bool isDiscrete = true;
 
                 static States predict(const States& x, const Scalar dT) {
                     typedef typename ModelDescription::StateDescription states;
-                    typedef typename ModelDescription::ControlDescription controls;
                     States xnext(x);
-                    USING_XYZ
+                    using std::sin; using std::cos;
 
-                    xnext.template segment<3>(states::position) += x.template segment<3>(states::velocity) * dT;
+                    const auto a = 2. * x(states::v) * sin(x(states::w) * dT / 2.) / x(states::w);
+                    const auto b = x(states::th) + (x(states::w) * dT / 2.);
 
-                    // Note that this skew-symmetric matrix is diagonally shifted upwards-left compared
-                    // to many representations, due to the storage model used by Eigen for quaternions: qx, qy, qz, qw
-                    Matrix<Scalar, 4, 4> S;
-                    S << QUATERNION_ROTATION_FROM_ROTVEL(x(states::omega[X]), x(states::omega[Y]), x(states::omega[Z]));
-
-                    const Scalar wnorm     = x.template segment<3>(states::rotational_velocity).norm();
-                    const Scalar wnormT2   = wnorm * dT / 2;
-
-                    if(wnorm > math::EPSILON) {
-                        xnext.template segment<4>(states::quaternion) =
-                            (std::cos(wnormT2) * x.template segment<4>(states::quaternion)
-                                - (std::sin(wnormT2) / wnorm) * S * x.template segment<4>(states::quaternion)
-                            ).normalized();
-                    }
-
+                    xnext(states::x) += a*cos(b);
+                    xnext(states::y) += a*sin(b);
+                    xnext(states::th) += x(states::w)*dT;
+                    xnext(states::v) += x(states::a)*dT;
                     return xnext;
                 }
 

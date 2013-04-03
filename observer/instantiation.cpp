@@ -3,6 +3,6 @@
 
 namespace sys {
     namespace observer {
-        template class Observer<FilterType, MotionModel, FilterState, TriggerType>;
+        template class Observer<Algorithm, Filter, MotionModel, TriggerType>;
     }
 }

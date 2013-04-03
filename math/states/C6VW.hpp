@@ -23,12 +23,6 @@ namespace sys {
                 };
 
                 static const int omega[3];
-
-                template<typename T>
-                static void initialize(T& filter) {
-                    auto l = filter.retrieve_lock();
-                    filter.control.setZero();
-                }
             };
         }
     }

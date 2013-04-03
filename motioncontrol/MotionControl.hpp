@@ -7,16 +7,16 @@
 
 namespace sys {
     namespace motioncontrol {
-        template<typename ControllerType, typename ControlState, typename Model, typename Trigger>
+        template<typename ControllerType, typename ControlState, typename ControlModel, typename SystemState>
         class MotionControl {
             public:
-                typedef MotionControl<ControllerType, ControlState, Model, Trigger> Self;
+                typedef MotionControl<ControllerType, ControlState, ControlModel, SystemState> Self;
 
             private:
                 ControllerType controller;
-                os::Dispatcher<Self, Trigger> dispatcher;
+                os::Dispatcher<Self, SystemState> dispatcher;
 
-                void updateControl(const Trigger systemState);
+                void updateControl(const SystemState systemState);
 
             public:
                 MotionControl();

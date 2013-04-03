@@ -1,6 +1,7 @@
 #include <sys/localplanner/API.hpp>
 #include <sys/localplanner/LocalPlanner.hpp>
 #include <os/com/getSignal.hpp>
+#include <iostream>
 
 INSTANTIATE_SIGNAL(sys::localplanner::Checkpoint);
 
@@ -17,6 +18,7 @@ namespace sys {
         }
 
         void LocalPlanner::yieldReference(const observer::SystemState) {
+            std::cout << "Localplanner: Yield reference" << std::endl;
             // Conceptual pseudocode below
             //~ Scalar angle;
             //~ {

@@ -9,12 +9,13 @@
 #include <sys/types.hpp>
 
 namespace sys {
-    namespace models {
-        namespace sensors {
+    namespace math {
+        namespace models {
             using namespace Eigen;
+            template<typename ModelDescription>
             struct Imu {
                 typedef Imu Self;
-                typedef sys::Scalar Scalar;
+                typedef typename ModelDescription::Scalar Scalar;
                 enum state {
                     ax = 0,
                     ay = 1,
@@ -34,40 +35,46 @@ namespace sys {
 
                 typedef Matrix<Scalar, nofMeasurements, 1> MeasurementVector;
                 typedef Matrix<Scalar, nofMeasurements, nofMeasurements> CovarianceMatrix;
-                template<typename T>
-                static MeasurementVector measurement(const T& filter) {
-                    typedef typename T::Model::StateDescription states;
+                static MeasurementVector measurement(const typename ModelDescription::States& state) {
+                    typedef typename ModelDescription::StateDescription states;
                     MeasurementVector m;
-                    m[ax] = filter.state[states::ax];
-                    m[ay] = filter.state[states::ay];
-                    m[az] = filter.state[states::az];
+                    m[ax] = state[states::ax];
+                    m[ay] = state[states::ay];
+                    m[az] = state[states::az];
 
-                    m[wx] = filter.state[states::wx];
-                    m[wy] = filter.state[states::wy];
-                    m[wz] = filter.state[states::wz];
+                    m[wx] = state[states::wx];
+                    m[wy] = state[states::wy];
+                    m[wz] = state[states::wz];
 
                     return m;
                 }
 
-                template<typename T>
-                static Matrix<typename T::Scalar, nofMeasurements, T::Model::nofStates>
-                jacobian(const T&) {
-                    typedef typename T::Model::StateDescription states;
-                    typedef Matrix<Scalar, nofMeasurements, states::nofStates> JacobianMatrix;
+                static CovarianceMatrix cov;
+                static const CovarianceMatrix& covariance(const typename ModelDescription::States& state) { return cov; }
+
+                static Matrix<Scalar, nofMeasurements, ModelDescription::nofStates>
+                jacobian(const typename ModelDescription::States&) {
+                    typedef typename ModelDescription::StateDescription states;
+                    typedef Matrix<Scalar, nofMeasurements, ModelDescription::nofStates> JacobianMatrix;
                     JacobianMatrix J;
                     J.setZero();
 
-                    J(ax,states::ax) = 1;
-                    J(ay,states::ay) = 1;
-                    J(az,states::az) = 1;
+                    J(ax, states::ax) = 1;
+                    J(ay, states::ay) = 1;
+                    J(az, states::az) = 1;
 
-                    J(wx,states::wx) = 1;
-                    J(wy,states::wy) = 1;
-                    J(wz,states::wz) = 1;
+                    J(wx, states::wx) = 1;
+                    J(wy, states::wy) = 1;
+                    J(wz, states::wz) = 1;
 
                     return J;
                 }
             };
+
+            template<typename ModelDescription> typename Imu<ModelDescription>::CovarianceMatrix
+            Imu<ModelDescription>::cov = (Imu<ModelDescription>::MeasurementVector() <<
+                1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+            ).finished().asDiagonal();
         }
     }
 }

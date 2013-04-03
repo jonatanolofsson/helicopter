@@ -1,6 +1,6 @@
 #pragma once
-#ifndef SYS_MATH_MODELS_DIRECTVELOCITIES3D_HPP_
-#define SYS_MATH_MODELS_DIRECTVELOCITIES3D_HPP_
+#ifndef SYS_MATH_MODELS_COORDINATEDTURN2DPOSE_HPP_
+#define SYS_MATH_MODELS_COORDINATEDTURN2DPOSE_HPP_
 
 #include <Eigen/Core>
 #include <sys/types.hpp>
@@ -13,9 +13,9 @@ namespace sys {
         namespace models {
             using namespace Eigen;
             template<typename ModelDescription_>
-            struct DirectVelocities3D {
+            struct CoordinatedTurn2DPose {
                 typedef ModelDescription_ ModelDescription;
-                typedef DirectVelocities3D<ModelDescription> Self;
+                typedef CoordinatedTurn2DPose<ModelDescription> Self;
                 typedef typename ModelDescription::Scalar Scalar;
                 typedef typename ModelDescription::States States;
                 typedef typename ModelDescription::Controls Controls;
@@ -25,32 +25,24 @@ namespace sys {
                     typedef typename ModelDescription::StateDescription states;
                     typedef typename ModelDescription::ControlDescription controls;
                     States xnext(x);
+                    using std::sin; using std::cos;
 
-                    xnext.template segment<3>(states::position) += u.template segment<3>(controls::velocity) * dT;
+                    Scalar a;
+                    if(u(controls::w) < 1e-2) {
+                        a = u(controls::v) * dT;
+                    } else {
+                        a = 2. * u(controls::v) * sin(u(controls::w) * dT / 2.) / u(controls::w);
+                    }
+                    const auto b = x(states::th) + (u(controls::w) * dT / 2.);
 
-                    //~ // Note that this skew-symmetric matrix is diagonally shifted upwards-left compared
-                    //~ // to many representations, due to the storage model used by Eigen for quaternions: qx, qy, qz, qw
-                    //~ Matrix<Scalar, 4, 4> S;
-                    //~ S << QUATERNION_ROTATION_FROM_ROTVEL(x(states::omega[X]), x(states::omega[Y]), x(states::omega[Z]));
-//~
-                    //~ const Scalar wnorm     = x.template segment<3>(states::rotational_velocity).norm();
-                    //~ const Scalar wnormT2   = wnorm * filter.dT / 2;
-//~
-                    //~ if(wnorm > math::EPSILON) {
-                        //~ xnext.template segment<4>(states::quaternion) =
-                            //~ (std::cos(wnormT2) * x.template segment<4>(states::quaternion)
-                                //~ - (std::sin(wnormT2) / wnorm) * S * x.template segment<4>(states::quaternion)
-                            //~ ).normalized();
-                    //~ }
-//~
-                    //~ xnext.template segment<3>(states::rotational_velocity) = u.template segment<3>(controls::rotational_velocity);
-
+                    xnext(states::x) += a*cos(b);
+                    xnext(states::y) += a*sin(b);
                     return xnext;
                 }
 
                 template<typename D>
-                static States diffStates(const States& x, const Controls& u, const D& dx) {
-                    return predict(x + dx, u, 1e-2) - predict(x - dx, u, 1e-2);
+                static States diffStates(const States& x, const D& dx) {
+                    return predict(x + dx, 1e-2) - predict(x - dx, 1e-2);
                 }
 
                 template<typename D>
@@ -61,13 +53,13 @@ namespace sys {
                 static Matrix<Scalar, ModelDescription::nofStates, ModelDescription::nofStates>
                 systemJacobian(const States& x, const Controls& u) {
                     static const States dx = States::Constant(1e-2);
-                    return math::template differentiateStates<ModelDescription, States, &Self::diffStates>(x, u, dx);
+                    return math::template differentiateStates<ModelDescription, &Self::diffStates>(x, u, dx);
                 }
 
                 static Matrix<Scalar, ModelDescription::nofStates, ModelDescription::nofControls>
                 controlJacobian(const States& x, const Controls& u) {
                     static const Controls du = Controls::Constant(1e-2);
-                    return math::template differentiateStates<ModelDescription, Controls, &Self::diffControls>(x, u, du);
+                    return math::template differentiateStates<ModelDescription, &Self::diffControls>(x, u, du);
                 }
 
                 static Matrix<Scalar, ModelDescription::nofStates, ModelDescription::nofStates>

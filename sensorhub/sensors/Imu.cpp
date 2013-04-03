@@ -6,27 +6,27 @@
 
 #include <iostream>
 
-INSTANTIATE_SIGNAL(sys::math::GaussianMeasurement<sys::models::sensors::Imu>);
+INSTANTIATE_SIGNAL(sys::sensorhub::sensors::Imu);
 
 namespace sys {
     namespace sensorhub {
         Imu::Imu() : d(&Imu::handleMessage, this) {}
 
         void Imu::handleMessage(const SensorMessage msg) {
-            typedef math::GaussianMeasurement<models::sensors::Imu> Measurement;
-            typedef Measurement::Model meas;
-            typedef SensorMessage raw;
+            typedef sys::sensorhub::sensors::Imu Measurement;
+            typedef Measurement::Sensor M;
+            typedef SensorMessage R;
             Measurement m;
-            m.z[meas::ax] = (S16)msg.imu[raw::ax];
-            m.z[meas::ay] = (S16)msg.imu[raw::ax];
-            m.z[meas::az] = (S16)msg.imu[raw::ax];
-            m.z[meas::wx] = (S16)msg.imu[raw::wx];
-            m.z[meas::wy] = (S16)msg.imu[raw::wx];
-            m.z[meas::wz] = (S16)msg.imu[raw::wx];
-            //~ yield(m);
+            m.z[M::ax] = (S16)msg.imu[R::ax];
+            m.z[M::ay] = (S16)msg.imu[R::ax];
+            m.z[M::az] = (S16)msg.imu[R::ax];
+            m.z[M::wx] = (S16)msg.imu[R::wx];
+            m.z[M::wy] = (S16)msg.imu[R::wx];
+            m.z[M::wz] = (S16)msg.imu[R::wx];
+            yield(m);
 
-                 if(up && m.z[meas::ax] < 0) postEvent(events::FlippedDown());
-            else if(!up && m.z[meas::ax] > 0) postEvent(events::FlippedUp());
+                 if(up && m.z[M::ax] < 0) postEvent(events::FlippedDown());
+            else if(!up && m.z[M::ax] > 0) postEvent(events::FlippedUp());
 
             std::cout << (up ? "Up      : " : "Down    : ") << m.z.transpose() << std::endl;
         }

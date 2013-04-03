@@ -10,16 +10,16 @@
 
 namespace sys {
     namespace motioncontrol {
-        typedef math::models::SCart3DAccQuat States;
-        typedef math::models::CVel3 Controls;
-        typedef math::models::Description<States, Controls> ModelDescription;
+        typedef math::models::SCart3DAccQuat StateDescription;
+        typedef math::models::CVel3 ControlDescription;
+        typedef math::models::Description<StateDescription, ControlDescription> ModelDescription;
 
-        typedef math::LqController<ModelDescription> Controller;
-        typedef math::ControlState<ModelDescription> ControlState;
-        typedef models::motion::DirectVelocities3D MotionModel;
-        typedef observer::SystemState SystemState;
+        typedef math::LqController<ModelDescription>                Controller;
+        typedef math::ControlState<ModelDescription>                ControlState;
+        typedef math::models::DirectVelocities3D<ModelDescription>  ControlModel;
+        typedef observer::SystemState                               SystemState;
     }
 
-    typedef motioncontrol::MotionControl<motioncontrol::Controller, motioncontrol::ControlState, motioncontrol::MotionModel, motioncontrol::SystemState> MotionControl;
+    typedef motioncontrol::MotionControl<motioncontrol::Controller, motioncontrol::ControlState, motioncontrol::ControlModel, motioncontrol::SystemState> MotionControl;
 }
 #endif
