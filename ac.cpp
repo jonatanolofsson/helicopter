@@ -5,7 +5,7 @@
 void print(int v, int base = 10);
 void print(int v, int base) {
     if (v < 0) {
-        Serial3.write('-');
+        Serial1.write('-');
         v = -v;
     }
     if (v >= base) {
@@ -13,9 +13,9 @@ void print(int v, int base) {
     }
     int p = v%base;
     if(p < 10) {
-        Serial3.write('0'+p);
+        Serial1.write('0'+p);
     } else {
-        Serial3.write('A'+p);
+        Serial1.write('A'+p);
     }
 }
 
@@ -31,6 +31,7 @@ void print(int v, int base) {
 #include <syrup/drivers/sensors/MPU6050.hpp>
 #include <syrup/drivers/sensors/MS5611.hpp>
 #include <syrup/drivers/sensors/HMC5883L.hpp>
+#include <syrup/drivers/sensors/ADNS3080.hpp>
 //~ #include <syrup/drivers/sensors/TCS230.hpp>
 //~ #include <syrup/drivers/sensors/Button.hpp>
 //~ #include <syrup/drivers/sensors/SRF04.hpp>
@@ -44,7 +45,9 @@ void print(int v, int base) {
 __attribute__((constructor)) void premain() {
     init();
     pinMode(BOARD_LED_PIN, OUTPUT);
-    //~ Serial3.begin(115200);
+    Serial1.begin(115200);
+    Spi2.begin(SPI_4_5MHZ, MSBFIRST, 0);
+    Spi2.setup_dma();
 
     i2c_master_enable(I2C1, I2C_FAST_MODE | I2C_BUS_RESET);
 }
@@ -56,9 +59,10 @@ using namespace os;
 using namespace sys;
 U16 ioctl;
 
-MPU6050 IMU(I2C1, 17);
-MS5611 pressureSensor(I2C1);
-HMC5883L magnetometer(I2C1, 18);
+//~ MPU6050 IMU(I2C1, 17);
+//~ MS5611 pressureSensor(I2C1);
+//~ HMC5883L magnetometer(I2C1, 18);
+ADNS3080 opticalFlow(&Spi2);
 //~ SRF04 groundDistance[4] = {{4, Timer3, true},{5, Timer3},{6, Timer3},{7, Timer3}};
 //~ TCS230 RPMSensor(19, Timer4); // Verify args
 //~
@@ -79,12 +83,17 @@ ComputerLink computer(&Serial3);
 void timerISR(void*) {
     static int N = 0;
 
-    //~ digitalWrite(BOARD_LED_PIN, N%2);
+    //~ digitalWrite(BOARD_LED_PIN, !(N%4));
 
     // Feed the watchdog
     //~ digitalWrite(WATCHDOG, (N % 5) == 0);
 
     //~ pressureSensor.sample();
+    //~ if(N % 2) {
+        opticalFlow.sample();
+    //~ } else {
+        //~ opticalFlow.measure(d);
+    //~ }
 
     //~ if(!(N % 5)) {
         //~ for(int i = 0; i < 4; ++i) {
@@ -92,10 +101,10 @@ void timerISR(void*) {
         //~ }
     //~ }
 
-    IMU.measure(message.imu);
+    //~ IMU.measure(message.imu);
     //~ digitalWrite(BOARD_LED_PIN, message.imu[2] != 0);
     //~ pressureSensor.measure(&message.pressure);
-    magnetometer.measure(message.magnetometer);
+    //~ magnetometer.measure(message.magnetometer);
     //~ message.buttons = (btn3.pressed() << 3)
                     //~ | (btn2.pressed() << 2)
                     //~ | (btn1.pressed() << 1)
@@ -157,7 +166,7 @@ void stresstest(void*) {
 
 void setIoctl(const U8* msg, const std::size_t len) {
     ioctl = *(U16*)msg;
-    digitalWrite(BOARD_LED_PIN, 1);
+    //~ digitalWrite(BOARD_LED_PIN, 1);
 
     if(ioctl & IoctlMessage::STRESSTEST) {
         isr::queue(stresstest);
@@ -198,6 +207,6 @@ int main(void) {
     Computer::setup();
     timerSetup();
     isr::serviceLoop();
-    while(1);
+    while(1) asm volatile ("nop");
     return 0;
 }
