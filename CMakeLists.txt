@@ -5,7 +5,8 @@ include_directories(.)
 find_package(Boost COMPONENTS system)
 
 #~ add_definitions(-std=c++0x -Wall -Werror -pedantic-errors -Wextra -Wcast-align -ggdb -O0 -Wfatal-errors)
-add_definitions(-std=c++0x -Wall -Werror -pedantic-errors -Wextra -Wcast-align -ggdb -O0)
+#~ add_definitions(-std=c++0x -Wall -Werror -pedantic-errors -Wextra -Wcast-align -ggdb -O0)
+add_definitions(-std=c++0x -Wall -Werror -pedantic-errors -Wextra -Wcast-align -ggdb -O4)
 
 add_subdirectory(common)
 add_subdirectory(os)
