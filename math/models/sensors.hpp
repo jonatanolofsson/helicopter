@@ -4,5 +4,6 @@
 
 #include <sys/math/models/sensors/Gps.hpp>
 #include <sys/math/models/sensors/Imu.hpp>
+#include <sys/math/models/sensors/UltrasoundInMap.hpp>
 
 #endif

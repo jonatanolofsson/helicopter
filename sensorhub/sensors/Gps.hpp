@@ -3,7 +3,7 @@
 #define SYS_SENSORHUB_SENSORS_GPS_HPP_
 
 #include <os/com/Dispatcher.hpp>
-#include <sys/com/Maple.hpp>
+#include <sys/sensorhub/API.hpp>
 
 namespace sys {
     namespace sensorhub {

@@ -9,8 +9,8 @@ namespace sys {
     namespace sensorhub {
         Gps::Gps() : d(&Gps::handleMessage, this) {}
 
-        void Gps::handleMessage(const SensorMessage) {
-            typedef sys::sensorhub::sensors::Imu Measurement;
+        void Gps::handleMessage(const GpsMessage) {
+            typedef sys::sensorhub::sensors::Gps Measurement;
             Measurement m;
 
             yield(m);

@@ -11,11 +11,13 @@ namespace sys {
     namespace sensorhub {
         class Imu {
             private:
-                os::Dispatcher<Imu, SensorMessage> d;
+                typedef maple::SensorMessage            ImuMessage;
+                typedef maple::SensorMessage            GpsMessage;
+                os::Dispatcher<Imu, ImuMessage> d;
 
             public:
                 Imu();
-                void handleMessage(const SensorMessage);
+                void handleMessage(const ImuMessage);
 
                 // Remove after testing
                 bool up;

@@ -6,11 +6,12 @@
 #include <sys/settings.hpp>
 #include <sys/com/MotionControlSignal.hpp>
 #include <sys/com/CameraControlSignal.hpp>
-#include <sys/com/MapleMessages.hpp>
+#include <sys/com/Maple.hpp>
 #include <sys/actuator/API.hpp>
 
 namespace sys {
     namespace actuator {
+        using namespace maple;
         template<typename Serial>
         Actuator<Serial>::Actuator(Serial& maple_)
         : maple(maple_)
@@ -21,7 +22,7 @@ namespace sys {
 
         template<typename Serial>
         void Actuator<Serial>::actuateControl(const MotionControlSignal u) {
-            MapleMessages::Message<MapleMessages::controlMessage>::Type msg = {
+            Messages::ById<Messages::controlMessage>::Type msg = {
                 {
                     (U16)(u[control::servo[0]]),
                     (U16)(u[control::servo[1]]),
@@ -34,7 +35,7 @@ namespace sys {
 
         template<typename Serial>
         void Actuator<Serial>::actuateCamera(const CameraControlSignal c) {
-            MapleMessages::Message<MapleMessages::cameraControlMessage>::Type msg = {
+            Messages::ById<Messages::cameraControlMessage>::Type msg = {
                 (U16)(c[camera::horizontal]),
                 (U16)(c[camera::vertical])
             };

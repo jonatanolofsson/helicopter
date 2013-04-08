@@ -6,7 +6,7 @@
 
 namespace sys {
     namespace math {
-        template<typename S, int N> struct ControlVector    { typedef Eigen::Matrix<S, N, 1> type; };
+        template<typename S, int N> struct ControlVector    { typedef Eigen::Matrix<S, N, 1> Type; };
     }
 }
 

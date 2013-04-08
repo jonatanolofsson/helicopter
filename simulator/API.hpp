@@ -10,11 +10,11 @@
 
 namespace sys {
     namespace simulator {
-        typedef math::models::SCart3DAccQuat                StateDescription;
+        typedef math::models::S2DPose     StateDescription;
         typedef motioncontrol::ControlDescription           ControlDescription;
         typedef math::models::Description<StateDescription, ControlDescription> ModelDescription;
 
-        typedef math::models::DirectVelocities3D<ModelDescription> MotionModel;
+        typedef math::models::CoordinatedTurn2DPose<ModelDescription> MotionModel;
         typedef math::GaussianFilter<ModelDescription>      Filter;
 
         namespace sensors {

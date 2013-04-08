@@ -1,5 +1,5 @@
 #include <os/com/SerialCommunication.hpp>
-#include <sys/com/MapleMessages.hpp>
+#include <sys/com/Maple.hpp>
 #include <os/bytemagic.hpp>
 #include <iomanip>
 #include <sys/types.hpp>
@@ -10,6 +10,7 @@
 #include <endian.h>
 
 using namespace sys;
+using namespace sys::maple;
 
 
 #include <cpplot/cpplot.hpp>
@@ -58,9 +59,9 @@ void sensorResponseHandler(const U8* msg, const std::size_t) {
 int main(int argc, char* argv[]){
     cpplot::glut::init(argc, argv);
 
-    typedef SerialCommunication<MapleMessages, 50, 10, B460800> Serial;
+    typedef SerialCommunication<maple::Messages, 50, 10, B460800> Serial;
     Serial maple("/dev/ttyUSB0");
-    maple.registerPackager<MapleMessages::sensorMessage>(sensorResponseHandler);
+    maple.registerPackager<maple::Messages::sensorMessage>(sensorResponseHandler);
 
     IoctlMessage ioctlMsg = { IoctlMessage::SEND_SENSOR_DATA };
     maple.send<>(ioctlMsg);

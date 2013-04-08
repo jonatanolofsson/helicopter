@@ -11,6 +11,7 @@ set(libraries
     localplanner
     sensorhub
     states
+    particlefilter
     clock
 )
 

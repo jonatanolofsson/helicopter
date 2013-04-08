@@ -7,3 +7,6 @@ make_test(LqTests)
 target_link_libraries(LqTests models)
 make_test(ParticleFilterTests)
 target_link_libraries(ParticleFilterTests models)
+
+add_executable(PFPlot PFPlot.cpp)
+target_link_libraries(PFPlot pthread cpplot boost_system)

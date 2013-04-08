@@ -17,8 +17,8 @@ namespace sys {
                 static const int nofStates      = StateDescription::nofStates;
                 static const int nofControls    = ControlDescription::nofControls;
 
-                typedef typename StateVector<Scalar, nofStates>::type States;
-                typedef typename StateVector<Scalar, nofControls>::type Controls;
+                typedef typename StateVector<Scalar, nofStates>::Type States;
+                typedef typename StateVector<Scalar, nofControls>::Type Controls;
             };
         }
     }

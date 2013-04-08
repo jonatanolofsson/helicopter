@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <os/com/SerialCommunication.hpp>
-#include <sys/com/MapleMessages.hpp>
+#include <sys/com/Maple.hpp>
 #include <sys/com/MotionControlSignal.hpp>
 #include <sys/com/CameraControlSignal.hpp>
 #include <os/bytemagic.hpp>
@@ -15,6 +15,7 @@
 #include <boost/serialization/array.hpp>
 
 using namespace sys;
+using namespace sys::maple;
 
 std::condition_variable responseCondition;
 std::mutex responseGuard;
@@ -44,12 +45,12 @@ void sensorResponseHandler(const U8* msg, const std::size_t len) {
 
 class SensorTests : public ::testing::Test {
     public:
-        typedef SerialCommunication<MapleMessages, 50, 10, B460800> Serial;
+        typedef SerialCommunication<maple::Messages, 50, 10, B460800> Serial;
         Serial maple;
         SensorTests()
         : maple("/dev/ttyUSB0") // FIXME?
         {
-            maple.registerPackager<MapleMessages::sensorMessage>(sensorResponseHandler);
+            maple.registerPackager<maple::Messages::sensorMessage>(sensorResponseHandler);
 
             receivedResponse = 0;
             printResponse = false;

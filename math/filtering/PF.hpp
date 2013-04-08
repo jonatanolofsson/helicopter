@@ -23,13 +23,14 @@ namespace sys {
                             beta -= filter.particles[index].weight;
                             index = (index + 1) % Filter::nofParticles;
                         }
+                        //~ std::cout << "Chose particle " << index << " : " << filter.particles[index].state.transpose() << std::endl;
                         p.state = filter.particles[index].state;
                     }
                 }
 
             public:
                 template<typename MotionModel, typename Filter>
-                static void propagate(Filter& filter, typename MotionModel::Controls& u, typename Filter::Scalar dT) {
+                static void propagate(Filter& filter, const typename MotionModel::Controls& u, typename Filter::Scalar dT) {
                     resample(filter);
                     for(auto& p : filter.particles) {
                         p.state = MotionModel::predict(p.state, u, dT) + math::normalSample(MotionModel::covariance(dT));
@@ -47,7 +48,9 @@ namespace sys {
                 static void measurementUpdate(Filter& filter, const Measurement& m) {
                     Scalar weightSum = 0;
                     for(auto& p : filter.particles) {
-                        p.weight = math::normalProbabilityUnscaled(Measurement::Sensor::measurement(p.state), m.z, m.R);
+                        //~ std::cout << "p.state: " << p.state.transpose() << std::endl;
+                        p.weight = math::normalProbabilityUnscaled(m.measurement(p.state), m.z, m.R);
+                        //~ std::cout << "p.weight: " << p.weight << std::endl;
                         weightSum += p.weight;
                     }
                     Scalar scalingFactor = 1.0 / weightSum;
@@ -64,7 +67,6 @@ namespace sys {
 
                 template<typename MotionModel, typename Filter>
                 static void timeUpdate(Filter& filter, typename MotionModel::Controls& u, typename Filter::Scalar dT) {
-                    static bool w = true; if(w) { std::cerr << "Warning: Particle filter time update should not be used. This is for testing purposes only." << std::endl; w = false; }
                     propagate<MotionModel>(filter, u, dT);
                     filter.state.setZero();
                     for(const auto& p : filter.particles) {
@@ -74,7 +76,6 @@ namespace sys {
 
                 template<typename MotionModel, typename Filter>
                 static void timeUpdate(Filter& filter, typename Filter::Scalar dT) {
-                    static bool w = true; if(w) { std::cerr << "Warning: Particle filter time update should not be used. This is for testing purposes only." << std::endl; w = false; }
                     propagate<MotionModel>(filter, dT);
                     filter.state.setZero();
                     for(const auto& p : filter.particles) {
@@ -85,7 +86,13 @@ namespace sys {
                 template<typename MotionModel, typename Filter, typename Measurement>
                 static void update(Filter& filter, const Measurement& m, typename Filter::Scalar dT) {
                     propagate<MotionModel>(filter, dT);
-                    measurementUpdate<Filter, Measurement::Sensor>(filter, m);
+                    measurementUpdate<>(filter, m);
+                }
+
+                template<typename MotionModel, typename Filter, typename Measurement>
+                static void update(Filter& filter, const typename MotionModel::Controls& u, const Measurement& m, typename Filter::Scalar dT) {
+                    propagate<MotionModel>(filter, u, dT);
+                    measurementUpdate<>(filter, m);
                 }
         };
     }

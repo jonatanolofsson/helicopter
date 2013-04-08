@@ -15,7 +15,7 @@ namespace sys {
             typedef typename ModelDescription::Scalar Scalar;
             typedef typename ModelDescription::States Reference;
             typedef GaussianFilter<ModelDescription> Self;
-            typedef typename Covariance<typename ModelDescription::Scalar, ModelDescription::nofStates>::type CovarianceMatrix;
+            typedef typename Covariance<typename ModelDescription::Scalar, ModelDescription::nofStates>::Type CovarianceMatrix;
             typedef typename ModelDescription::States States;
             CovarianceMatrix covariance;
             States state;
@@ -30,11 +30,31 @@ namespace sys {
             }
         };
 
-        template<typename Sensor_>
+        template<typename Sensor_, bool CALL_WITH_OBJECT = false>
         struct GaussianMeasurement {
             typedef Sensor_ Sensor;
-            typename Sensor::MeasurementVector z;
+            typedef typename Sensor::MeasurementVector MeasurementVector;
+            MeasurementVector z;
             Matrix<typename Sensor::Scalar, Sensor::nofMeasurements, Sensor::nofMeasurements> R;
+            template<typename States>
+            MeasurementVector measurement(const States& state) const {
+                return Sensor::measurement(state);
+            }
+        };
+
+        template<typename Sensor_>
+        struct GaussianMeasurement<Sensor_, true> {
+            typedef Sensor_ Sensor;
+            typedef typename Sensor::MeasurementVector MeasurementVector;
+            MeasurementVector z;
+            Sensor* sensor;
+            Matrix<typename Sensor::Scalar, Sensor::nofMeasurements, Sensor::nofMeasurements> R;
+            GaussianMeasurement() : sensor(nullptr) {}
+            template<typename States>
+            MeasurementVector measurement(const States& state) const {
+                assert(sensor);
+                return sensor->measurement(state);
+            }
         };
     }
 }

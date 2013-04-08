@@ -37,12 +37,13 @@ namespace sys {
 
                     xnext(states::x) += a*cos(b);
                     xnext(states::y) += a*sin(b);
+                    xnext(states::th) += u(controls::w) * dT;
                     return xnext;
                 }
 
                 template<typename D>
-                static States diffStates(const States& x, const D& dx) {
-                    return predict(x + dx, 1e-2) - predict(x - dx, 1e-2);
+                static States diffStates(const States& x, const Controls& u, const D& dx) {
+                    return predict(x + dx, u, 1e-2) - predict(x - dx, u, 1e-2);
                 }
 
                 template<typename D>
@@ -53,19 +54,19 @@ namespace sys {
                 static Matrix<Scalar, ModelDescription::nofStates, ModelDescription::nofStates>
                 systemJacobian(const States& x, const Controls& u) {
                     static const States dx = States::Constant(1e-2);
-                    return math::template differentiateStates<ModelDescription, &Self::diffStates>(x, u, dx);
+                    return math::template differentiateStates<ModelDescription, States, &Self::diffStates>(x, u, dx);
                 }
 
                 static Matrix<Scalar, ModelDescription::nofStates, ModelDescription::nofControls>
                 controlJacobian(const States& x, const Controls& u) {
                     static const Controls du = Controls::Constant(1e-2);
-                    return math::template differentiateStates<ModelDescription, &Self::diffControls>(x, u, du);
+                    return math::template differentiateStates<ModelDescription, Controls, &Self::diffControls>(x, u, du);
                 }
 
                 static Matrix<Scalar, ModelDescription::nofStates, ModelDescription::nofStates>
                 covariance(const Scalar dT) {
                     typedef Matrix<Scalar, ModelDescription::nofStates, ModelDescription::nofStates> RetType;
-                    return RetType::Identity() * dT;
+                    return RetType::Identity() * dT * 0.01;
                 }
             };
         }
