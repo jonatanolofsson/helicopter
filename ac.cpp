@@ -22,12 +22,13 @@ void print(int v, int base) {
 
 #include <syrup/comm/i2c.hpp>
 #include <syrup/isr.hpp>
-//~
+
 #include "Serial.hpp"
+#include <sys/com/MapleMessages.hpp>
 #include <libmaple/i2c.h>
 #include <Servo/Servo.h>
 #include "types.hpp"
-//~
+
 #include <syrup/drivers/sensors/MPU6050.hpp>
 #include <syrup/drivers/sensors/MS5611.hpp>
 #include <syrup/drivers/sensors/HMC5883L.hpp>
@@ -52,14 +53,15 @@ __attribute__((constructor)) void premain() {
     i2c_master_enable(I2C1, I2C_FAST_MODE | I2C_BUS_RESET);
 }
 
-sys::SensorMessage message;
+sys::maple::SensorMessage message;
 
 using namespace syrup;
 using namespace os;
 using namespace sys;
+using namespace sys::maple;
 U16 ioctl;
 
-//~ MPU6050 IMU(I2C1, 17);
+MPU6050 IMU(I2C1, 17);
 //~ MS5611 pressureSensor(I2C1);
 //~ HMC5883L magnetometer(I2C1, 18);
 ADNS3080 opticalFlow(&Spi2);
@@ -90,7 +92,7 @@ void timerISR(void*) {
 
     //~ pressureSensor.sample();
     //~ if(N % 2) {
-        opticalFlow.sample();
+        //~ opticalFlow.sample();
     //~ } else {
         //~ opticalFlow.measure(d);
     //~ }
@@ -101,7 +103,7 @@ void timerISR(void*) {
         //~ }
     //~ }
 
-    //~ IMU.measure(message.imu);
+    IMU.measure(message.imu);
     //~ digitalWrite(BOARD_LED_PIN, message.imu[2] != 0);
     //~ pressureSensor.measure(&message.pressure);
     //~ magnetometer.measure(message.magnetometer);
@@ -135,8 +137,8 @@ void timerISR(void*) {
 void actuateControl(const U8* msg, const std::size_t len) {
     //~ static bool a = true; a = !a;
     //~ digitalWrite(BOARD_LED_PIN, a);
-    if(len == sizeof(sys::ControlMessage)) {
-        sys::ControlMessage *m = (sys::ControlMessage*)msg; // FIXME
+    if(len == sizeof(ControlMessage)) {
+        ControlMessage *m = (ControlMessage*)msg; // FIXME
         //~ digitalWrite(BOARD_LED_PIN, a);
         //~ a = !a;
         //~ delay(500);
@@ -150,8 +152,8 @@ void actuateControl(const U8* msg, const std::size_t len) {
     }
 }
 void actuateCamera(const U8* msg, const std::size_t len) {
-    if(len == sizeof(sys::CameraControlMessage)) {
-        sys::CameraControlMessage *m = (sys::CameraControlMessage*)msg; // Safe because of requested alignment of msg
+    if(len == sizeof(CameraControlMessage)) {
+        CameraControlMessage *m = (CameraControlMessage*)msg; // Safe because of requested alignment of msg
         //~ cameraServo[0].set(m->horizontal);
         //~ cameraServo[1].set(m->vertical);
     }
@@ -185,9 +187,9 @@ namespace Computer {
     void setup() {
         Serial3.setup_dma();
         computer.device.rxCallback = Computer::rxCallback;
-        computer.registerPackager<MapleMessages::controlMessage>(actuateControl);
-        computer.registerPackager<MapleMessages::cameraControlMessage>(actuateCamera);
-        computer.registerPackager<MapleMessages::ioctlMessage>(setIoctl);
+        computer.registerPackager<Messages::controlMessage>(actuateControl);
+        computer.registerPackager<Messages::cameraControlMessage>(actuateCamera);
+        computer.registerPackager<Messages::ioctlMessage>(setIoctl);
         isr::queue(Computer::readBytes);
     }
 }
