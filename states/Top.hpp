@@ -10,9 +10,12 @@
 #include <sys/observer/API.hpp>
 #include <sys/sensorhub/API.hpp>
 #include <sys/com/Maple.hpp>
+#include <sys/com/Stm.hpp>
 #include <sys/states/events.hpp>
 
 #include <sys/states/Firefighter.hpp>
+#include <os/com/NetworkServer.hpp>
+#include <os/com/TestMessages.hpp>
 
 namespace sys {
     namespace mpl = boost::mpl;
@@ -20,10 +23,14 @@ namespace sys {
 
     namespace states {
         struct Init;
+        typedef os::NetworkServer<50007, os::testmessages::Messages, 100, 10> DebugServer;
         struct Top : sc::simple_state<Top, Firefighter, Init>
         {
             Observer observer;
             Maple maple;
+            Stm stm;
+            DebugServer debugServer;
+
             Sensorhub sensorhub;
 
             Top();

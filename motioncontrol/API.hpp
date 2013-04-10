@@ -18,6 +18,8 @@ namespace sys {
         typedef math::ControlState<ModelDescription>                ControlState;
         typedef math::models::CoordinatedTurn2DPose<ModelDescription>   ControlModel;
         typedef observer::SystemState                               SystemState;
+
+        typedef ModelDescription::States                            Reference;
     }
 
     typedef motioncontrol::MotionControl<motioncontrol::Controller, motioncontrol::ControlState, motioncontrol::ControlModel, motioncontrol::SystemState> MotionControl;

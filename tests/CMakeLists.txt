@@ -5,3 +5,6 @@ make_test(ControllerTests)
 
 add_executable(ImuPrint ImuPrint.cpp)
 target_link_libraries(ImuPrint pthread cpplot boost_system)
+
+add_executable(StmDistancePlot StmDistancePlot.cpp)
+target_link_libraries(StmDistancePlot pthread cpplot boost_system)

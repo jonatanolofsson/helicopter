@@ -36,7 +36,7 @@ namespace sys {
         {
             StateDescription::initialize(filter);
             for(auto& p : filter.particles) {
-                p.state.setZero();
+                p.state << sys::math::randU()*2.2 + 0.1, sys::math::randU()*2.2 + 0.1, sys::math::randU()*2*M_PI;
                 p.weight = 1.0/nofParticles;
             }
             filter.maxWeight = 1.0/nofParticles;
@@ -50,6 +50,7 @@ namespace sys {
             Algorithm::propagate<MotionModel>(filter, u, dT);
         }
         void ParticleFilter::measurementUpdate(const SensorMessage s) {
+            std::cout << "Got sensormessage: " << s.distance[0] << ", " <<  s.distance[1] << ", " <<  s.distance[2] << ", " <<  s.distance[3] << std::endl;
             m.z << s.distance[0], s.distance[1], s.distance[2], s.distance[3];
             Algorithm::measurementUpdate<>(filter, m);
         }

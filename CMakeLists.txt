@@ -6,6 +6,7 @@ set(libraries
     com
     motioncontrol
     actuator
+    towercontrol
     observer
     simulator
     localplanner

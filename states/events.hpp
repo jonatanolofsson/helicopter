@@ -14,6 +14,7 @@ namespace sys {
         CREATE_EVENT(GotGlobalPosition);
         CREATE_EVENT(FoundFire);
         CREATE_EVENT(ReachedObjective);
+        CREATE_EVENT(OutOfObjectives);
         CREATE_EVENT(FinishedAction);
         CREATE_EVENT(FireExtinguished);
         CREATE_EVENT(Dying);

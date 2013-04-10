@@ -14,6 +14,7 @@ namespace sys {
             > reactions;
 
             InitializePosition();
+            ~InitializePosition();
         };
     }
 }

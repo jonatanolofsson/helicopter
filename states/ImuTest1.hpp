@@ -17,6 +17,7 @@ namespace sys {
             ImuTest1(my_context ctx) : my_base(ctx) {
                 context<Top>().sensorhub.imu.up = true;
                 std::cout << "ImuTest1" << std::endl;
+                //~ context<Top>().debugServer.sendString("Upp\n");
             }
         };
     }

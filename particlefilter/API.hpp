@@ -23,11 +23,14 @@ namespace sys {
         typedef os::SystemTime                              TimeTrigger;
 
         static const Scalar dT = sys::settings::dT;
-
     }
 }
 
 
 #include <sys/particlefilter/ParticleFilter.hpp>
+
+namespace sys {
+    typedef particlefilter::ParticleFilter ParticleFilter;
+}
 
 #endif

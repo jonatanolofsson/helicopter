@@ -3,6 +3,8 @@
 #define SYS_STATES_MOVING_HPP_
 #include <sys/states/Top.hpp>
 #include <sys/actuator/API.hpp>
+#include <sys/localplanner/API.hpp>
+#include <sys/particlefilter/API.hpp>
 
 namespace sys {
     namespace states {
@@ -11,7 +13,11 @@ namespace sys {
         : sc::state<Moving, Top, InitializePosition>
         {
             Actuator actuator;
+            LocalPlanner planner;
+            ParticleFilter particleFilter;
             Moving(my_context ctx);
+
+            const localplanner::Checkpoint* startingPosition;
         };
     }
 }

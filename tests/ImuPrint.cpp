@@ -45,14 +45,14 @@ void sensorResponseHandler(const U8* msg, const std::size_t) {
     wzplot << std::make_pair(t, (S16)le16toh(m->imu[5]));
 
 
-        //~ std::cout
-            //~ << std::setw(8) << m->imu[0]
-            //~ << std::setw(8) << m->imu[1]
-            //~ << std::setw(8) << m->imu[2]
-            //~ << std::setw(8) << m->imu[3]
-            //~ << std::setw(8) << m->imu[4]
-            //~ << std::setw(8) << m->imu[5]
-            //~ << std::endl;
+        std::cout
+            << std::setw(8) << m->imu[0]
+            << std::setw(8) << m->imu[1]
+            << std::setw(8) << m->imu[2]
+            << std::setw(8) << m->imu[3]
+            << std::setw(8) << m->imu[4]
+            << std::setw(8) << m->imu[5]
+            << std::endl;
 }
 
 
