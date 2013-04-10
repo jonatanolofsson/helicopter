@@ -12,7 +12,7 @@ using namespace cpplot;
 
 using namespace Eigen;
 using namespace sys;
-static const int nofParticles = 5000;
+static const int nofParticles = 10000;
 typedef sys::math::models::S2DPose states;
 typedef sys::math::models::CVW controls;
 typedef sys::math::models::Description<states, controls> ModelDescription;
@@ -25,7 +25,7 @@ int index(int row, int col) { return row + (col-1)*rows; }
 
 
 static const int count = 30*10;
-#define rows 1
+#define rows 2
 #define cols 1
 #define plotname "PF"
 
@@ -33,6 +33,7 @@ static const int count = 30*10;
 int main(int argc, char* argv[]){
     cpplot::glut::init(argc, argv);
     auto mapwin = figure(plotname)->subplot(rows,cols,index<rows,cols>(1,1))->title("Map");
+    auto measwin = figure(plotname)->subplot(rows,cols,index<rows,cols>(2,1))->title("Measurements");
     //~ double X[14][2] = {
         //~ {0.00, 2.40}, {0.00, 2.40}, {2.40, 0.00}, {2.40, 0.00},
         //~ {0.69, 1.51}, {0.69, 0.46}, {1.17, 0.00}, {1.17, 1.37}, {1.94, 1.37},
@@ -70,7 +71,7 @@ int main(int argc, char* argv[]){
         wY.push_back(W[i][0][1]);
         wX.push_back(W[i][1][0]);
         wY.push_back(W[i][1][1]);
-        mapwalls[i] = mapwin->add<Line>()->line(wX, wY)->set("LineWidth", 1.0)->set("k");
+        mapwalls[i] = mapwin->add<Line>()->line(wX, wY)->set("k");
     }
 
     //~ auto wallplot = mapwin->add<Patch>()->patch(wX,wY,wZ);
@@ -117,12 +118,17 @@ int main(int argc, char* argv[]){
         {{1.17, 0.89}, {2.40, 0.89}}
     }}};
 
-    //~ filter.state << 0.4, 0.7, 0.0;
-    filter.state << 1.5, 1.6, 0.0;
+    filter.state << 0.4, 0.7, 0.0;
+    //~ filter.state << 1.5, 1.6, 0.0;
+    //~ filter.state << 0.9, 2.0, 0.0;
     ModelDescription::States trueState = filter.state;
     line_t distPlot;
     line_t truth = mapwin->add<Line>()->set("LineStyle", "none")->set("r")->set("Marker", "d");
     line_t guess = mapwin->add<Line>()->set("LineStyle", "none")->set("g")->set("Marker", "o");
+    line_t meas0 = measwin->add<Line>()->set('r')->set_capacity(count);
+    line_t meas1 = measwin->add<Line>()->set('g')->set_capacity(count);
+    line_t meas2 = measwin->add<Line>()->set('b')->set_capacity(count);
+    line_t meas3 = measwin->add<Line>()->set('k')->set_capacity(count);
 
     for(auto& p : filter.particles) {
         p.state << sys::math::randU()*2.2 + 0.1, sys::math::randU()*2.2 + 0.1, sys::math::randU()*2*M_PI;
@@ -150,12 +156,17 @@ int main(int argc, char* argv[]){
         tY.push_back(trueState[states::y]);
         truth->line(tX, tY);
 
+        //~ m.z = m.measurement(trueState) + sys::math::normalSample(m.R);
         m.z = m.measurement(trueState);
         gX.push_back(filter.state[states::x]);
         gY.push_back(filter.state[states::y]);
         guess->line(gX, gY);
 
         usleep(100000);
+        meas0 << std::make_pair(i, m.z(0));
+        meas1 << std::make_pair(i, m.z(1));
+        meas2 << std::make_pair(i, m.z(2));
+        meas3 << std::make_pair(i, m.z(3));
 
         Algorithm::update<MotionModel>(filter, u, m, 1e-2);
 
