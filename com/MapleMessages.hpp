@@ -36,9 +36,9 @@ namespace sys {
                 my = 1,
                 mz = 2
             };
-            U16 imu[6];
+            S16 imu[6];
             U16 pressure;
-            U16 magnetometer[3];
+            S16 magnetometer[3];
             U16 wind[2];
             U16 distance[4];
             U16 rpm;

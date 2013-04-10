@@ -3,11 +3,13 @@
 #define SYS_SENSORHUB_HPP_
 
 #include <sys/sensorhub/sensors/Imu.hpp>
+#include <sys/sensorhub/sensors/StmFFT.hpp>
 
 namespace sys {
     namespace sensorhub {
         struct Sensorhub {
             Imu imu;
+            StmFFT stmFFT;
         };
     }
 }
