@@ -12,14 +12,10 @@
 
 namespace sys {
     namespace particlefilter {
-        typedef sys::math::models::UltrasoundInMap<ModelDescription, 4, sys::math::Map<14>> Sensor;
-
         struct ParticleFilter {
                 typedef ParticleFilter Self;
                 os::Dispatcher<ParticleFilter, ControlMessage> controlDispatcher;
                 os::Dispatcher<ParticleFilter, SensorMessage> sensorDispatcher;
-
-                sys::math::GaussianMeasurement<Sensor, true> m;
 
                 ParticleFilter();
 

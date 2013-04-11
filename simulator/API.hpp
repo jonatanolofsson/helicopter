@@ -7,6 +7,7 @@
 #include <sys/math/filtering.hpp>
 #include <os/clock.hpp>
 #include <sys/motioncontrol/API.hpp>
+#include <sys/math/algorithm.hpp>
 
 namespace sys {
     namespace simulator {
@@ -16,6 +17,8 @@ namespace sys {
 
         typedef math::models::CoordinatedTurn2DPose<ModelDescription> MotionModel;
         typedef math::GaussianFilter<ModelDescription>      Filter;
+
+        static const Scalar distanceScaling = 1000.0;
 
         namespace sensors {
             typedef math::models::Gps<ModelDescription>     Gps;

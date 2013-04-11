@@ -4,6 +4,7 @@
 
 #include <os/com/Dispatcher.hpp>
 #include <sys/types.hpp>
+#include <mutex>
 
 namespace sys {
     namespace towercontrol {
@@ -15,6 +16,7 @@ namespace sys {
                 void actuateControl(const os::SystemTime);
                 void setTowerAngle(const U16 c);
                 void fireWater();
+                std::mutex irGuard;
 
                 Serial& stm;
 

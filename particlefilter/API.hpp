@@ -4,6 +4,7 @@
 
 #include <sys/settings.hpp>
 #include <sys/motioncontrol/API.hpp>
+#include <sys/sensorhub/API.hpp>
 #include <sys/math/models.hpp>
 #include <os/clock.hpp>
 #include <sys/com/StmMessages.hpp>
@@ -18,7 +19,7 @@ namespace sys {
         typedef math::ParticleFilter<ModelDescription, nofParticles> Filter;
         typedef math::PF Algorithm;
 
-        typedef stm::SensorMessage                          SensorMessage;
+        typedef sensorhub::stmir::DistanceMeasurement       SensorMessage;
         typedef motioncontrol::ModelDescription::Controls   ControlMessage;
         typedef os::SystemTime                              TimeTrigger;
 

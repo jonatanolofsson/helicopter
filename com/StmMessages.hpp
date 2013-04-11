@@ -52,7 +52,7 @@ namespace sys {
 
         struct IrCameraMessage {
             static const Messages::Id ID = Messages::irCameraMessage;
-            U16 blobs[4][2];
+            U16 blobs[4][3];
         };
 
         struct IoctlMessage {

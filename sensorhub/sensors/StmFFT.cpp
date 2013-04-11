@@ -1,4 +1,4 @@
-#include <sys/sensorhub/sensors/Imu.hpp>
+#include <sys/sensorhub/sensors/StmFFT.hpp>
 #include <sys/math/filtering.hpp>
 #include <sys/math/models.hpp>
 #include <os/com/getSignal.hpp>

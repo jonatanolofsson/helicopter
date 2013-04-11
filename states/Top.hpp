@@ -17,6 +17,12 @@
 #include <os/com/NetworkServer.hpp>
 #include <os/com/TestMessages.hpp>
 
+#define SIMULATE (1)
+
+#ifdef SIMULATE
+#include <sys/simulator/API.hpp>
+#endif
+
 namespace sys {
     namespace mpl = boost::mpl;
     namespace sc = boost::statechart;
@@ -32,6 +38,10 @@ namespace sys {
             DebugServer debugServer;
 
             Sensorhub sensorhub;
+
+            #ifdef SIMULATE
+            Simulator simulator;
+            #endif
 
             Top();
             ~Top();

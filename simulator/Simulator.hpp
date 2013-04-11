@@ -17,7 +17,7 @@ namespace sys {
                 typedef Simulator<MotionModel, Filter> Self;
 
             private:
-                os::Dispatcher<Self, Controls> dispatcher;
+                os::Dispatcher<Self, Controls> controlDispatcher;
                 Filter filter;
 
             public:
