@@ -30,7 +30,7 @@ namespace sys {
             U16 reference;
             {
                 std::unique_lock<std::mutex> l(irGuard);
-                if(firePosition[0] > 0) { // Light in site
+                if(firePosition[0] > 0) { // Light in sight
                     reference = currentAngle + regP * (512 - firePosition[0]);
                     if(std::abs(512 - firePosition[0]) < firePermissionOffset) {
                         fireWater();

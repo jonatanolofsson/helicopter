@@ -1,14 +1,18 @@
 #include <sys/states/API.hpp>
 #include <os/com/getSignal.hpp>
 #include <os/clock.hpp>
+#include <sys/global.hpp>
 
 INSTANTIATE_SIGNAL(os::SystemTime);
 
-using namespace sys;
+namespace sys {
+    StateMachine stateMachine;
+    DebugServer debugServer;
+}
 
 
 int main(int, char*[]) {
-    runStateMachine();
+    sys::runStateMachine();
 
     return 0;
 }

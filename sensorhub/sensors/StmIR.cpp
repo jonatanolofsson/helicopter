@@ -3,6 +3,7 @@
 #include <sys/math/models.hpp>
 #include <os/com/getSignal.hpp>
 #include <sys/states/API.hpp>
+#include <sys/global.hpp>
 
 #include <iostream>
 
@@ -52,6 +53,9 @@ namespace sys {
                 distanceScaling * s.distance[1],
                 distanceScaling * s.distance[2],
                 distanceScaling * s.distance[3];
+
+            //~ std::stringstream cmsg; cmsg << "DISTANCE=[" << m.z[0] << "," << m.z[1] << "," << m.z[2] << "," << m.z[3] << "]\n";
+            //~ debugServer.sendString(cmsg.str());
         }
     }
 }

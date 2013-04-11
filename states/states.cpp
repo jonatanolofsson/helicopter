@@ -3,8 +3,6 @@
 
 namespace sys {
     namespace states {
-        typedef Firefighter StateMachine;
-
         StateMachine stateMachine;
 
         void postEvent(const sc::event_base& e) {

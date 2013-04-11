@@ -5,16 +5,18 @@
 #include <boost/statechart/state_machine.hpp>
 #include <boost/statechart/custom_reaction.hpp>
 #include <boost/mpl/list.hpp>
+#include <os/com/NetworkServer.hpp>
+#include <os/com/TestMessages.hpp>
 
 #include <sys/states/events.hpp>
 #include <mutex>
 #include <condition_variable>
 
 namespace sys {
-    namespace mpl = boost::mpl;
-    namespace sc = boost::statechart;
-
     namespace states {
+        namespace mpl = boost::mpl;
+        namespace sc = boost::statechart;
+
         struct Top;
         struct Firefighter : sc::state_machine<Firefighter, Top> {
             typedef mpl::list<

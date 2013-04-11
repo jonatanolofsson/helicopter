@@ -19,4 +19,9 @@ namespace sys {
 
 #include <sys/states/Firefighter.hpp>
 
+namespace sys {
+    typedef states::Firefighter StateMachine;
+    extern StateMachine stateMachine;
+}
+
 #endif

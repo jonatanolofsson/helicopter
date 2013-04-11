@@ -7,8 +7,7 @@ namespace sys {
     namespace states {
         Top::Top()
         : maple("/dev/maple")
-        , stm("/dev/stm")
-        , debugServer() {
+        , stm("/dev/stm") {
             maple.registerPackager<maple::Messages::sensorMessage>(&os::messageDispatcher<maple::SensorMessage>);
             maple.registerPackager<maple::Messages::controlMessage>(&os::messageDispatcher<maple::ControlMessage>);
             maple.registerPackager<maple::Messages::cameraControlMessage>(&os::messageDispatcher<maple::CameraControlMessage>);
