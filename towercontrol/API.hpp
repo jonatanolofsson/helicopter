@@ -1,18 +1,19 @@
 #pragma once
-#ifndef SYS_ACTUATOR_API_HPP_
-#define SYS_ACTUATOR_API_HPP_
+#ifndef SYS_TOWERCONTROL_API_HPP_
+#define SYS_TOWERCONTROL_API_HPP_
 
-#include <sys/actuator/Actuator.hpp>
+#include <sys/towercontrol/TowerControl.hpp>
 #include <sys/com/Stm.hpp>
 #include <sys/types.hpp>
 
 namespace sys {
-    namespace actuator {
+    namespace towercontrol {
         typedef Stm SerialLink;
         static const U16 firePermissionOffset   = 50;
         static const Scalar regP                = 10.0;
+        static const Scalar maxAngle            = 100.0;
     }
-    typedef actuator::Actuator<actuator::SerialLink> Actuator;
+    typedef towercontrol::TowerControl<towercontrol::SerialLink> TowerControl;
 }
 
 #endif

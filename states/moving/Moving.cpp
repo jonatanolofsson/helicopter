@@ -4,7 +4,7 @@ namespace sys {
     namespace states {
         Moving::Moving(my_context ctx)
         : my_base(ctx)
-        , actuator(context<Top>().maple)
+        , actuator(context<Top>().stm)
         {}
     }
 }

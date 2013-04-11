@@ -2,14 +2,24 @@
 #ifndef SYS_ACTUATOR_API_HPP_
 #define SYS_ACTUATOR_API_HPP_
 
-#include <sys/actuator/Actuator.hpp>
-#include <sys/com/Maple.hpp>
+#include <sys/motioncontrol/API.hpp>
+#include <sys/com/Stm.hpp>
 
 namespace sys {
     namespace actuator {
-        typedef Maple SerialLink;
+        typedef Stm SerialLink;
+
+        typedef motioncontrol::ModelDescription         ModelDescription;
+        typedef motioncontrol::Controls                 MotionControlSignal;
+
+        static const Scalar wheelbase                   = 20.0;
     }
-    typedef actuator::Actuator<actuator::SerialLink> Actuator;
+}
+
+#include <sys/actuator/Actuator.hpp>
+
+namespace sys {
+    typedef actuator::Actuator<actuator::SerialLink>    Actuator;
 }
 
 #endif

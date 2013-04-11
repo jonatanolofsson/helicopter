@@ -20,6 +20,7 @@ namespace sys {
         typedef observer::SystemState                               SystemState;
 
         typedef ModelDescription::States                            Reference;
+        typedef ModelDescription::Controls                          Controls;
     }
 
     typedef motioncontrol::MotionControl<motioncontrol::Controller, motioncontrol::ControlState, motioncontrol::ControlModel, motioncontrol::SystemState> MotionControl;

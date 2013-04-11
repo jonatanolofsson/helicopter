@@ -22,7 +22,6 @@ namespace sys {
         template<typename ControllerType, typename ControlState, typename ControlModel, typename SystemState>
         void MotionControl<ControllerType, ControlState, ControlModel, SystemState>
         ::updateControl(const SystemState systemState) {
-            typedef typename ControlModel::Controls Controls;
             ControlState controlState(systemState);
             controller.template updateModel<ControlModel::isDiscrete>(ControlModel::systemJacobian(controlState.state, ZeroVector<Controls>::z), ControlModel::controlJacobian(controlState.state, ZeroVector<Controls>::z));
             os::yield(controller(controlState.state));

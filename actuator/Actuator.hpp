@@ -3,28 +3,28 @@
 #define SYS_ACTUATOR_HPP_
 
 #include <os/com/Dispatcher.hpp>
-#include <sys/com/MotionControlSignal.hpp>
-#include <sys/com/CameraControlSignal.hpp>
+#include <sys/motioncontrol/API.hpp>
+#include <sys/actuator/API.hpp>
 
 namespace sys {
     namespace actuator {
         template<typename Serial>
         class Actuator {
+            public:
+                typedef Actuator<Serial> Self;
+
             private:
                 void actuateControl(const MotionControlSignal u);
-                void actuateCamera(const CameraControlSignal c);
 
-                Serial& maple;
+                Serial& stm;
 
-                os::Dispatcher<Actuator, MotionControlSignal> controlActuator;
-                os::Dispatcher<Actuator, CameraControlSignal> cameraActuator;
+                os::Dispatcher<Self, MotionControlSignal> controlActuator;
 
                 Actuator();
 
             public:
-                explicit Actuator(Serial& maple_);
+                explicit Actuator(Serial&);
         };
     }
 }
-
 #endif

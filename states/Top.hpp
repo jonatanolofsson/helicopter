@@ -7,6 +7,7 @@
 #include <boost/statechart/transition.hpp>
 
 #include <sys/clock/API.hpp>
+#include <sys/towercontrol/API.hpp>
 #include <sys/observer/API.hpp>
 #include <sys/sensorhub/API.hpp>
 #include <sys/com/Maple.hpp>
@@ -33,6 +34,7 @@ namespace sys {
             Maple maple;
             Stm stm;
 
+            TowerControl towercontrol;
             Sensorhub sensorhub;
 
             #ifdef SIMULATE

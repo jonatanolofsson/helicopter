@@ -1,8 +1,7 @@
 #include <sys/motioncontrol/implementation.hpp>
 #include <os/com/getSignal.hpp>
-#include <sys/com/MotionControlSignal.hpp>
 
-INSTANTIATE_SIGNAL(sys::MotionControlSignal);
+INSTANTIATE_SIGNAL(sys::motioncontrol::Controls);
 
 namespace sys {
     namespace motioncontrol {

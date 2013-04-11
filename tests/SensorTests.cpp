@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <sys/types.hpp>
 #include <termios.h>
+#include <os/bytemagic.hpp>
 
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/array.hpp>
@@ -29,16 +30,15 @@ void sensorResponseHandler(const U8* msg, const std::size_t len) {
     if(receivedResponse >= 1000) {
         responseCondition.notify_all();
     }
-    SensorMessage* m = (SensorMessage*)msg;
-    EXPECT_TRUE(m);
+    SensorMessage m = os::fromBytes<SensorMessage>(msg);
     if(printResponse) {
         std::cout
-            << std::setw(8) << m->imu[0]
-            << std::setw(8) << m->imu[1]
-            << std::setw(8) << m->imu[2]
-            << std::setw(8) << m->imu[3]
-            << std::setw(8) << m->imu[4]
-            << std::setw(8) << m->imu[5]
+            << std::setw(8) << m.imu[0]
+            << std::setw(8) << m.imu[1]
+            << std::setw(8) << m.imu[2]
+            << std::setw(8) << m.imu[3]
+            << std::setw(8) << m.imu[4]
+            << std::setw(8) << m.imu[5]
             << std::endl;
     }
 }
