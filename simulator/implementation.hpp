@@ -25,11 +25,18 @@ namespace sys {
 
         template<typename MotionModel_, typename Filter_>
         void Simulator<MotionModel_, Filter_>::simulate(const Controls u) {
-            filter.state = MotionModel::predict(filter.state, u, settings::dT) + filter.noise();
+            filter.state = MotionModel::predict(filter.state, u, settings::dT);// + filter.noise();
 
-            //~ typedef template sys::math::models::Imu<MotionModel::ModelDescription> Imu;
-            //~ auto mImu = Imu::measurement(filter.state);
-            //~ os::yield(maple::SensorMessage{{mImu[0], mImu[1], mImu[2], mImu[3], mImu[4], mImu[5]}});
+            auto mImu = sensors::Imu::measurement(filter.state);
+            os::yield(maple::SensorMessage{{
+                (S16)(accelerometerScaling * mImu[0]),
+                (S16)(accelerometerScaling * mImu[1]),
+                (S16)(accelerometerScaling * mImu[2]),
+
+                (S16)(gyroscopeScaling * mImu[3]),
+                (S16)(gyroscopeScaling * mImu[4]),
+                (S16)(gyroscopeScaling * mImu[5])
+            },0,{0},{0},{0},0,0});
 
             sys::math::GaussianMeasurement<PfSensor, true> m;
             m.sensor = &pfSensor;

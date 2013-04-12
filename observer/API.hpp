@@ -21,8 +21,7 @@ namespace sys {
         typedef ModelDescription::States                    SystemState;
 
         namespace sensors {
-            typedef math::GaussianMeasurement<math::models::Gps<ModelDescription>>        Gps;
-            typedef math::GaussianMeasurement<math::models::Imu<ModelDescription>>        Imu;
+            typedef math::GaussianMeasurement<math::models::Imu1d<ModelDescription>>        Imu;
         }
     }
 }

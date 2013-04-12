@@ -1,6 +1,6 @@
 #pragma once
-#ifndef SYS_MATH_MODELS_SENSORS_IMU2D_HPP_
-#define SYS_MATH_MODELS_SENSORS_IMU2D_HPP_
+#ifndef SYS_MATH_MODELS_SENSORS_IMU1D_HPP_
+#define SYS_MATH_MODELS_SENSORS_IMU1D_HPP_
 
 #include <sys/math/constants.hpp>
 #include <sys/math/filtering/GaussianFilter.hpp>
@@ -13,20 +13,18 @@ namespace sys {
         namespace models {
             using namespace Eigen;
             template<typename ModelDescription>
-            struct Imu2d {
-                typedef Imu2d Self;
+            struct Imu1d {
+                typedef Imu1d Self;
                 typedef typename ModelDescription::Scalar Scalar;
                 enum state {
-                    ax = 0,
-                    ay = 1,
+                    a = 0,
+                    w  = 1,
 
-                    w  = 2,
-
-                    nofMeasurements = 3
+                    nofMeasurements = 2
                 };
 
                 enum states {
-                    acceleration = ax,
+                    acceleration = a,
                     rotational_velocity = w
                 };
 
@@ -35,9 +33,7 @@ namespace sys {
                 static MeasurementVector measurement(const typename ModelDescription::States& state) {
                     typedef typename ModelDescription::StateDescription states;
                     MeasurementVector m;
-                    m[ax] = state[states::ax];
-                    m[ay] = state[states::ay];
-
+                    m[a] = state[states::a];
                     m[w] = state[states::w];
 
                     return m;
@@ -53,18 +49,16 @@ namespace sys {
                     JacobianMatrix J;
                     J.setZero();
 
-                    J(ax, states::ax) = 1;
-                    J(ay, states::ay) = 1;
-
+                    J(a, states::a) = 1;
                     J(w, states::w)  = 1;
 
                     return J;
                 }
             };
 
-            template<typename ModelDescription> typename Imu2d<ModelDescription>::CovarianceMatrix
-            Imu2d<ModelDescription>::cov = (Imu2d<ModelDescription>::MeasurementVector() <<
-                1.0, 1.0, 1.0
+            template<typename ModelDescription> typename Imu1d<ModelDescription>::CovarianceMatrix
+            Imu1d<ModelDescription>::cov = (Imu1d<ModelDescription>::MeasurementVector() <<
+                1.0, 1.0
             ).finished().asDiagonal();
         }
     }
