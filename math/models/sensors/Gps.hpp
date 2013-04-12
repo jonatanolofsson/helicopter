@@ -7,6 +7,7 @@
 #include <Eigen/Core>
 #include <os/com/Dispatcher.hpp>
 #include <sys/types.hpp>
+#include <sys/math/statistics.hpp>
 
 namespace sys {
     namespace math {
@@ -50,7 +51,7 @@ namespace sys {
                 }
 
                 static CovarianceMatrix cov;
-                static const CovarianceMatrix& covariance(const typename ModelDescription::States& state) { return cov; }
+                static const CovarianceMatrix& covariance() { return cov; }
 
                 static Matrix<Scalar, nofMeasurements, ModelDescription::nofStates>
                 jacobian(const typename ModelDescription::States&) {
@@ -70,25 +71,8 @@ namespace sys {
                     return J;
                 }
 
-
-                template<typename PostOffice>
-                static void packager(const typename PostOffice::Message& msg) {
-                    USING_XYZ
-                    struct gpsOverlay {
-                        float pos[3];
-                        float vel[3];
-                    };
-                    if(msg.size == sizeof(gpsOverlay)) {
-                        gpsOverlay* gps = (gpsOverlay*)&msg.msg;
-                        math::GaussianMeasurement<Self> m;
-                        m.z[x] = gps.pos[X];
-                        m.z[y] = gps.pos[Y];
-                        m.z[z] = gps.pos[Z];
-                        m.z[vx] = gps.vel[X];
-                        m.z[vy] = gps.vel[Y];
-                        m.z[vz] = gps.vel[Z];
-                        os::yield(m);
-                    }
+                static MeasurementVector noise() {
+                    return math::normalSample(covariance());
                 }
             };
 

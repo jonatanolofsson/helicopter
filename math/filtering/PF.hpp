@@ -31,7 +31,6 @@ namespace sys {
             public:
                 template<typename MotionModel, typename Filter>
                 static void propagate(Filter& filter, const typename MotionModel::Controls& u, typename Filter::Scalar dT) {
-                    resample(filter);
                     for(auto& p : filter.particles) {
                         p.state = MotionModel::predict(p.state, u, dT) + math::normalSample(MotionModel::covariance(dT));
                     }
@@ -63,6 +62,8 @@ namespace sys {
                         }
                         filter.state += p.weight * p.state;
                     }
+
+                    resample(filter);
                 }
 
                 template<typename MotionModel, typename Filter>

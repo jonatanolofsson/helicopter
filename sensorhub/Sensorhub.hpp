@@ -5,6 +5,7 @@
 #include <sys/sensorhub/sensors/Imu.hpp>
 #include <sys/sensorhub/sensors/StmFFT.hpp>
 #include <sys/sensorhub/sensors/StmIR.hpp>
+#include <sys/sensorhub/sensors/Mouse.hpp>
 
 namespace sys {
     namespace sensorhub {
@@ -12,6 +13,7 @@ namespace sys {
             Imu imu;
             StmIR stmIr;
             StmFFT stmFFT;
+            Mouse mouse;
         };
     }
 }

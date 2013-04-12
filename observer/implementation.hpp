@@ -14,7 +14,9 @@ namespace sys {
         Observer<Algorithm, Filter, MotionModel, Trigger>::Observer()
         : dispatcher(&Self::timeUpdate, this)
         //~ , gps(&Self::measurementUpdate<sensors::Gps>, this)
-        //~ , imu(&Self::measurementUpdate<sensors::Imu>, this)
+        , imu(&Self::measurementUpdate<sensors::Imu>, this)
+        , mouse(&Self::measurementUpdate<sensors::Mouse>, this)
+        , pfilter(&Self::measurementUpdate<sensors::ParticleFilterSensor>, this)
         {
             MotionModel::ModelDescription::StateDescription::initialize(filter);
         }

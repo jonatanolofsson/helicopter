@@ -1,4 +1,7 @@
 #include <sys/particlefilter/API.hpp>
+#include <os/com/getSignal.hpp>
+
+INSTANTIATE_SIGNAL(sys::particlefilter::PfState);
 
 namespace sys {
     namespace particlefilter {
@@ -15,11 +18,16 @@ namespace sys {
         }
 
         void ParticleFilter::timeUpdate(const ControlMessage u) {
-            Algorithm::propagate<MotionModel>(filter, u, dT);
+            static int n = 0;
+            n = (n + 1) % 5;
+            if(n == 0) {
+                Algorithm::propagate<MotionModel>(filter, u, dT);
+            }
         }
 
         void ParticleFilter::measurementUpdate(const SensorMessage m) {
             Algorithm::measurementUpdate<>(filter, m);
+            os::yield(PfState{filter.state});
         }
     }
 }

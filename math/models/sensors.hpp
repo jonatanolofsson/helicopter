@@ -6,6 +6,8 @@
 #include <sys/math/models/sensors/Imu.hpp>
 #include <sys/math/models/sensors/Imu2d.hpp>
 #include <sys/math/models/sensors/Imu1d.hpp>
+#include <sys/math/models/sensors/Mouse.hpp>
+#include <sys/math/models/sensors/ParticleFilterSensor.hpp>
 #include <sys/math/models/sensors/UltrasoundInMap.hpp>
 
 #endif

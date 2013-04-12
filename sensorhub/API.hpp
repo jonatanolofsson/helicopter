@@ -7,7 +7,9 @@
 namespace sys {
     namespace sensorhub {
         namespace sensors {
-            typedef observer::sensors::Imu          Imu;
+            typedef observer::sensors::Imu                  Imu;
+            typedef observer::sensors::Mouse                Mouse;
+            typedef observer::sensors::ParticleFilterSensor ParticleFilterSensor;
             //~ typedef observer::sensors::Gps          Gps;
         }
     }

@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 #include <sys/math/base.hpp>
 #include <cmath>
+#include <sys/math/statistics.hpp>
 
 namespace sys {
     namespace math {
@@ -49,7 +50,11 @@ namespace sys {
                 }
 
                 static CovarianceMatrix cov;
-                static const CovarianceMatrix& covariance(const States& state) { return cov; }
+                static const CovarianceMatrix& covariance() { return cov; }
+
+                static MeasurementVector noise() {
+                    return math::normalSample(covariance());
+                }
             };
 
             template<typename ModelDescription, unsigned N, typename Map> typename UltrasoundInMap<ModelDescription, N, Map>::CovarianceMatrix

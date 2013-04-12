@@ -24,6 +24,11 @@ namespace sys {
         typedef os::SystemTime                              TimeTrigger;
 
         static const Scalar dT = sys::settings::dT;
+
+
+        struct PfState {
+            ModelDescription::States state;
+        };
     }
 }
 

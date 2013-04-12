@@ -19,7 +19,9 @@ namespace sys {
 
                 /* Sensors */
                 //~ os::Dispatcher<Observer, sensors::Gps> gps;
-                //~ os::Dispatcher<Self, sensors::Imu> imu;
+                os::Dispatcher<Self, sensors::Imu> imu;
+                os::Dispatcher<Self, sensors::Mouse> mouse;
+                os::Dispatcher<Self, sensors::ParticleFilterSensor> pfilter;
 
             public:
                 Filter filter;
@@ -29,7 +31,7 @@ namespace sys {
                 void timeUpdate(const Trigger);
                 //~ void timeUpdate(const Trigger, typename MotionModel::Controls);
 
-                template<typename Measurement, typename MUFilter = Filter>
+                template<typename Measurement, typename MUFilter = Algorithm>
                 void measurementUpdate(const Measurement m) {
                     auto l = filter.retrieve_lock();
                     //~ std::cout << "Observer measurement update: " << typeid(Measurement).name() << std::endl;

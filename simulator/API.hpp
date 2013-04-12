@@ -26,6 +26,7 @@ namespace sys {
 
         namespace sensors {
             typedef math::models::Imu1d<ModelDescription>     Imu;
+            typedef math::models::Mouse<ModelDescription>     Mouse;
         }
     }
 }

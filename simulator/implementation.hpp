@@ -6,6 +6,7 @@
 #include <sys/com/Maple.hpp>
 #include <sys/com/Stm.hpp>
 #include <sys/simulator/API.hpp>
+#include <sys/sensorhub/API.hpp>
 #include <sys/settings.hpp>
 #include <sys/math/models/Map.hpp>
 #include <sys/math/models.hpp>
@@ -27,26 +28,30 @@ namespace sys {
         void Simulator<MotionModel_, Filter_>::simulate(const Controls u) {
             filter.state = MotionModel::predict(filter.state, u, settings::dT);// + filter.noise();
 
-            auto mImu = sensors::Imu::measurement(filter.state);
+            /* Measurements for the kalman filter */
+            auto mImu = sensors::Imu::measurement(filter.state) + sensors::Imu::noise();
             os::yield(maple::SensorMessage{{
-                (S16)(accelerometerScaling * mImu[0]),
-                (S16)(accelerometerScaling * mImu[1]),
-                (S16)(accelerometerScaling * mImu[2]),
-
-                (S16)(gyroscopeScaling * mImu[3]),
-                (S16)(gyroscopeScaling * mImu[4]),
-                (S16)(gyroscopeScaling * mImu[5])
+                (S16)(accelerometerScaling * mImu[0]), 0, 0,
+                0, 0, (S16)(gyroscopeScaling * mImu[1])
             },0,{0},{0},{0},0,0});
 
-            sys::math::GaussianMeasurement<PfSensor, true> m;
-            m.sensor = &pfSensor;
+            sys::sensorhub::sensors::Mouse m;
+            m.z = sensors::Mouse::measurement(filter.state) + sensors::Mouse::noise();
+            os::yield(m);
 
-            auto z = m.measurement(filter.state);
-            os::yield(stm::SensorMessage{{
-                (U16)(distanceScaling * z[0]),
-                (U16)(distanceScaling * z[1]),
-                (U16)(distanceScaling * z[2])
-            }});
+            /* Measurements for the particlefilter */
+            static int pN = 0;
+            pN = (pN + 1) % 5;
+            if(pN == 0) {
+                sys::math::GaussianMeasurement<PfSensor, true> m;
+                m.sensor = &pfSensor;
+                auto z = m.measurement(filter.state) + PfSensor::noise();
+                os::yield(stm::SensorMessage{{
+                    (U16)(distanceScaling * z[0]),
+                    (U16)(distanceScaling * z[1]),
+                    (U16)(distanceScaling * z[2])
+                }});
+            }
         }
     }
 }

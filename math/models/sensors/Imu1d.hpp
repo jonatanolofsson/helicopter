@@ -7,6 +7,7 @@
 #include <Eigen/Core>
 #include <os/com/Dispatcher.hpp>
 #include <sys/types.hpp>
+#include <sys/math/statistics.hpp>
 
 namespace sys {
     namespace math {
@@ -40,7 +41,7 @@ namespace sys {
                 }
 
                 static CovarianceMatrix cov;
-                static const CovarianceMatrix& covariance(const typename ModelDescription::States& state) { return cov; }
+                static const CovarianceMatrix& covariance() { return cov; }
 
                 static Matrix<Scalar, nofMeasurements, ModelDescription::nofStates>
                 jacobian(const typename ModelDescription::States&) {
@@ -53,6 +54,10 @@ namespace sys {
                     J(w, states::w)  = 1;
 
                     return J;
+                }
+
+                static MeasurementVector noise() {
+                    return math::normalSample(covariance());
                 }
             };
 

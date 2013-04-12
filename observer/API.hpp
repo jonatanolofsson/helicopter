@@ -22,6 +22,8 @@ namespace sys {
 
         namespace sensors {
             typedef math::GaussianMeasurement<math::models::Imu1d<ModelDescription>>        Imu;
+            typedef math::GaussianMeasurement<math::models::Mouse<ModelDescription>>        Mouse;
+            typedef math::GaussianMeasurement<math::models::ParticleFilterSensor<ModelDescription>>        ParticleFilterSensor;
         }
     }
 }
