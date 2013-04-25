@@ -11,7 +11,7 @@ namespace sys {
         static const Scalar baseVelocity            = 2e-1;
         static const Scalar rotateFirstLimit        = 2e-1;
 
-        typedef math::astar::Graph<4, 2, math::astar::CartesianPosition2d> Graph;
+        typedef math::astar::Graph<15, 3, math::astar::CartesianPosition2d> Graph;
         typedef Graph::NodeType                     Checkpoint;
     }
 }
