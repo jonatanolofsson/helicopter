@@ -14,7 +14,7 @@ namespace sys {
                 void timelyReader(const os::SystemTime);
                 void mouseReader();
                 bool dying;
-                U32 dots;
+                S32 dots;
                 std::mutex inputGuard;
 
             public:

@@ -30,7 +30,7 @@ namespace sys {
             static Scalar distance = 0;
             distance += m.z[0] * settings::dT;
 
-            std::cout << "Distance, Velocity: " << distance << " :: " << m.z[0] << std::endl;
+            //~ std::cout << "Distance, Velocity: " << distance << " :: " << m.z[0] << std::endl;
 
             dots = 0;
             os::yield(m);
@@ -40,16 +40,20 @@ namespace sys {
             struct input_event ie;
             unsigned int readData;
 
-            while(!dying) {
-                int fd = open(MOUSEFILE, O_RDONLY);
-                readData = read(fd, &ie, sizeof(struct input_event));
-                if(readData == sizeof(struct input_event)) {
-                    if((ie.type == EV_REL) && (ie.code==0)) {
-                        std::unique_lock<std::mutex> l(inputGuard);
-                        dots += ie.value;
+            int fd = open(MOUSEFILE, O_RDONLY);
+            if(fd > 0) {
+                while(!dying) {
+                    readData = read(fd, &ie, sizeof(struct input_event));
+                    if(readData == sizeof(struct input_event)) {
+                        if((ie.type == EV_REL) && (ie.code==0)) {
+                            std::unique_lock<std::mutex> l(inputGuard);
+                            dots += ie.value;
+                        }
                     }
                 }
+                close(fd);
             }
+            std::cout << "Mouse thread died" << std::endl;
         }
 
         Mouse::~Mouse() {
