@@ -1,4 +1,5 @@
 #include <sys/particlefilter/API.hpp>
+#include <sys/states/API.hpp>
 #include <os/com/getSignal.hpp>
 
 INSTANTIATE_SIGNAL(sys::particlefilter::PfState);
@@ -28,6 +29,15 @@ namespace sys {
         void ParticleFilter::measurementUpdate(const SensorMessage m) {
             Algorithm::measurementUpdate<>(filter, m);
             os::yield(PfState{filter.state});
+
+            Scalar convergence = 0;
+            for(auto& p : filter.particles) {
+                convergence += (filter.state.segment<2>(0) - p.state.segment<2>(0)).norm() * p.weight;
+            }
+            std::cout << "Convergence value: " << convergence << std::endl;
+            if(convergence < convergenceCriteria) {
+                postEvent(events::GotGlobalPosition());
+            }
         }
     }
 }

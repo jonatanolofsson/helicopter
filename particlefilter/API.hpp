@@ -11,7 +11,8 @@
 
 namespace sys {
     namespace particlefilter {
-        static const int nofParticles = 5000;
+        static const int nofParticles                       = 5000;
+        static const Scalar convergenceCriteria             = 10.0;
         typedef math::models::S2DPose StateDescription;
         typedef math::models::CVW ControlDescription;
         typedef math::models::Description<StateDescription, ControlDescription> ModelDescription;
