@@ -15,7 +15,7 @@ namespace sys {
                 };
                 enum states {
                     position = x,
-                    angle = th,
+                    angle = th
                 };
 
                 template<typename T>
