@@ -36,6 +36,7 @@ namespace sys {
             },0,{0},{0},{0},0,0});
 
             sys::sensorhub::sensors::Mouse m;
+            m.R.setIdentity();
             m.z = sensors::Mouse::measurement(filter.state) + sensors::Mouse::noise();
             os::yield(m);
 

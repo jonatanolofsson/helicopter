@@ -7,13 +7,13 @@ namespace sys {
     namespace states {
         struct Running;
         struct InitializePosition
-        : sc::simple_state<InitializePosition, Moving>
+        : sc::state<InitializePosition, Moving>
         {
             typedef mpl::list<
                 sc::transition< events::GotGlobalPosition, Running >
             > reactions;
 
-            InitializePosition();
+            InitializePosition(my_context ctx);
             ~InitializePosition();
         };
     }

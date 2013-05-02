@@ -3,12 +3,13 @@
 
 namespace sys {
     namespace states {
-        InitializePosition::~InitializePosition() {
-            context<Moving>().startingPosition = context<Moving>().planner.getClosestCheckpoint();
-        }
-        InitializePosition::InitializePosition()
+        InitializePosition::InitializePosition(my_context ctx) : my_base(ctx)
         {
             context<Top>().stm.send(stm::ControlMessage{-200, 200});
+        }
+
+        InitializePosition::~InitializePosition() {
+            context<Moving>().startingPosition = context<Moving>().planner.getClosestCheckpoint();
         }
     }
 }
