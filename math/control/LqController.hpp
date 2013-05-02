@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_MATH_LQ_CONTROLLER_HPP_
 #define SYS_MATH_LQ_CONTROLLER_HPP_
 
@@ -15,9 +16,10 @@
 namespace sys {
     namespace math {
         using namespace Eigen;
-        template<typename ModelDescription, typename Scalar = Scalar>
+        template<typename ModelDescription>
         class LqController {
             public:
+                typedef typename ModelDescription::Scalar Scalar;
                 typedef Matrix<Scalar, ModelDescription::nofStates, ModelDescription::nofStates> StateMatrix; ///< A state (propagation) matrix describes how the model state evolves in time, given no control
                 typedef Matrix<Scalar, ModelDescription::nofStates, ModelDescription::nofControls> ControlMatrix; ///<
                 typedef Matrix<Scalar, ModelDescription::nofStates, 1> StateVector; ///< A state vector describes the state in which the system is (currently) in
@@ -49,19 +51,19 @@ namespace sys {
                     P = Q;
                 }
 
-                template<char CD>
+                template<bool isDiscrete>
                 void updateModel(const StateMatrix& A_, const ControlMatrix& B_) {
                     A = A_;
                     //~ std::cout << "A::::::::::::::" << std::endl << A << std::endl << ":::::::::::::::::::::::::::::::::::::" << std::endl;
                     B = B_;
                     //~ std::cout << "B::::::::::::::" << std::endl << B << std::endl << ":::::::::::::::::::::::::::::::::::::" << std::endl;
-                    updateControlMatrices(CD);
+                    updateControlMatrices(isDiscrete);
                 }
 
-                void updateControlMatrices(const char CD) {
+                void updateControlMatrices(const bool modelIsDiscrete) {
                     Scalar measure = 1000;
                     Scalar newMeasure;
-                    if(CD == 'C') {
+                    if(modelIsDiscrete) {
                         auto Rinv = R.householderQr();
                         auto BRB = B*Rinv.solve(B.transpose());
                         StateMatrix deltaP;

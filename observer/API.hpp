@@ -1,28 +1,29 @@
+#pragma once
 #ifndef SYS_OBSERVER_API_HPP_
 #define SYS_OBSERVER_API_HPP_
 
-#include <sys/math/models/models.hpp>
-#include <sys/math/filtering/GaussianFilter.hpp>
-#include <sys/math/filtering/EKF.hpp>
+#include <sys/math/states.hpp>
+#include <sys/math/models.hpp>
+#include <sys/math/filtering.hpp>
 #include <os/clock.hpp>
-
-#include <sys/observer/gps.hpp>
 
 namespace sys {
     namespace observer {
-        typedef math::models::SCart3DAccQuat                States;
-        typedef math::models::CVel3                         Controls;
-        typedef math::models::Description<States, Controls> ModelDescription;
+        typedef math::models::SCT2D                         StateDescription;
+        typedef math::models::C0                            ControlDescription;
+        typedef math::models::Description<StateDescription, ControlDescription> ModelDescription;
 
-        typedef math::EKF                                   FilterType;
-        typedef models::motion::ConstantVelocities3D        MotionModel;
-        typedef math::GaussianFilter<ModelDescription>      FilterState;
+        typedef math::EKF                                   Algorithm;
+        typedef math::GaussianFilter<ModelDescription>      Filter;
+        typedef math::models::CoordinatedTurn2D<ModelDescription> MotionModel;
         typedef os::SystemTime                              TriggerType;
 
-        typedef FilterState::States                         SystemState;
+        typedef ModelDescription::States                    SystemState;
 
         namespace sensors {
-            typedef math::GaussianMeasurement<GPS<>>        GPS;
+            typedef math::GaussianMeasurement<math::models::Imu1d<ModelDescription>>        Imu;
+            typedef math::GaussianMeasurement<math::models::Mouse<ModelDescription>>        Mouse;
+            typedef math::GaussianMeasurement<math::models::ParticleFilterSensor<ModelDescription>>        ParticleFilterSensor;
         }
     }
 }
@@ -30,7 +31,7 @@ namespace sys {
 #include <sys/observer/Observer.hpp>
 
 namespace sys {
-    typedef observer::Observer<observer::FilterType, observer::MotionModel, observer::FilterState, observer::TriggerType> Observer;
+    typedef observer::Observer<observer::Algorithm, observer::Filter, observer::MotionModel, observer::TriggerType> Observer;
 }
 
 #endif

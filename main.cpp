@@ -1,11 +1,18 @@
-#include <sys/states/Top.hpp>
+#include <sys/states/API.hpp>
+#include <os/com/getSignal.hpp>
+#include <os/clock.hpp>
+#include <sys/global.hpp>
 
-using namespace sys;
+INSTANTIATE_SIGNAL(os::SystemTime);
 
-Helicopter helicopterStateMachine;
+namespace sys {
+    StateMachine stateMachine;
+    DebugServer debugServer;
+}
+
 
 int main(int, char*[]) {
-    helicopterStateMachine.initiate();
+    sys::runStateMachine();
 
     return 0;
 }

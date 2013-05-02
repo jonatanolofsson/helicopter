@@ -1,7 +1,12 @@
-make_test(DifferentiationTests)
+#~ make_test(DifferentiationTests)
 #~ make_test(ConstantVelocityModelTests)
 #~ target_link_libraries(ConstantVelocityModelTests models)
 make_test(EKFTests)
 target_link_libraries(EKFTests models)
 make_test(LqTests)
 target_link_libraries(LqTests models)
+make_test(ParticleFilterTests)
+target_link_libraries(ParticleFilterTests models)
+
+add_executable(PFPlot PFPlot.cpp)
+target_link_libraries(PFPlot pthread cpplot boost_system)

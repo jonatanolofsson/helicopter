@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SYS_MOTIONCONTROL_IMPLEMENTATION_HPP_
 #define SYS_MOTIONCONTROL_IMPLEMENTATION_HPP_
 
@@ -7,24 +8,27 @@
 #include <sys/math/control/LqController.hpp>
 
 #include <sys/math/filtering/GaussianFilter.hpp>
-#include <sys/math/models/SCart3DAccQuat.hpp>
-#include <sys/math/models/ConstantVelocities3D.hpp>
+#include <sys/math/states.hpp>
+#include <sys/math/models.hpp>
 
 #include <sys/observer/API.hpp>
 #include <sys/motioncontrol/API.hpp>
 
 namespace sys {
     namespace motioncontrol {
-        template<typename ControllerType, typename ControlState, typename Model, typename Trigger>
-        void MotionControl<ControllerType, ControlState, Model, Trigger>
-        ::updateControl(const Trigger systemState) {
+        template<typename T> struct ZeroVector { static T z; ZeroVector() { z.setZero(); } };
+        template<typename T> T ZeroVector<T>::z;
+
+        template<typename ControllerType, typename ControlState, typename ControlModel, typename SystemState>
+        void MotionControl<ControllerType, ControlState, ControlModel, SystemState>
+        ::updateControl(const SystemState systemState) {
             ControlState controlState(systemState);
-            controller.template updateModel<Model::CD>(Model::systemJacobian(controlState), Model::controlJacobian(controlState));
+            controller.template updateModel<ControlModel::isDiscrete>(ControlModel::systemJacobian(controlState.state, ZeroVector<Controls>::z), ControlModel::controlJacobian(controlState.state, ZeroVector<Controls>::z));
             os::yield(controller(controlState.state));
         }
 
-        template<typename ControllerType, typename ControlState, typename Model, typename Trigger>
-        MotionControl<ControllerType, ControlState, Model, Trigger>
+        template<typename ControllerType, typename ControlState, typename ControlModel, typename SystemState>
+        MotionControl<ControllerType, ControlState, ControlModel, SystemState>
         ::MotionControl()
         : dispatcher(&Self::updateControl, this)
         {}

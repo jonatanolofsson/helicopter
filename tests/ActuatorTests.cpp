@@ -12,6 +12,7 @@
 #include <termios.h>
 
 using namespace sys;
+using namespace sys::maple;
 
 std::condition_variable responseCondition;
 std::mutex responseGuard;
@@ -34,8 +35,8 @@ class ActuatorTests : public ::testing::Test {
         : maple("/dev/ttyUSB0") // FIXME
         , actuator(maple)
         {
-            maple.registerPackager<MapleMessages::controlMessage>(responseHandler<ControlMessage>);
-            maple.registerPackager<MapleMessages::cameraControlMessage>(responseHandler<CameraControlMessage>);
+            maple.registerPackager<maple::Messages::controlMessage>(responseHandler<ControlMessage>);
+            maple.registerPackager<maple::Messages::cameraControlMessage>(responseHandler<CameraControlMessage>);
         }
 };
 

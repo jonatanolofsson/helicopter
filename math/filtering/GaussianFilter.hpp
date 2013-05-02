@@ -1,41 +1,60 @@
+#pragma once
 #ifndef SYS_MATH_FILTERING_GAUSSIAN_FILTER_HPP_
 #define SYS_MATH_FILTERING_GAUSSIAN_FILTER_HPP_
 
-#include <sys/math/filtering/types.hpp>
 #include <os/mem/ProtectedData.hpp>
+#include <sys/math/statistics.hpp>
+#include <sys/math/filtering.hpp>
+#include <sys/math/control.hpp>
+#include <sys/types.hpp>
 
 namespace sys {
     namespace math {
-        template<typename M, typename S = Scalar>
+        template<typename ModelDescription>
         struct GaussianFilter : public os::ProtectedClass {
-            typedef S Scalar;
-            typedef typename Covariance<Scalar, M::nofStates>::type CovarianceMatrix;
-            typedef typename StateVector<Scalar, M::nofStates>::type States;
-            typedef typename ControlVector<Scalar, M::nofControls>::type Controls;
-            typedef States Reference;
-            typedef M Model;
-            typedef GaussianFilter<M,S> Self;
+            typedef typename ModelDescription::Scalar Scalar;
+            typedef typename ModelDescription::States Reference;
+            typedef GaussianFilter<ModelDescription> Self;
+            typedef typename Covariance<typename ModelDescription::Scalar, ModelDescription::nofStates>::Type CovarianceMatrix;
+            typedef typename ModelDescription::States States;
             CovarianceMatrix covariance;
             States state;
-            Controls controls;
 
             explicit GaussianFilter() {
                 state.setZero();
                 covariance.setZero();
             }
 
-            GaussianFilter(const Self& c)
-                : covariance(c.covariance)
-                , state(c.state)
-                , controls(c.controls)
-            {}
+            States noise() {
+                return math::normalSample(covariance);
+            }
         };
 
-        template<typename Sensor>
-        struct GaussianMeasurement : public Sensor {
-            typedef Sensor Model;
-            Matrix<typename Sensor::Scalar, Sensor::nofMeasurements, 1> z;
+        template<typename Sensor_, bool CALL_WITH_OBJECT = false>
+        struct GaussianMeasurement {
+            typedef Sensor_ Sensor;
+            typedef typename Sensor::MeasurementVector MeasurementVector;
+            MeasurementVector z;
             Matrix<typename Sensor::Scalar, Sensor::nofMeasurements, Sensor::nofMeasurements> R;
+            template<typename States>
+            MeasurementVector measurement(const States& state) const {
+                return Sensor::measurement(state);
+            }
+        };
+
+        template<typename Sensor_>
+        struct GaussianMeasurement<Sensor_, true> {
+            typedef Sensor_ Sensor;
+            typedef typename Sensor::MeasurementVector MeasurementVector;
+            MeasurementVector z;
+            Sensor* sensor;
+            Matrix<typename Sensor::Scalar, Sensor::nofMeasurements, Sensor::nofMeasurements> R;
+            GaussianMeasurement() : sensor(nullptr) {}
+            template<typename States>
+            MeasurementVector measurement(const States& state) const {
+                assert(sensor);
+                return sensor->measurement(state);
+            }
         };
     }
 }
