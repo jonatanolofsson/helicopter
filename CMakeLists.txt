@@ -6,13 +6,9 @@ set(libraries
     com
     motioncontrol
     actuator
-    towercontrol
     observer
-    simulator
-    localplanner
     sensorhub
     states
-    particlefilter
     clock
 )
 

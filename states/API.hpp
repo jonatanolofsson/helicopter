@@ -17,10 +17,10 @@ namespace sys {
     using states::runStateMachine;
 }
 
-#include <sys/states/Firefighter.hpp>
+#include <sys/states/Helicopter.hpp>
 
 namespace sys {
-    typedef states::Firefighter StateMachine;
+    typedef states::Helicopter StateMachine;
     extern StateMachine stateMachine;
 }
 

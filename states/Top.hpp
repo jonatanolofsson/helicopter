@@ -14,7 +14,7 @@
 #include <sys/com/Stm.hpp>
 #include <sys/states/events.hpp>
 
-#include <sys/states/Firefighter.hpp>
+#include <sys/states/Helicopter.hpp>
 
 #define SIMULATE (1)
 
@@ -28,7 +28,7 @@ namespace sys {
 
     namespace states {
         struct Init;
-        struct Top : sc::simple_state<Top, Firefighter, Init>
+        struct Top : sc::simple_state<Top, Helicopter, Init>
         {
             Observer observer;
             Maple maple;

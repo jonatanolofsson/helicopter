@@ -6,7 +6,6 @@
 #include <boost/statechart/custom_reaction.hpp>
 #include <boost/mpl/list.hpp>
 #include <os/com/NetworkServer.hpp>
-#include <os/com/TestMessages.hpp>
 
 #include <sys/states/events.hpp>
 #include <mutex>
@@ -18,7 +17,7 @@ namespace sys {
         namespace sc = boost::statechart;
 
         struct Top;
-        struct Firefighter : sc::state_machine<Firefighter, Top> {
+        struct Helicopter : sc::state_machine<Helicopter, Top> {
             typedef mpl::list<
                 sc::custom_reaction< events::Dying >
             > reactions;
@@ -26,7 +25,7 @@ namespace sys {
             std::mutex m;
             std::condition_variable waitingForDeath;
             bool dying;
-            Firefighter() : dying(false) {}
+            Helicopter() : dying(false) {}
             void wait();
             void kill();
             void react(const events::Dying&);
