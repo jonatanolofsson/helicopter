@@ -7,8 +7,6 @@ namespace sys {
     namespace states {
         Top::Top()
         : maple("/dev/maple")
-        , stm("/dev/stm")
-        , towercontrol(stm)
         {
             maple.registerPackager<maple::Messages::sensorMessage>(&os::messageDispatcher<maple::SensorMessage>);
             maple.registerPackager<maple::Messages::controlMessage>(&os::messageDispatcher<maple::ControlMessage>);
@@ -20,22 +18,13 @@ namespace sys {
                 maple.send<>(ioctlMsg);
             }
 
-            stm.registerPackager<stm::Messages::sensorMessage>(&os::messageDispatcher<stm::SensorMessage>);
-            stm.registerPackager<stm::Messages::controlMessage>(&os::messageDispatcher<stm::ControlMessage>);
-            stm.registerPackager<stm::Messages::irCameraMessage>(&os::messageDispatcher<stm::IrCameraMessage>);
-            stm.registerPackager<stm::Messages::towerMessage>(&os::messageDispatcher<stm::TowerMessage>);
-            stm.registerPackager<stm::Messages::ioctlMessage>(&os::messageDispatcher<stm::IoctlMessage>);
-
-            {
-                stm::IoctlMessage ioctlMsg = { stm::IoctlMessage::SEND_SENSOR_DATA };
-                stm.send<>(ioctlMsg);
-            }
-
-            //~ while(true) {
-                //~ if(debugServer.connected()) {
-                    //~ debugServer.sendString("Teststring\n");
-                //~ }
-            //~ }
+            /*
+             * while(true) {
+             *     if(debugServer.connected()) {
+             *         debugServer.sendString("Teststring\n");
+             *     }
+             * }
+             */
         }
 
 

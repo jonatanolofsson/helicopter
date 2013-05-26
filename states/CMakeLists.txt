@@ -1,12 +1,9 @@
 add_library(states
-    Top.cpp
     states.cpp
-    Firefighter.cpp
+    Top.cpp
+    Helicopter.cpp
 )
 
-add_subdirectory(moving)
-
 target_link_libraries(states
-    states_moving
     observer
 )

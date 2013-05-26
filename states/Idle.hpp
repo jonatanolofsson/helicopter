@@ -9,9 +9,6 @@ namespace sys {
         struct Idle
         : sc::simple_state<Idle, Top>
         {
-            typedef mpl::list<
-                sc::transition< events::StartSignal, Moving >
-            > reactions;
         };
     }
 }

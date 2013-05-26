@@ -7,20 +7,13 @@
 #include <boost/statechart/transition.hpp>
 
 #include <sys/clock/API.hpp>
-#include <sys/towercontrol/API.hpp>
 #include <sys/observer/API.hpp>
 #include <sys/sensorhub/API.hpp>
 #include <sys/com/Maple.hpp>
-#include <sys/com/Stm.hpp>
 #include <sys/states/events.hpp>
 
 #include <sys/states/Helicopter.hpp>
 
-#define SIMULATE (1)
-
-#ifdef SIMULATE
-#include <sys/simulator/API.hpp>
-#endif
 
 namespace sys {
     namespace mpl = boost::mpl;
@@ -32,14 +25,8 @@ namespace sys {
         {
             Observer observer;
             Maple maple;
-            Stm stm;
 
-            TowerControl towercontrol;
             Sensorhub sensorhub;
-
-            #ifdef SIMULATE
-            Simulator simulator;
-            #endif
 
             Top();
             ~Top();
@@ -49,9 +36,6 @@ namespace sys {
 }
 
 #include <sys/states/Init.hpp>
-#include <sys/states/Idle.hpp>
-#include <sys/states/moving/Moving.hpp>
-#include <sys/states/Stop.hpp>
 
 #endif
 
