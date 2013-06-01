@@ -1,2 +1,2 @@
-cd /home/shared/projects/maple/syrup
+cd ${LIB_MAPLE_HOME}/../syrup
 make
