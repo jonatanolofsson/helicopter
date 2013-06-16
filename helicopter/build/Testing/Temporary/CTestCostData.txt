@@ -1,0 +1,5 @@
+DispatcherTests 1 0.00215101
+LocalSerialCommunicationTests 1 4.87565
+LocalNetworkCommunicationTests 1 2.53011
+PtyTests 1 0.00896692
+---

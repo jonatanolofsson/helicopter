@@ -1,0 +1,2 @@
+/usr/bin/ar cr libsensorhub.a  CMakeFiles/sensorhub.dir/sensors/Imu.cpp.o
+/usr/bin/ranlib libsensorhub.a

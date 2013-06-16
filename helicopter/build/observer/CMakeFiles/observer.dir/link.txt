@@ -1,0 +1,2 @@
+/usr/bin/ar cr libobserver.a  CMakeFiles/observer.dir/instantiation.cpp.o
+/usr/bin/ranlib libobserver.a
