@@ -1,3 +1,5 @@
+add_subdirectory(.. math)
+
 #~ make_test(DifferentiationTests)
 #~ make_test(ConstantVelocityModelTests)
 #~ target_link_libraries(ConstantVelocityModelTests models)

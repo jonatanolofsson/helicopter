@@ -1,0 +1,2 @@
+/usr/bin/ar cr libstates.a  CMakeFiles/states.dir/states.cpp.o CMakeFiles/states.dir/Top.cpp.o CMakeFiles/states.dir/Helicopter.cpp.o
+/usr/bin/ranlib libstates.a

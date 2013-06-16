@@ -3,7 +3,7 @@
 #define SYS_OBSERVER_IMPLEMENTATION_HPP_
 
 #include <os/com/Dispatcher.hpp>
-#include <sys/observer/API.hpp>
+#include <sys/Observer.hpp>
 #include <sys/settings.hpp>
 
 #include <iostream>

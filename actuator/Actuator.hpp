@@ -3,8 +3,8 @@
 #define SYS_ACTUATOR_HPP_
 
 #include <os/com/Dispatcher.hpp>
-#include <sys/motioncontrol/API.hpp>
-#include <sys/actuator/API.hpp>
+#include <sys/Motioncontrol.hpp>
+#include <sys/Actuator.hpp>
 
 namespace sys {
     namespace actuator {

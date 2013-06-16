@@ -3,7 +3,7 @@
 #define SYS_MOTIONCONTROL_HPP_
 
 #include <os/com/Dispatcher.hpp>
-#include <sys/observer/API.hpp>
+#include <sys/Observer.hpp>
 
 namespace sys {
     namespace motioncontrol {

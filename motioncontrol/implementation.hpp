@@ -2,7 +2,6 @@
 #ifndef SYS_MOTIONCONTROL_IMPLEMENTATION_HPP_
 #define SYS_MOTIONCONTROL_IMPLEMENTATION_HPP_
 
-#include <sys/settings.hpp>
 #include <os/com/Dispatcher.hpp>
 #include <sys/types.hpp>
 #include <sys/math/control/LqController.hpp>
@@ -11,8 +10,8 @@
 #include <sys/math/states.hpp>
 #include <sys/math/models.hpp>
 
-#include <sys/observer/API.hpp>
-#include <sys/motioncontrol/API.hpp>
+#include <sys/Observer.hpp>
+#include <sys/Motioncontrol.hpp>
 
 namespace sys {
     namespace motioncontrol {

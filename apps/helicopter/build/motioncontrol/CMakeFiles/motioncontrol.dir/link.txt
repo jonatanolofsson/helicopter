@@ -1,0 +1,2 @@
+/usr/bin/ar cr libmotioncontrol.a  CMakeFiles/motioncontrol.dir/instantiation.cpp.o
+/usr/bin/ranlib libmotioncontrol.a

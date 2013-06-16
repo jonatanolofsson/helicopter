@@ -7,7 +7,7 @@
 #include <sys/com/MotionControlSignal.hpp>
 #include <sys/com/CameraControlSignal.hpp>
 #include <sys/com/Stm.hpp>
-#include <sys/actuator/API.hpp>
+#include <sys/Actuator.hpp>
 
 namespace sys {
     namespace actuator {

@@ -4,7 +4,7 @@
 
 #include <thread>
 #include <chrono>
-#include <sys/clock/API.hpp>
+#include <sys/Clock.hpp>
 #include <os/clock.hpp>
 #include <os/com/Dispatcher.hpp>
 

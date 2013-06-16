@@ -1,4 +1,4 @@
-#include <sys/actuator/API.hpp>
+#include <sys/Actuator.hpp>
 #include <sys/actuator/implementation.hpp>
 
 namespace sys {

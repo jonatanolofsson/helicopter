@@ -1,0 +1,38 @@
+cmake_minimum_required(VERSION 2.8)
+get_filename_component(SOURCEROOT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/../.." ABSOLUTE)
+include(${SOURCEROOT_DIRECTORY}/common/CMake/common.cmake)
+include_directories(${CMAKE_CURRENT_LIST_DIR})
+include_directories(${SOURCEROOT_DIRECTORY})
+
+find_package(Boost COMPONENTS system)
+find_package(Eigen3)
+include_directories(${Eigen3_INCLUDE_DIR})
+
+macro(local_modules)
+    set(LOCAL_MODULES_LIBRARIES ${ARGN})
+    foreach(lib ${ARGN})
+        add_subdirectory(sys/${lib})
+    endforeach()
+endmacro()
+
+get_filename_component(SHARED_MODULES_BASE_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/../" ABSOLUTE)
+get_filename_component(OS_DIRECTORY "${SOURCEROOT_DIRECTORY}/os" ABSOLUTE)
+
+macro(shared_modules)
+    set(SHARED_MODULES_LIBRARIES ${ARGN})
+    foreach(lib ${ARGN})
+        add_subdirectory("${SHARED_MODULES_BASE_DIRECTORY}/${lib}" ${lib})
+    endforeach()
+endmacro()
+
+macro(app)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+    project(${ARGN})
+    add_definitions(-std=c++0x -Wall -Werror -pedantic-errors -Wextra -Wcast-align -ggdb -O0 -Wfatal-errors)
+    add_subdirectory(${OS_DIRECTORY} os)
+endmacro()
+
+macro(executable_app)
+    add_executable(${PROJECT_NAME} ${ARGN})
+    target_link_libraries(helicopter ${LOCAL_MODULES_LIBRARIES} ${LOCAL_MODULES_LIBRARIES} ${SHARED_MODULES_LIBRARIES} ${SHARED_MODULES_LIBRARIES} os pthread)
+endmacro()

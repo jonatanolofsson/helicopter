@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/git/heli/os/utils/pty.hpp
+sys/types.h
+-
+string
+-
+
+/home/git/heli/os/utils/tests/PtyTests.cpp
+gtest/gtest.h
+-
+os/utils/pty.hpp
+-
+stdio.h
+-
+iostream
+-
+unistd.h
+-
+

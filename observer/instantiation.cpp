@@ -1,4 +1,4 @@
-#include <sys/observer/API.hpp>
+#include <sys/Observer.hpp>
 #include <sys/observer/implementation.hpp>
 #include <os/com/getSignal.hpp>
 

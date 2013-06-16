@@ -1,0 +1,2 @@
+/usr/bin/ar cr libcom.a  CMakeFiles/com.dir/MapleInstantiation.cpp.o CMakeFiles/com.dir/StmInstantiation.cpp.o
+/usr/bin/ranlib libcom.a

@@ -1,0 +1,1 @@
+/usr/lib64/colorgcc/bin/c++       CMakeFiles/DispatcherTests.dir/DispatcherTests.cpp.o ../CMakeFiles/os_com.dir/Dispatcher.cpp.o  -o DispatcherTests -rdynamic -lgtest_main -lgtest -lpthread 
