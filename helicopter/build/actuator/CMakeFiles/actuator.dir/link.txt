@@ -1,2 +1,0 @@
-/usr/bin/ar cr libactuator.a  CMakeFiles/actuator.dir/instantiation.cpp.o
-/usr/bin/ranlib libactuator.a

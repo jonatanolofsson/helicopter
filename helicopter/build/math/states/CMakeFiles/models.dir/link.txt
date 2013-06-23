@@ -1,2 +1,0 @@
-/usr/bin/ar cr libmodels.a  CMakeFiles/models.dir/SCart3DAccQuat.cpp.o CMakeFiles/models.dir/SCart3DQuat.cpp.o CMakeFiles/models.dir/C6VW.cpp.o
-/usr/bin/ranlib libmodels.a
