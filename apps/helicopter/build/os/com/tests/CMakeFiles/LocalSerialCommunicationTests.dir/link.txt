@@ -1,1 +1,0 @@
-/usr/lib64/colorgcc/bin/c++       CMakeFiles/LocalSerialCommunicationTests.dir/LocalSerialCommunicationTests.cpp.o  -o LocalSerialCommunicationTests -rdynamic -lgtest_main -lgtest -lpthread ../../utils/libutils.a -lboost_system-mt 

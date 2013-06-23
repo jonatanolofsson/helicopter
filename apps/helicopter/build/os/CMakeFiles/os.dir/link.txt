@@ -1,2 +1,0 @@
-/usr/bin/ar cr libos.a  com/CMakeFiles/os_com.dir/Dispatcher.cpp.o
-/usr/bin/ranlib libos.a
