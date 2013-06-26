@@ -18,10 +18,14 @@ namespace sys {
                 };
 
                 template<typename T>
+                static void initializeState(T& state) {
+                    state.setZero();
+                }
+
+                template<typename T>
                 static void initialize(T& filter) {
                     auto l = filter.retrieve_lock();
-                    filter.state.setZero();
-
+                    initializeState(filter.state);
                     filter.covariance.setIdentity();
                 }
             };

@@ -26,8 +26,25 @@ namespace sys {
                     typedef typename ModelDescription::StateDescription states;
                     typedef typename ModelDescription::ControlDescription controls;
                     States xnext(x);
+                    USING_XYZ
 
                     xnext.template segment<3>(states::position) += x.template segment<3>(states::velocity) * dT;
+
+                    // Note that this skew-symmetric matrix is diagonally shifted upwards-left compared
+                    // to many representations, due to the storage model used by Eigen for quaternions: qx, qy, qz, qw
+                    Matrix<Scalar, 4, 4> S;
+                    S << QUATERNION_ROTATION_FROM_ROTVEL(x(states::omega[X]), x(states::omega[Y]), x(states::omega[Z]));
+
+                    const Scalar wnorm     = x.template segment<3>(states::rotational_velocity).norm();
+                    const Scalar wnormT2   = wnorm * dT / 2;
+
+                    if(wnorm > math::EPSILON) {
+                        xnext.template segment<4>(states::quaternion) =
+                            (std::cos(wnormT2) * x.template segment<4>(states::quaternion)
+                                - (std::sin(wnormT2) / wnorm) * S * x.template segment<4>(states::quaternion)
+                            ).normalized();
+                    }
+
                     return xnext;
                 }
 

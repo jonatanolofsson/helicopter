@@ -40,6 +40,10 @@ namespace sys {
             MeasurementVector measurement(const States& state) const {
                 return Sensor::measurement(state);
             }
+            GaussianMeasurement() {
+                z.setZero();
+                R = Sensor::covariance();
+            }
         };
 
         template<typename Sensor_>
@@ -49,7 +53,11 @@ namespace sys {
             MeasurementVector z;
             Sensor* sensor;
             Matrix<typename Sensor::Scalar, Sensor::nofMeasurements, Sensor::nofMeasurements> R;
-            GaussianMeasurement() : sensor(nullptr) {}
+            GaussianMeasurement() : sensor(nullptr) 
+            {
+                z.setZero();
+                R = Sensor::covariance();
+            }
             template<typename States>
             MeasurementVector measurement(const States& state) const {
                 assert(sensor);

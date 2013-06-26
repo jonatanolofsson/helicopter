@@ -1,6 +1,6 @@
 #pragma once
-#ifndef SYS_MATH_MODELS_CONSTANT_VELOCITY_HPP_
-#define SYS_MATH_MODELS_CONSTANT_VELOCITY_HPP_
+#ifndef SYS_MATH_MODELS_CONSTANTPOSITION_HPP_
+#define SYS_MATH_MODELS_CONSTANTPOSITION_HPP_
 
 #include <Eigen/Core>
 #include <sys/types.hpp>
@@ -15,19 +15,15 @@ namespace sys {
         namespace models {
             using namespace Eigen;
             template<typename ModelDescription_>
-            struct ConstantVelocities3D {
+            struct ConstantPosition3D {
                 typedef ModelDescription_ ModelDescription;
-                typedef ConstantVelocities3D<ModelDescription> Self;
+                typedef ConstantPosition3D<ModelDescription> Self;
                 typedef typename ModelDescription::Scalar Scalar;
                 typedef typename ModelDescription::States States;
                 static const bool isDiscrete = true;
 
-                static States predict(const States& x, const Scalar dT) {
-                    typedef typename ModelDescription::StateDescription states;
-                    typedef typename ModelDescription::ControlDescription controls;
+                static States predict(const States& x, const Scalar) {
                     States xnext(x);
-
-                    xnext.template segment<3>(states::position) += x.template segment<3>(states::velocity) * dT;
                     return xnext;
                 }
 

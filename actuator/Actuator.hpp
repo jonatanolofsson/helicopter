@@ -16,7 +16,7 @@ namespace sys {
             private:
                 void actuateControl(const MotionControlSignal u);
 
-                Serial& stm;
+                Serial& mcu;
 
                 os::Dispatcher<Self, MotionControlSignal> controlActuator;
 

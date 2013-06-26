@@ -10,19 +10,16 @@
 
 namespace sys {
     namespace observer {
-        template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger>
-        Observer<Algorithm, Filter, MotionModel, Trigger>::Observer()
+        template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger, typename... Sensors>
+        Observer<Algorithm, Filter, MotionModel, Trigger, Sensors...>::Observer()
         : dispatcher(&Self::timeUpdate, this)
-        //~ , gps(&Self::measurementUpdate<sensors::Gps>, this)
-        , imu(&Self::measurementUpdate<sensors::Imu>, this)
-        , mouse(&Self::measurementUpdate<sensors::Mouse>, this)
-        , pfilter(&Self::measurementUpdate<sensors::ParticleFilterSensor>, this)
+        , sensors(this)
         {
             MotionModel::ModelDescription::StateDescription::initialize(filter);
         }
 
-        template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger>
-        void Observer<Algorithm, Filter, MotionModel, Trigger>::timeUpdate(const Trigger) {
+        template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger, typename... Sensors>
+        void Observer<Algorithm, Filter, MotionModel, Trigger, Sensors...>::timeUpdate(const Trigger) {
             auto l = filter.retrieve_lock();
             Algorithm::template timeUpdate<MotionModel>(filter, settings::dT);
             os::yield(filter.state);

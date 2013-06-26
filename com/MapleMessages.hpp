@@ -7,6 +7,10 @@
 namespace sys {
     namespace maple {
         using namespace os;
+        struct SensorMessage;
+        struct ControlMessage;
+        struct CameraControlMessage;
+        struct IoctlMessage;
         template<int ID> struct Message;
         struct Messages {
             static const int numberOfMessages = 4;
@@ -19,6 +23,11 @@ namespace sys {
             };
             template<Id MID>
             struct ById { typedef typename Message<MID>::Type Type; };
+
+            typedef maple::SensorMessage SensorMessage;
+            typedef maple::ControlMessage ControlMessage;
+            typedef maple::CameraControlMessage CameraControlMessage;
+            typedef maple::IoctlMessage IoctlMessage;
         };
 
         struct SensorMessage {

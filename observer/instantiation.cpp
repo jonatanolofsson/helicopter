@@ -6,6 +6,6 @@ INSTANTIATE_SIGNAL(sys::observer::Filter::States);
 
 namespace sys {
     namespace observer {
-        template class Observer<Algorithm, Filter, MotionModel, TriggerType>;
+        template class OBSERVER_CLASS;
     }
 }

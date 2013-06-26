@@ -8,20 +8,29 @@
 
 namespace sys {
     namespace observer {
-        template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger>
+        template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger, typename... Sensors>
         class Observer {
             public:
-                typedef Observer<Algorithm, Filter, MotionModel, Trigger> Self;
+                typedef Observer<Algorithm, Filter, MotionModel, Trigger, Sensors...> Self;
+
             private:
                 typename std::conditional<(MotionModel::ModelDescription::nofControls > 0),
-                    os::Dispatcher<Self, Trigger, typename MotionModel::Controls>,
+                    os::Dispatcher<Self, Trigger, typename MotionModel::ModelDescription::ControlMessage>,
                     os::Dispatcher<Self, Trigger>>::type dispatcher;
 
                 /* Sensors */
-                //~ os::Dispatcher<Observer, sensors::Gps> gps;
-                os::Dispatcher<Self, sensors::Imu> imu;
-                os::Dispatcher<Self, sensors::Mouse> mouse;
-                os::Dispatcher<Self, sensors::ParticleFilterSensor> pfilter;
+                template<typename Sensor>
+                struct SingleSensorWrapper { 
+                    os::Dispatcher<Self, Sensor> d;
+                    explicit SingleSensorWrapper(Self*& self) : d(&Self::measurementUpdate<Sensor>, self) {}
+                };
+                template<typename... WSensors>
+                struct SensorWrapper : public SingleSensorWrapper<WSensors>... {
+                    explicit SensorWrapper(Self* self) : SingleSensorWrapper<WSensors>(self)... {}
+                };
+
+                typename std::conditional<(sizeof...(Sensors) == 0),
+                    Self*, SensorWrapper<Sensors...>>::type sensors;
 
             public:
                 Filter filter;

@@ -11,7 +11,7 @@
 #include <sys/math/models.hpp>
 
 #include <sys/Observer.hpp>
-#include <sys/Motioncontrol.hpp>
+#include <sys/MotionControl.hpp>
 
 namespace sys {
     namespace motioncontrol {
@@ -22,8 +22,8 @@ namespace sys {
         void MotionControl<ControllerType, ControlState, ControlModel, SystemState>
         ::updateControl(const SystemState systemState) {
             ControlState controlState(systemState);
-            controller.template updateModel<ControlModel::isDiscrete>(ControlModel::systemJacobian(controlState.state, ZeroVector<Controls>::z), ControlModel::controlJacobian(controlState.state, ZeroVector<Controls>::z));
-            os::yield(controller(controlState.state));
+            controller.template updateModel<ControlModel::isDiscrete>(ControlModel::systemJacobian(controlState.state, ZeroVector<typename ControlModel::Controls>::z), ControlModel::controlJacobian(controlState.state, ZeroVector<typename ControlModel::Controls>::z));
+            os::yield(typename ControlModel::ModelDescription::ControlMessage(controller(controlState.state)));
         }
 
         template<typename ControllerType, typename ControlState, typename ControlModel, typename SystemState>

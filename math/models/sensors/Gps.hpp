@@ -22,16 +22,21 @@ namespace sys {
                     y = 1,
                     z = 2,
 
-                    vx = 3,
-                    vy = 4,
-                    vz = 5,
-
-                    nofMeasurements = 6
+/*
+ *                    vx = 3,
+ *                    vy = 4,
+ *                    vz = 5,
+ *
+ *                    nofMeasurements = 6
+ */
+                    nofMeasurements = 3
                 };
 
                 enum states {
                     position = x,
-                    velocity = vx
+                    /*
+                     *velocity = vx
+                     */
                 };
 
                 typedef Matrix<Scalar, nofMeasurements, 1> MeasurementVector;
@@ -43,9 +48,11 @@ namespace sys {
                     m[y] = state[states::y];
                     m[z] = state[states::z];
 
-                    m[vx] = state[states::vx];
-                    m[vy] = state[states::vy];
-                    m[vz] = state[states::vz];
+                    /*
+                     *m[vx] = state[states::vx];
+                     *m[vy] = state[states::vy];
+                     *m[vz] = state[states::vz];
+                     */
 
                     return m;
                 }
@@ -64,9 +71,11 @@ namespace sys {
                     J(y, states::y) = 1;
                     J(z, states::z) = 1;
 
-                    J(vx, states::vx) = 1;
-                    J(vy, states::vy) = 1;
-                    J(vz, states::vz) = 1;
+                    /*
+                     *J(vx, states::vx) = 1;
+                     *J(vy, states::vy) = 1;
+                     *J(vz, states::vz) = 1;
+                     */
 
                     return J;
                 }
@@ -78,7 +87,7 @@ namespace sys {
 
             template<typename ModelDescription> typename Gps<ModelDescription>::CovarianceMatrix
             Gps<ModelDescription>::cov = (Gps<ModelDescription>::MeasurementVector() <<
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0
+                1.0, 1.0, 1.0//, 1.0, 1.0, 1.0
             ).finished().asDiagonal();
         }
     }
