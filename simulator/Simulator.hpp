@@ -26,7 +26,7 @@ namespace sys {
 
                 template<typename... WSensors>
                 void yieldSensorReadings() {
-                    os::eval((yieldSensorReading<WSensors>(), 1)...);
+                    os::evalVariadic((yieldSensorReading<WSensors>(), 1)...);
                 }
 
                 Simulator();

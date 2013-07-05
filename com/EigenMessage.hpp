@@ -4,8 +4,9 @@
 
 namespace sys {
     struct EigenMessageBase {};
-    template<typename Contained>
+    template<typename Contained_>
     struct EigenMessage : public EigenMessageBase {
+        typedef Contained_ Contained;
         Contained value;
 
         std::ostream& operator<<(std::ostream& os) {

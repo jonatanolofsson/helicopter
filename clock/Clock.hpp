@@ -10,7 +10,7 @@
 
 namespace sys {
     namespace clock {
-        class Clock : os::Via<os::Jiffy> {
+        class Clock {
             private:
                 os::Dispatcher<Clock, os::Jiffy> d;
                 void tick(const os::Jiffy);

@@ -28,7 +28,7 @@ endmacro()
 macro(app)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR})
     project(${ARGN})
-    add_definitions(-std=c++0x -Wall -Werror -pedantic-errors -Wextra -Wcast-align -ggdb -O0)# -Wfatal-errors)
+    add_definitions(-std=c++0x -Wall -Werror -pedantic-errors -Wextra -Wcast-align -O4)# -ggdb -O0)# -Wfatal-errors)
     add_subdirectory(${OS_DIRECTORY} os)
 endmacro()
 
