@@ -1,4 +1,4 @@
-option(TEST_ENABLE "Enable tests" On)
+option(TEST_ENABLE "Enable tests" Off)
 
 if(TEST_ENABLE)
     enable_testing()
@@ -58,3 +58,9 @@ function(make_test TNAME)
         add_dependencies(run_tests "${TNAME}")
     endif()
 endfunction(make_test)
+
+macro(add_testdirectory DNAME)
+    if(TEST_ENABLE)
+        add_subdirectory(${DNAME})
+    endif()
+endmacro()
