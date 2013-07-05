@@ -10,8 +10,7 @@ namespace sys {
         template<typename... DataTypes>
         void Logger<DataTypes...>::log(const DataTypes... parameters)
         {
-            os::eval((logfile << parameters <<",")...);
-            logfile << std::endl;
+            logWriteHelper1<DataTypes...>(parameters...);
         }
     }
 }
