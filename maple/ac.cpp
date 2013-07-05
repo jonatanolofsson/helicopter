@@ -2,22 +2,26 @@
 #include <stdlib.h>
 #include <wirish/wirish.h>
 
-void print(int v, int base = 10);
-void print(int v, int base) {
-    if (v < 0) {
-        Serial1.write('-');
-        v = -v;
-    }
-    if (v >= base) {
-        print(v/base, base);
-    }
-    int p = v%base;
-    if(p < 10) {
-        Serial1.write('0'+p);
-    } else {
-        Serial1.write('A'+p);
-    }
-}
+/*
+ *void print(int v, int base = 10);
+ *void print(int v, int base) {
+ *    if (v < 0) {
+ *        Serial1.write('-');
+ *        v = -v;
+ *    }
+ *    if (v >= base) {
+ *        print(v/base, base);
+ *    }
+ *    int p = v%base;
+ *    if(p < 10) {
+ *        Serial1.write('0'+p);
+ *    } else {
+ *        Serial1.write('A'+p);
+ *    }
+ *}
+ */
+
+
 
 
 #include <syrup/comm/i2c.hpp>
@@ -26,27 +30,26 @@ void print(int v, int base) {
 #include "Serial.hpp"
 #include <sys/com/MapleMessages.hpp>
 #include <libmaple/i2c.h>
-#include <Servo/Servo.h>
 #include "types.hpp"
 
 #include <syrup/drivers/sensors/MPU6050.hpp>
-#include <syrup/drivers/sensors/MS5611.hpp>
-#include <syrup/drivers/sensors/HMC5883L.hpp>
-#include <syrup/drivers/sensors/ADNS3080.hpp>
-//~ #include <syrup/drivers/sensors/TCS230.hpp>
-//~ #include <syrup/drivers/sensors/Button.hpp>
-//~ #include <syrup/drivers/sensors/SRF04.hpp>
-//~ #include <syrup/drivers/sensors/AnalogSensor.hpp>
-//~
+/*
+ *#include <syrup/drivers/sensors/MS5611.hpp>
+ *#include <syrup/drivers/sensors/HMC5883L.hpp>
+ *#include <syrup/drivers/sensors/ADNS3080.hpp>
+ *#include <syrup/drivers/sensors/TCS230.hpp>
+ *#include <syrup/drivers/sensors/Button.hpp>
+ *#include <syrup/drivers/sensors/SRF04.hpp>
+ *#include <syrup/drivers/sensors/AnalogSensor.hpp>
+ */
 //~ #define WATCHDOG                (12)
-
 
 // Force init to be called *first*, i.e. before static object allocation.
 // Otherwise, statically allocated objects that need libmaple may fail.
 __attribute__((constructor)) void premain() {
     init();
     pinMode(BOARD_LED_PIN, OUTPUT);
-    Serial1.begin(115200);
+//    Serial1.begin(115200);
     Spi2.begin(SPI_4_5MHZ, MSBFIRST, 0);
     Spi2.setup_dma();
 
@@ -64,7 +67,7 @@ U16 ioctl;
 MPU6050 IMU(I2C1, 17);
 //~ MS5611 pressureSensor(I2C1);
 //~ HMC5883L magnetometer(I2C1, 18);
-ADNS3080 opticalFlow(&Spi2);
+// ADNS3080 opticalFlow(&Spi2);
 //~ SRF04 groundDistance[4] = {{4, Timer3, true},{5, Timer3},{6, Timer3},{7, Timer3}};
 //~ TCS230 RPMSensor(19, Timer4); // Verify args
 //~
@@ -76,9 +79,9 @@ ADNS3080 opticalFlow(&Spi2);
 //~ AnalogSensor powerSensor(3);
 //~ AnalogSensor windSensor[2] = {{4}, {5}};
 //~
-//~ Servo motionServo[3] = {{24},{25},{26}};
-//~ Servo motor = {27};
-//~ Servo cameraServo[2] = {{10},{11}};
+U8 motionServo[3] = {24,25,26};
+U8 motor = 27;
+U8 cameraServo[4] = {8,9,10,11};
 
 ComputerLink computer(&Serial3);
 
@@ -135,17 +138,17 @@ void timerISR(void*) {
 
 
 void actuateControl(const U8* msg, const std::size_t len) {
-    //~ static bool a = true; a = !a;
+    static bool a = true; a = !a;
     //~ digitalWrite(BOARD_LED_PIN, a);
     if(len == sizeof(ControlMessage)) {
         ControlMessage *m = (ControlMessage*)msg; // FIXME
-        //~ digitalWrite(BOARD_LED_PIN, a);
-        //~ a = !a;
+        digitalWrite(BOARD_LED_PIN, a);
+        a = !a;
         //~ delay(500);
-        //~ motionServo[0].set(m->servo[0]);
-        //~ motionServo[1].set(m->servo[1]);
-        //~ motionServo[2].set(m->servo[2]);
-        //~ motor.set(m->rpm);
+        pwmWrite(motionServo[0], m->servo[0]);
+        pwmWrite(motionServo[1], m->servo[1]);
+        pwmWrite(motionServo[2], m->servo[2]);
+        pwmWrite(motor, m->rpm);
         if(ioctl & IoctlMessage::RESPONSETEST) {
             computer.send<>(*m); // Respond for test application
         }
@@ -154,8 +157,8 @@ void actuateControl(const U8* msg, const std::size_t len) {
 void actuateCamera(const U8* msg, const std::size_t len) {
     if(len == sizeof(CameraControlMessage)) {
         CameraControlMessage *m = (CameraControlMessage*)msg; // Safe because of requested alignment of msg
-        //~ cameraServo[0].set(m->horizontal);
-        //~ cameraServo[1].set(m->vertical);
+        pwmWrite(cameraServo[0], m->horizontal);
+        pwmWrite(cameraServo[1], m->vertical);
     }
 }
 
@@ -168,7 +171,7 @@ void stresstest(void*) {
 
 void setIoctl(const U8* msg, const std::size_t len) {
     ioctl = *(U16*)msg;
-    //~ digitalWrite(BOARD_LED_PIN, 1);
+    digitalWrite(BOARD_LED_PIN, 1);
 
     if(ioctl & IoctlMessage::STRESSTEST) {
         isr::queue(stresstest);
@@ -205,9 +208,33 @@ void timerSetup() {
     Timer4.refresh();
 }
 
+void servoSetup() {
+//    Serial1.end();
+//    Serial2.end();
+    Timer1.setPeriod(2000);
+    Timer2.setPeriod(2000);
+    pinMode(motionServo[0], PWM);
+    pinMode(motionServo[1], PWM);
+    pinMode(motionServo[2], PWM);
+    pinMode(motor, PWM);
+    pinMode(cameraServo[0], PWM);
+    pinMode(cameraServo[1], PWM);
+    pinMode(cameraServo[2], PWM);
+    pinMode(cameraServo[3], PWM);
+    pwmWrite(motionServo[0], 500);
+    pwmWrite(motionServo[1], 500);
+    pwmWrite(motionServo[2], 500);
+    pwmWrite(motor, 500);
+    pwmWrite(cameraServo[0], 500);
+    pwmWrite(cameraServo[1], 500);
+    pwmWrite(cameraServo[2], 500);
+    pwmWrite(cameraServo[3], 500);
+}
+
 int main(void) {
     Computer::setup();
     timerSetup();
+    servoSetup();
     isr::serviceLoop();
     while(1) asm volatile ("nop");
     return 0;
