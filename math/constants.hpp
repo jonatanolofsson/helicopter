@@ -13,7 +13,7 @@
 
 namespace sys {
     namespace math {
-        static const int EPSILON = 1e-16;
+        static const double EPSILON = 1e-16;
     }
 }
 #endif

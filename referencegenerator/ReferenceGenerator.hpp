@@ -5,12 +5,13 @@
 #include <os/com/Dispatcher.hpp>
 #include <sys/MotionControl.hpp>
 #include <sys/ReferenceGenerator.hpp>
+#include <os/clock.hpp>
 
 namespace sys {
     namespace referencegenerator {
         template<typename Reference>
         struct ReferenceWithTime {
-            int time;
+            os::TimeType time;
             Reference reference;
         };
 

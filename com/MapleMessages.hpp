@@ -53,7 +53,7 @@ namespace sys {
             U16 rpm;
             U8 buttons;
             template<class Archive>
-            void serialize(Archive & ar, const unsigned int version)
+            void serialize(Archive & ar, const unsigned int /*version*/)
             {
                 ar & imu;
                 ar & pressure;
@@ -70,7 +70,7 @@ namespace sys {
             U16 servo[3];
             U16 rpm;
             template<class Archive>
-            void serialize(Archive & ar, const unsigned int version)
+            void serialize(Archive & ar, const unsigned int /*version*/)
             {
                 ar & servo;
                 ar & rpm;
@@ -82,7 +82,7 @@ namespace sys {
             U16 horizontal;
             U16 vertical;
             template<class Archive>
-            void serialize(Archive & ar, const unsigned int version)
+            void serialize(Archive & ar, const unsigned int /*version*/)
             {
                 ar & horizontal;
                 ar & vertical;
@@ -98,7 +98,7 @@ namespace sys {
                 STRESSTEST = (1 << 2)
             };
             template<class Archive>
-            void serialize(Archive & ar, const unsigned int version)
+            void serialize(Archive & ar, const unsigned int /*version*/)
             {
                 ar & message;
             }

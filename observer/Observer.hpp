@@ -38,7 +38,7 @@ namespace sys {
                 Observer();
 
                 void timeUpdate(const Trigger);
-                //~ void timeUpdate(const Trigger, typename MotionModel::Controls);
+                //~ FIXME: enable_if: void timeUpdate(const Trigger, typename MotionModel::Controls);
 
                 template<typename Measurement, typename MUFilter = Algorithm>
                 void measurementUpdate(const Measurement m) {

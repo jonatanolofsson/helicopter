@@ -6,22 +6,16 @@
 #include <sys/states/events.hpp>
 
 namespace sys {
-    namespace states {
-        namespace sc = boost::statechart;
-
-        void postEvent(const sc::event_base&);
-        void runStateMachine();
-    }
-
-    using states::postEvent;
-    using states::runStateMachine;
+    void postEvent(const boost::statechart::event_base&);
+    void runStateMachine();
 }
 
 #include <sys/states/Helicopter.hpp>
 
 namespace sys {
     typedef states::Helicopter StateMachine;
-    extern StateMachine stateMachine;
+    void initStateMachine(StateMachine& stateMachine);
+    void killStateMachine();
 }
 
 #endif

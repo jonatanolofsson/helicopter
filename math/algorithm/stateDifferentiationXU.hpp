@@ -104,7 +104,12 @@ namespace sys {
         Matrix<typename M::Scalar, M::States::RowsAtCompileTime, D::RowsAtCompileTime>
         differentiateStates(const typename M::States& x, const typename M::Controls& u, const D& dx) {
             typedef DifferentiationThreadXU<M,D,FN> DThread;
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Wunused-variable"
+
             static DThread threads[D::RowsAtCompileTime];
+
+            #pragma clang diagnostic pop
 
             return DThread::differentiate(x, u, dx);
         }

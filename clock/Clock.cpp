@@ -4,17 +4,34 @@
 #include <os/com/Dispatcher.hpp>
 #include <iostream>
 
+#include <sys/States.hpp>
+
 namespace sys {
     namespace clock {
         Clock::Clock()
         : d(&Clock::tick, this)
         , nextInvokation(SystemClock::now() + realTimePerTick)
-        {
-            os::yield(time);
+        {}
+
+        void Clock::start() {
+            os::startTime();
+        }
+
+        void Clock::stop() {
+            os::stopTime();
+        }
+
+        Clock::~Clock() {
+            stop();
         }
 
         void Clock::tick(const os::Jiffy) {
             std::this_thread::sleep_until(nextInvokation);
+            if(time.value >= 5) {
+                stop();
+                killStateMachine();
+                return;
+            }
             os::yield(++time);
             nextInvokation = SystemClock::now() + realTimePerTick;
         }

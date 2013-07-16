@@ -19,6 +19,9 @@ namespace sys {
 
             public:
                 Clock();
+                ~Clock();
+                void start();
+                void stop();
         };
     }
 }

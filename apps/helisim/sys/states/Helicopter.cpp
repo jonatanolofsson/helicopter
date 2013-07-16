@@ -1,4 +1,5 @@
 #include <sys/states/Helicopter.hpp>
+#include <iostream>
 
 namespace sys {
     namespace states {
@@ -10,7 +11,11 @@ namespace sys {
 
         void Helicopter::wait() {
             std::unique_lock<std::mutex> l(m);
-            while(!dying) waitingForDeath.wait(l);
+            LOG_EVENT(typeid(Self).name(), 0, "Waiting to die");
+            while(!dying) {
+                waitingForDeath.wait(l);
+                LOG_EVENT(typeid(Self).name(), 0, "Woke up to die");
+            }
         }
 
         void Helicopter::react(const events::Dying&) {

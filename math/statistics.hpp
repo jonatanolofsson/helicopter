@@ -11,7 +11,7 @@
 
 namespace sys {
     namespace math {
-        template<typename S = Scalar> class RandN;
+        template<typename S = Scalar> struct RandN;
     }
 }
 
