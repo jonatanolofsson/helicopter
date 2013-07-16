@@ -8,6 +8,8 @@ namespace sys {
         };
         Fly::Fly() 
         : referenceGenerator(ref, 1)
-        {}
+        {
+            os::startTime();
+        }
     }
 }

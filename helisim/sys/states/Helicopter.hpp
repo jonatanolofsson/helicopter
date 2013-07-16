@@ -18,13 +18,14 @@ namespace sys {
 
         struct Top;
         struct Helicopter : sc::state_machine<Helicopter, Top> {
+            typedef Helicopter Self;
             typedef mpl::list<
                 sc::custom_reaction< events::Dying >
             > reactions;
 
             std::mutex m;
             std::condition_variable waitingForDeath;
-            bool dying;
+            volatile bool dying;
             Helicopter() : dying(false) {}
             void wait();
             void kill();

@@ -3,12 +3,10 @@
 #define SYS_STATES_EVENTS_HPP_
 #include <boost/statechart/event.hpp>
 
-#define CREATE_EVENT(name)      struct name : sc::event< name > {}
+#define CREATE_EVENT(name)      struct name : boost::statechart::event< name > {}
 
 namespace sys {
     namespace events {
-        namespace sc = boost::statechart;
-
         CREATE_EVENT(Initialized);
         CREATE_EVENT(StartSignal);
         CREATE_EVENT(GotGlobalPosition);

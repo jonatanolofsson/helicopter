@@ -2,16 +2,22 @@
 #include <sys/states/Top.hpp>
 
 namespace sys {
-    namespace states {
-        StateMachine stateMachine;
+    StateMachine* stateMachine;
 
-        void postEvent(const sc::event_base& e) {
-            stateMachine.process_event(e);
-        }
+    void initStateMachine(StateMachine& sm) {
+        stateMachine = &sm;
+    }
 
-        void runStateMachine() {
-            stateMachine.initiate();
-            stateMachine.wait();
-        }
+    void postEvent(const sc::event_base& e) {
+        stateMachine->process_event(e);
+    }
+
+    void runStateMachine() {
+        stateMachine->initiate();
+        stateMachine->wait();
+    }
+
+    void killStateMachine() {
+        stateMachine->kill();
     }
 }

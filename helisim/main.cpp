@@ -2,12 +2,9 @@
 #include <os/com/getSignal.hpp>
 #include <os/clock.hpp>
 
-namespace sys {
-    StateMachine stateMachine;
-}
-
-
 int main(int, char*[]) {
+    sys::StateMachine stateMachine;
+    sys::initStateMachine(stateMachine);
     sys::runStateMachine();
 
     return 0;
