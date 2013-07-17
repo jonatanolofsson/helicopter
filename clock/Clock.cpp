@@ -27,7 +27,7 @@ namespace sys {
 
         void Clock::tick(const os::Jiffy) {
             std::this_thread::sleep_until(nextInvokation);
-            if(time.value >= 5) {
+            if(time.value >= 2000) {
                 stop();
                 killStateMachine();
                 return;
