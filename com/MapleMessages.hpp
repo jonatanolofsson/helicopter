@@ -32,7 +32,7 @@ namespace sys {
 
         struct SensorMessage {
             static const Messages::Id ID = Messages::sensorMessage;
-            enum ImuStates {
+            enum AccelerometerStates {
                 ax = 0,
                 ay = 1,
                 az = 2,
@@ -45,48 +45,30 @@ namespace sys {
                 my = 1,
                 mz = 2
             };
-            S16 imu[6];
-            U16 pressure;
-            S16 magnetometer[3];
-            U16 wind[2];
-            U16 distance[4];
+            S32 imu[6];
+            U32 pressure;
+            S32 magnetometer[3];
+            U32 wind[2];
+            U32 distance[4];
             U16 rpm;
+            U16 nofImu;
+            U16 nofPressure;
+            U16 nofMagnetometer;
+            U16 nofWind[2];
+            U16 nofDistance[4];
             U8 buttons;
-            template<class Archive>
-            void serialize(Archive & ar, const unsigned int /*version*/)
-            {
-                ar & imu;
-                ar & pressure;
-                ar & magnetometer;
-                ar & wind;
-                ar & distance;
-                ar & rpm;
-                ar & buttons;
-            }
         };
 
         struct ControlMessage {
             static const Messages::Id ID = Messages::controlMessage;
             U16 servo[3];
             U16 rpm;
-            template<class Archive>
-            void serialize(Archive & ar, const unsigned int /*version*/)
-            {
-                ar & servo;
-                ar & rpm;
-            }
         };
 
         struct CameraControlMessage {
             static const Messages::Id ID = Messages::cameraControlMessage;
             U16 horizontal;
             U16 vertical;
-            template<class Archive>
-            void serialize(Archive & ar, const unsigned int /*version*/)
-            {
-                ar & horizontal;
-                ar & vertical;
-            }
         };
 
         struct IoctlMessage {
@@ -97,11 +79,6 @@ namespace sys {
                 RESPONSETEST = (1 << 1),
                 STRESSTEST = (1 << 2)
             };
-            template<class Archive>
-            void serialize(Archive & ar, const unsigned int /*version*/)
-            {
-                ar & message;
-            }
         };
 
         template<> struct Message<Messages::sensorMessage> { typedef SensorMessage Type; };
