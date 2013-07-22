@@ -50,8 +50,8 @@ __attribute__((constructor)) void premain() {
     init();
     pinMode(BOARD_LED_PIN, OUTPUT);
 //    Serial1.begin(115200);
-    Spi2.begin(SPI_4_5MHZ, MSBFIRST, 0);
-    Spi2.setup_dma();
+    //Spi2.begin(SPI_4_5MHZ, MSBFIRST, 0);
+    //Spi2.setup_dma();
 
     i2c_master_enable(I2C1, I2C_FAST_MODE | I2C_BUS_RESET);
 }
@@ -106,7 +106,7 @@ void timerISR(void*) {
         //~ }
     //~ }
 
-    IMU.measure(message.imu);
+    IMU.measure(message.imu, &message.nofImu, sizeof(message.nofImu));
     //~ digitalWrite(BOARD_LED_PIN, message.imu[2] != 0);
     //~ pressureSensor.measure(&message.pressure);
     //~ magnetometer.measure(message.magnetometer);
@@ -128,7 +128,7 @@ void timerISR(void*) {
     //~ RPMSensor.measure(&message.rpm);
 
     if(ioctl & IoctlMessage::SEND_SENSOR_DATA) {
-        //~ digitalWrite(BOARD_LED_PIN, N%2);
+        //digitalWrite(BOARD_LED_PIN, N%2);
         computer.send<>(message);
     }
 
@@ -150,7 +150,7 @@ void actuateControl(const U8* msg, const std::size_t len) {
         pwmWrite(motionServo[2], m->servo[2]);
         pwmWrite(motor, m->rpm);
         if(ioctl & IoctlMessage::RESPONSETEST) {
-            computer.send<>(*m); // Respond for test application
+            //computer.send<>(*m); // Respond for test application
         }
     }
 }
@@ -164,14 +164,14 @@ void actuateCamera(const U8* msg, const std::size_t len) {
 
 void stresstest(void*) {
     for(int i = 0; i < 1000; ++i) {
-        computer.send<>(message);
+        //computer.send<>(message);
     }
     ioctl ^= IoctlMessage::STRESSTEST;
 }
 
 void setIoctl(const U8* msg, const std::size_t len) {
     ioctl = *(U16*)msg;
-    digitalWrite(BOARD_LED_PIN, 1);
+    //digitalWrite(BOARD_LED_PIN, 1);
 
     if(ioctl & IoctlMessage::STRESSTEST) {
         isr::queue(stresstest);
@@ -198,8 +198,8 @@ namespace Computer {
 }
 
 void timer10msInterrupt() {
-    //~ static bool a = true; a = !a;
-    //~ digitalWrite(BOARD_LED_PIN, 1);
+    ////~ static bool a = true; a = !a;
+    ////~ digitalWrite(BOARD_LED_PIN, 1);
     isr::queue(timerISR);
 }
 void timerSetup() {
