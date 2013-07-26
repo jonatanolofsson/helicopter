@@ -25,11 +25,13 @@ macro(shared_modules)
     endforeach()
 endmacro()
 
+set(MIN_LOG_LEVEL 0 CACHE STRING "Minimum log level that is recorded")
+
 macro(app)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR})
     project(${ARGN})
     #add_definitions(-std=c++0x -Wall -Werror -Wno-unknown-pragmas -pedantic-errors -Wextra -Wcast-align -O4)# -Wfatal-errors)
-    add_definitions(-std=c++0x -Wall -Werror -Wno-unknown-pragmas -pedantic-errors -Wextra -Wcast-align -ggdb -O0 -DMIN_LOG_LEVEL=1)# -Wfatal-errors)
+    add_definitions(-std=c++0x -Wall -Werror -Wno-unknown-pragmas -pedantic-errors -Wextra -Wcast-align -ggdb -O0 -DMIN_LOG_LEVEL=${MIN_LOG_LEVEL})# -Wfatal-errors)
     add_subdirectory(${OS_DIRECTORY} os)
 endmacro()
 
