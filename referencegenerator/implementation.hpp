@@ -4,6 +4,7 @@
 
 #include <os/com/Dispatcher.hpp>
 #include <sys/settings.hpp>
+#include <os/utils/eventlog.hpp>
 
 namespace sys {
     namespace referencegenerator {
@@ -18,6 +19,7 @@ namespace sys {
         template<typename ModelDescription, typename Trigger>
         void ReferenceGenerator<ModelDescription, Trigger>::yieldReference(const Trigger t) {
             while((t.value > reference[i].time) && ((i+1) < nofReferences)) ++i;
+            LOG_EVENT(typeid(Self).name(), 0, "Reference at time " << t.value);
             os::yield(ReferenceMessage(reference[i].reference));
         }
     }

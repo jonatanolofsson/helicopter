@@ -11,6 +11,8 @@
 namespace sys {
     namespace clock {
         class Clock {
+            public:
+                typedef Clock Self;
             private:
                 os::Dispatcher<Clock, os::Jiffy> d;
                 void tick(const os::Jiffy);

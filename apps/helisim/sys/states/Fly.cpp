@@ -4,10 +4,11 @@
 namespace sys {
     namespace states {
         ReferenceGenerator::TemporalReference ref[] = {
-            {0, (ReferenceGenerator::Reference() << 0,0,0).finished()}
+            {0, (ReferenceGenerator::Reference() << 0,0,0).finished()},
+            {10, (ReferenceGenerator::Reference() << 1,1,0).finished()}
         };
         Fly::Fly() 
-        : referenceGenerator(ref, 1)
+        : referenceGenerator(ref, sizeof(ref)/sizeof(ref[0]))
         {
             os::startTime();
         }
