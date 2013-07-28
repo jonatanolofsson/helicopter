@@ -5,6 +5,7 @@
 #include <os/com/Dispatcher.hpp>
 #include <sys/Simulator.hpp>
 #include <sys/settings.hpp>
+#include <os/utils/eventlog.hpp>
 
 #include <iostream>
 
@@ -20,7 +21,8 @@ namespace sys {
         template<typename MotionModel, typename... Sensors>
         void Simulator<MotionModel, Sensors...>::simulate(const typename MotionModel::ModelDescription::ControlMessage u) {
             state = MotionModel::predict(state, u.value, settings::dT);
-            yieldSensorReadings();
+            LOG_EVENT(typeid(Self).name(), 50, "Simulated state: " << state.transpose());
+            yieldSensorReadings<Sensors...>();
         }
     }
 }

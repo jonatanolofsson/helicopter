@@ -3,6 +3,7 @@
 #include <os/com/getSignal.hpp>
 
 INSTANTIATE_SIGNAL(sys::observer::Filter::States);
+INSTANTIATE_SIGNAL(sys::observer::sensors::Gps);
 
 namespace sys {
     namespace observer {

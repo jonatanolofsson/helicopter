@@ -5,6 +5,7 @@
 #include <os/com/Dispatcher.hpp>
 #include <sys/Observer.hpp>
 #include <type_traits>
+#include <os/utils/eventlog.hpp>
 
 namespace sys {
     namespace observer {
@@ -22,7 +23,9 @@ namespace sys {
                 template<typename Sensor>
                 struct SingleSensorWrapper { 
                     os::Dispatcher<Self, Sensor> d;
-                    explicit SingleSensorWrapper(Self*& self) : d(&Self::measurementUpdate<Sensor>, self) {}
+                    explicit SingleSensorWrapper(Self*& self) : d(&Self::measurementUpdate<Sensor>, self) {
+                        LOG_EVENT(typeid(Self).name(), 10, "Observing sensor " << os::demangle(typeid(Sensor).name()));
+                    }
                 };
                 template<typename... WSensors>
                 struct SensorWrapper : public SingleSensorWrapper<WSensors>... {
@@ -45,6 +48,7 @@ namespace sys {
                     auto l = filter.retrieve_lock();
                     //~ std::cout << "Observer measurement update: " << typeid(Measurement).name() << std::endl;
                     MUFilter::template measurementUpdate(filter, m);
+                    LOG_EVENT(typeid(Self).name(), 50, "MU: " << filter.state.transpose());
                 }
         };
     }

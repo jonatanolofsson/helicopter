@@ -16,6 +16,7 @@ namespace sys {
         , sensors(this)
         {
             MotionModel::ModelDescription::StateDescription::initialize(filter);
+            LOG_EVENT(typeid(Self).name(), 10, "Initialized observer with " << sizeof...(Sensors) << " sensors.");
         }
 
         template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger, typename... Sensors>

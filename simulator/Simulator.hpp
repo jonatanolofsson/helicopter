@@ -6,6 +6,7 @@
 #include <os/com/Dispatcher.hpp>
 #include <sys/Observer.hpp>
 #include <type_traits>
+#include <os/utils/eventlog.hpp>
 
 namespace sys {
     namespace simulator {
@@ -19,13 +20,15 @@ namespace sys {
 
                 template<typename Sensor>
                 void yieldSensorReading() {
-                    static math::GaussianMeasurement<Sensor> m;
-                    m.z = Sensor::measurement(state);
+                    static Sensor m;
+                    m.z = Sensor::Sensor::measurement(state);
+                    LOG_EVENT(typeid(Self).name(), 50, "Sensor " << os::demangle(typeid(Sensor).name()) << ": " << m.z.transpose());
                     os::yield(m);
                 }
 
                 template<typename... WSensors>
                 void yieldSensorReadings() {
+                    LOG_EVENT(typeid(Self).name(), 50, "Yielding values from " << sizeof...(WSensors) << " sensors");
                     os::evalVariadic((yieldSensorReading<WSensors>(), 1)...);
                 }
 

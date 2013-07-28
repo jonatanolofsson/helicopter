@@ -5,6 +5,6 @@ INSTANTIATE_SIGNAL(sys::motioncontrol::ModelDescription::ControlMessage);
 
 namespace sys {
     namespace motioncontrol {
-        template class MotionControl<motioncontrol::Controller, motioncontrol::ControlState, motioncontrol::ControlModel, motioncontrol::SystemState>;
+        template class MotionControl<motioncontrol::ModelDescription, motioncontrol::Controller, motioncontrol::ControlState, motioncontrol::ControlModel, motioncontrol::SystemState>;
     }
 }

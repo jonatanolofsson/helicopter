@@ -20,6 +20,6 @@ namespace sys {
         typedef observer::SystemState                               SystemState;
     }
 
-    typedef motioncontrol::MotionControl<motioncontrol::Controller, motioncontrol::ControlState, motioncontrol::ControlModel, motioncontrol::SystemState> MotionControl;
+    typedef motioncontrol::MotionControl<motioncontrol::ModelDescription, motioncontrol::Controller, motioncontrol::ControlState, motioncontrol::ControlModel, motioncontrol::SystemState> MotionControl;
 }
 #endif
