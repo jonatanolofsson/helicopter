@@ -6,6 +6,7 @@
 #include <sys/math/models.hpp>
 #include <os/clock.hpp>
 #include <sys/simulator/Simulator.hpp>
+#include <sys/Observer.hpp>
 
 namespace sys {
     namespace simulator {
@@ -14,12 +15,8 @@ namespace sys {
         typedef math::models::Description<StateDescription, ControlDescription> ModelDescription;
 
         typedef math::models::DirectVelocities3D<ModelDescription> MotionModel;
-
-        namespace sensors {
-            typedef math::models::Gps<ModelDescription> Gps;
-        }
     }
-    typedef simulator::Simulator<simulator::MotionModel, simulator::sensors::Gps> Simulator;
+    typedef simulator::Simulator<simulator::MotionModel, observer::sensors::Gps> Simulator;
 }
 
 #endif
