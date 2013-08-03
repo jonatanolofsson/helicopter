@@ -13,7 +13,7 @@ typedef math::models::SCart3DQuat states;
 typedef math::models::C0 controls;
 typedef math::models::Description<states, controls> ModelDescription;
 typedef math::GaussianFilter<ModelDescription> Filter;
-typedef math::models::ConstantVelocities3D<ModelDescription> MotionModel;
+typedef math::models::ConstantVelocities6D<ModelDescription> MotionModel;
 typedef math::EKF Algorithm;
 
 
@@ -78,7 +78,7 @@ TEST_F(EKFTests, MeasurementUpdateGPS) {
     reference[states::x] = reference[states::y] = reference[states::z] = 0.5;
 
     math::GaussianMeasurement<sys::math::models::Gps<ModelDescription>> m;
-    m.z << 1, 1, 1, 0, 0, 0;
+    m.z << 1, 1, 1;
     m.R.setIdentity();
 
     Algorithm::measurementUpdate<>(filter, m);

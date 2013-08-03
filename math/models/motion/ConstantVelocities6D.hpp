@@ -1,6 +1,6 @@
 #pragma once
-#ifndef SYS_MATH_MODELS_CONSTANT_VELOCITY_HPP_
-#define SYS_MATH_MODELS_CONSTANT_VELOCITY_HPP_
+#ifndef SYS_MATH_MODELS_CONSTANT_VELOCITY_6D_HPP_
+#define SYS_MATH_MODELS_CONSTANT_VELOCITY_6D_HPP_
 
 #include <Eigen/Core>
 #include <sys/types.hpp>
@@ -15,9 +15,9 @@ namespace sys {
         namespace models {
             using namespace Eigen;
             template<typename ModelDescription_>
-            struct ConstantVelocities3D {
+            struct ConstantVelocities6D {
                 typedef ModelDescription_ ModelDescription;
-                typedef ConstantVelocities3D<ModelDescription> Self;
+                typedef ConstantVelocities6D<ModelDescription> Self;
                 typedef typename ModelDescription::Scalar Scalar;
                 typedef typename ModelDescription::States States;
                 static const bool isDiscrete = true;

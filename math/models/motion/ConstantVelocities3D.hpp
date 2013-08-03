@@ -1,6 +1,6 @@
 #pragma once
-#ifndef SYS_MATH_MODELS_CONSTANT_VELOCITY_HPP_
-#define SYS_MATH_MODELS_CONSTANT_VELOCITY_HPP_
+#ifndef SYS_MATH_MODELS_CONSTANT_VELOCITY_3D_HPP_
+#define SYS_MATH_MODELS_CONSTANT_VELOCITY_3D_HPP_
 
 #include <Eigen/Core>
 #include <sys/types.hpp>

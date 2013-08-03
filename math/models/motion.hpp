@@ -32,6 +32,7 @@ namespace sys {
 
 #include <sys/math/models/motion/ConstantPosition3D.hpp>
 #include <sys/math/models/motion/ConstantVelocities3D.hpp>
+#include <sys/math/models/motion/ConstantVelocities6D.hpp>
 #include <sys/math/models/motion/DirectVelocities3D.hpp>
 #include <sys/math/models/motion/CoordinatedTurn2D.hpp>
 #include <sys/math/models/motion/CoordinatedTurn2DPose.hpp>
