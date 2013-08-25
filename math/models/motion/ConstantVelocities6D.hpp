@@ -38,7 +38,7 @@ namespace sys {
                     const Scalar wnorm     = x.template segment<3>(states::rotational_velocity).norm();
                     const Scalar wnormT2   = wnorm * dT / 2;
 
-                    if(wnorm > math::EPSILON) {
+                    if(wnorm > math::constants::EPSILON) {
                         xnext.template segment<4>(states::quaternion) =
                             (std::cos(wnormT2) * x.template segment<4>(states::quaternion)
                                 - (std::sin(wnormT2) / wnorm) * S * x.template segment<4>(states::quaternion)

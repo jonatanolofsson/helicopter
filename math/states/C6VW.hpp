@@ -19,7 +19,7 @@ namespace sys {
                 };
                 enum states {
                     velocity = vx,
-                    rotational_velocity = wx
+                    rotationalVelocity = wx
                 };
 
                 static const int omega[3];

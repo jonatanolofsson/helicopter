@@ -13,7 +13,10 @@
 
 namespace sys {
     namespace math {
-        static const double EPSILON = 1e-16;
+        namespace constants {
+            static const double EPSILON = 1e-16;
+            static const Scalar g = 9.82331;
+        }
     }
 }
 #endif

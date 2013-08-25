@@ -16,16 +16,18 @@
 namespace sys {
     namespace math {
         using namespace Eigen;
-        template<typename ModelDescription>
+        template<typename ModelDescription, int EXTRA_STATES = 0, int EXTRA_CONTROLS = 0>
         class LqController {
             public:
                 typedef typename ModelDescription::Scalar Scalar;
-                typedef Matrix<Scalar, ModelDescription::nofStates, ModelDescription::nofStates> StateMatrix; ///< A state (propagation) matrix describes how the model state evolves in time, given no control
-                typedef Matrix<Scalar, ModelDescription::nofStates, ModelDescription::nofControls> ControlMatrix; ///<
-                typedef Matrix<Scalar, ModelDescription::nofStates, 1> StateVector; ///< A state vector describes the state in which the system is (currently) in
-                typedef Matrix<Scalar, ModelDescription::nofControls, 1> ControlVector; ///< A state vector describes the state in which the system is (currently) in
-                typedef Matrix<Scalar, ModelDescription::nofControls, ModelDescription::nofStates> FeedbackMatrix; ///< A feedback matrix is used to calculate the optimal control signal, given a current state fo the system, to bring the system to a zero-state
-                typedef Matrix<Scalar, ModelDescription::nofControls, ModelDescription::nofControls> ControlWeightMatrix;
+                static const int nofStates = ModelDescription::nofStates + EXTRA_STATES;
+                static const int nofControls = ModelDescription::nofControls + EXTRA_CONTROLS;
+                typedef Matrix<Scalar, nofStates, nofStates> StateMatrix; ///< A state (propagation) matrix describes how the model state evolves in time, given no control
+                typedef Matrix<Scalar, nofStates, nofControls> ControlMatrix; ///<
+                typedef Matrix<Scalar, nofStates, 1> StateVector; ///< A state vector describes the state in which the system is (currently) in
+                typedef Matrix<Scalar, nofControls, 1> ControlVector; ///< A state vector describes the state in which the system is (currently) in
+                typedef Matrix<Scalar, nofControls, nofStates> FeedbackMatrix; ///< A feedback matrix is used to calculate the optimal control signal, given a current state fo the system, to bring the system to a zero-state
+                typedef Matrix<Scalar, nofControls, nofControls> ControlWeightMatrix;
 
             private:
                 Scalar alpha;

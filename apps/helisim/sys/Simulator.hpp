@@ -10,11 +10,11 @@
 
 namespace sys {
     namespace simulator {
-        typedef math::models::SCart3D                       StateDescription;
-        typedef math::models::CVel3                         ControlDescription;
+        typedef math::models::SHelicopter       StateDescription;
+        typedef math::models::CHelicopter       ControlDescription;
         typedef math::models::Description<StateDescription, ControlDescription> ModelDescription;
 
-        typedef math::models::DirectVelocities3D<ModelDescription> MotionModel;
+        typedef math::models::Helicopter<ModelDescription> MotionModel;
     }
     typedef simulator::Simulator<simulator::MotionModel, observer::sensors::Gps> Simulator;
 }

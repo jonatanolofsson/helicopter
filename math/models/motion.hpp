@@ -36,5 +36,7 @@ namespace sys {
 #include <sys/math/models/motion/DirectVelocities3D.hpp>
 #include <sys/math/models/motion/CoordinatedTurn2D.hpp>
 #include <sys/math/models/motion/CoordinatedTurn2DPose.hpp>
+#include <sys/math/models/motion/Helicopter.hpp>
+#include <sys/math/models/motion/HelicopterControl.hpp>
 
 #endif

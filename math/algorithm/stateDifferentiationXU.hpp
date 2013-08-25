@@ -14,13 +14,13 @@ namespace sys {
         using namespace Eigen;
 
 
-        template<typename M, typename D, typename M::States(*FN)(const typename M::States&, const typename M::Controls&, const D&)>
+        template<typename M, typename MS, typename MC, typename D, typename M::States(*FN)(const MS&, const MC&, const D&)>
         struct DifferentiationThreadXU {
-            typedef DifferentiationThreadXU<M,D,FN> Self;
+            typedef DifferentiationThreadXU<M,MS,MC,D,FN> Self;
             static Matrix<typename M::Scalar, M::States::RowsAtCompileTime, D::RowsAtCompileTime> diff;
             static Matrix<typename M::Scalar, D::RowsAtCompileTime, D::RowsAtCompileTime> dx;
-            static const typename M::States* x;
-            static const typename M::Controls* u;
+            static const MS* x;
+            static const MC* u;
             static int id;
             static std::atomic<int> counter;
             static std::atomic<int> left;
@@ -66,7 +66,7 @@ namespace sys {
             }
 
             static Matrix<typename M::Scalar, M::States::RowsAtCompileTime, D::RowsAtCompileTime>
-            differentiate(const typename M::States& x_, const typename M::Controls& u_, const D& dx_) {
+            differentiate(const MS& x_, const MC& u_, const D& dx_) {
                 {
                     std::lock_guard<std::mutex> l(configurationGuard);
 
@@ -86,24 +86,24 @@ namespace sys {
         };
 
 
-        template<typename M, typename D, typename M::States(*FN)(const typename M::States&, const typename M::Controls&, const D&)> Matrix<typename M::Scalar, M::States::RowsAtCompileTime, D::RowsAtCompileTime> DifferentiationThreadXU<M,D,FN>::diff;
-        template<typename M, typename D, typename M::States(*FN)(const typename M::States&, const typename M::Controls&, const D&)> Matrix<typename M::Scalar, D::RowsAtCompileTime, D::RowsAtCompileTime> DifferentiationThreadXU<M,D,FN>::dx;
-        template<typename M, typename D, typename M::States(*FN)(const typename M::States&, const typename M::Controls&, const D&)> const typename M::States* DifferentiationThreadXU<M,D,FN>::x;
-        template<typename M, typename D, typename M::States(*FN)(const typename M::States&, const typename M::Controls&, const D&)> const typename M::Controls* DifferentiationThreadXU<M,D,FN>::u;
-        template<typename M, typename D, typename M::States(*FN)(const typename M::States&, const typename M::Controls&, const D&)> std::atomic<int> DifferentiationThreadXU<M,D,FN>::counter;
-        template<typename M, typename D, typename M::States(*FN)(const typename M::States&, const typename M::Controls&, const D&)> std::atomic<int> DifferentiationThreadXU<M,D,FN>::left;
-        template<typename M, typename D, typename M::States(*FN)(const typename M::States&, const typename M::Controls&, const D&)> std::mutex DifferentiationThreadXU<M,D,FN>::leftGuard;
-        template<typename M, typename D, typename M::States(*FN)(const typename M::States&, const typename M::Controls&, const D&)> std::mutex DifferentiationThreadXU<M,D,FN>::configurationGuard;
-        template<typename M, typename D, typename M::States(*FN)(const typename M::States&, const typename M::Controls&, const D&)> std::condition_variable DifferentiationThreadXU<M,D,FN>::resultCond;
-        template<typename M, typename D, typename M::States(*FN)(const typename M::States&, const typename M::Controls&, const D&)> std::condition_variable DifferentiationThreadXU<M,D,FN>::cond;
-        template<typename M, typename D, typename M::States(*FN)(const typename M::States&, const typename M::Controls&, const D&)> int DifferentiationThreadXU<M,D,FN>::id = 0;
-        template<typename M, typename D, typename M::States(*FN)(const typename M::States&, const typename M::Controls&, const D&)> bool DifferentiationThreadXU<M,D,FN>::dying = false;
+        template<typename M, typename MS, typename MC, typename D, typename M::States(*FN)(const MS&, const MC&, const D&)> Matrix<typename M::Scalar, M::States::RowsAtCompileTime, D::RowsAtCompileTime> DifferentiationThreadXU<M,MS,MC,D,FN>::diff;
+        template<typename M, typename MS, typename MC, typename D, typename M::States(*FN)(const MS&, const MC&, const D&)> Matrix<typename M::Scalar, D::RowsAtCompileTime, D::RowsAtCompileTime> DifferentiationThreadXU<M,MS,MC,D,FN>::dx;
+        template<typename M, typename MS, typename MC, typename D, typename M::States(*FN)(const MS&, const MC&, const D&)> const MS* DifferentiationThreadXU<M,MS,MC,D,FN>::x;
+        template<typename M, typename MS, typename MC, typename D, typename M::States(*FN)(const MS&, const MC&, const D&)> const MC* DifferentiationThreadXU<M,MS,MC,D,FN>::u;
+        template<typename M, typename MS, typename MC, typename D, typename M::States(*FN)(const MS&, const MC&, const D&)> std::atomic<int> DifferentiationThreadXU<M,MS,MC,D,FN>::counter;
+        template<typename M, typename MS, typename MC, typename D, typename M::States(*FN)(const MS&, const MC&, const D&)> std::atomic<int> DifferentiationThreadXU<M,MS,MC,D,FN>::left;
+        template<typename M, typename MS, typename MC, typename D, typename M::States(*FN)(const MS&, const MC&, const D&)> std::mutex DifferentiationThreadXU<M,MS,MC,D,FN>::leftGuard;
+        template<typename M, typename MS, typename MC, typename D, typename M::States(*FN)(const MS&, const MC&, const D&)> std::mutex DifferentiationThreadXU<M,MS,MC,D,FN>::configurationGuard;
+        template<typename M, typename MS, typename MC, typename D, typename M::States(*FN)(const MS&, const MC&, const D&)> std::condition_variable DifferentiationThreadXU<M,MS,MC,D,FN>::resultCond;
+        template<typename M, typename MS, typename MC, typename D, typename M::States(*FN)(const MS&, const MC&, const D&)> std::condition_variable DifferentiationThreadXU<M,MS,MC,D,FN>::cond;
+        template<typename M, typename MS, typename MC, typename D, typename M::States(*FN)(const MS&, const MC&, const D&)> int DifferentiationThreadXU<M,MS,MC,D,FN>::id = 0;
+        template<typename M, typename MS, typename MC, typename D, typename M::States(*FN)(const MS&, const MC&, const D&)> bool DifferentiationThreadXU<M,MS,MC,D,FN>::dying = false;
 
 
-        template<typename M, typename D, typename M::States(*FN)(const typename M::States&, const typename M::Controls&, const D&)>
+        template<typename M, typename MS, typename MC, typename D, typename M::States(*FN)(const MS&, const MC&, const D&)>
         Matrix<typename M::Scalar, M::States::RowsAtCompileTime, D::RowsAtCompileTime>
-        differentiateStates(const typename M::States& x, const typename M::Controls& u, const D& dx) {
-            typedef DifferentiationThreadXU<M,D,FN> DThread;
+        differentiateStates(const MS& x, const MC& u, const D& dx) {
+            typedef DifferentiationThreadXU<M,MS,MC,D,FN> DThread;
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Wunused-variable"
 

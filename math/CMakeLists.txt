@@ -1,4 +1,4 @@
 add_subdirectory(states)
 add_library(math
+    ${MATH_STATES_SOURCES}
 )
-target_link_libraries(math models)
