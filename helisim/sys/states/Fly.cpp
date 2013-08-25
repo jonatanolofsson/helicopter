@@ -4,8 +4,9 @@
 namespace sys {
     namespace states {
         ReferenceGenerator::TemporalReference ref[] = {
-            {0, (ReferenceGenerator::Reference() << 0,0,0).finished()},
-            {10, (ReferenceGenerator::Reference() << 1,2,0).finished()}
+            {0,    (ReferenceGenerator::Reference() << 0,0,0,0,0,0,0,0,0,0,0).finished()},
+            {10,   (ReferenceGenerator::Reference() << 0,0,0,1,2,0,0,0,0,0,0).finished()}
+            {20,   (ReferenceGenerator::Reference() << 0,0,0,1,2,0,0,0,0,0,0).finished()}
         };
         Fly::Fly() 
         : referenceGenerator(ref, sizeof(ref)/sizeof(ref[0]))

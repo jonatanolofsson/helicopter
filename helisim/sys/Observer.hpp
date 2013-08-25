@@ -9,13 +9,13 @@
 
 namespace sys {
     namespace observer {
-        typedef math::models::SCart3D                       StateDescription;
-        typedef math::models::C0                            ControlDescription;
+        typedef math::models::SHelicopter       StateDescription;
+        typedef math::models::C0                ControlDescription;
         typedef math::models::Description<StateDescription, ControlDescription> ModelDescription;
 
         typedef math::EKF                                   Algorithm;
         typedef math::GaussianFilter<ModelDescription>      Filter;
-        typedef math::models::ConstantPosition3D<ModelDescription> MotionModel;
+        typedef math::models::Helicopter<ModelDescription>  MotionModel;
         typedef os::SystemTime                              TriggerType;
 
         typedef ModelDescription::States                    SystemState;
