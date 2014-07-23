@@ -16,7 +16,7 @@ namespace sys {
 
         typedef math::models::Helicopter<ModelDescription> MotionModel;
     }
-    typedef simulator::Simulator<simulator::MotionModel, observer::sensors::Gps> Simulator;
+    typedef simulator::Simulator<simulator::MotionModel, 10, observer::sensors::Gps> Simulator;
 }
 
 #endif

@@ -6,7 +6,7 @@ include_directories(${SOURCEROOT_DIRECTORY})
 
 find_package(Boost COMPONENTS system)
 find_package(Eigen3)
-include_directories(${Eigen3_INCLUDE_DIR})
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-isystem${Eigen3_INCLUDE_DIR}")
 
 macro(local_modules)
     set(LOCAL_MODULES_LIBRARIES ${ARGN})
@@ -31,7 +31,7 @@ macro(app)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR})
     project(${ARGN})
     #add_definitions(-std=c++0x -Wall -Werror -Wno-unknown-pragmas -pedantic-errors -Wextra -Wcast-align -O4)# -Wfatal-errors)
-    add_definitions(-std=c++0x -Wall -Werror -Wno-unknown-pragmas -pedantic-errors -Wextra -Wcast-align -ggdb -O0 -DMIN_LOG_LEVEL=${MIN_LOG_LEVEL})# -Wfatal-errors)
+    add_definitions(-std=c++0x -Wall -Werror -Wno-unknown-pragmas -pedantic-errors -Wextra -Wcast-align -ggdb -O0 -DMIN_LOG_LEVEL=${MIN_LOG_LEVEL} -Wfatal-errors)
     add_subdirectory(${OS_DIRECTORY} os)
 endmacro()
 
