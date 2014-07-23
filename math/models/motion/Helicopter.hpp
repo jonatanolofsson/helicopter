@@ -25,6 +25,7 @@ namespace sys {
                 typedef typename ModelDescription::Controls Controls;
                 typedef typename ModelDescription::StateDescription states;
                 typedef typename ModelDescription::ControlDescription controls;
+                typedef typename Eigen::Matrix<Scalar, 2, 1> Vector2;
                 typedef typename Eigen::Matrix<Scalar, 3, 1> Vector3;
                 typedef typename Eigen::Matrix<Scalar, 6, 1> Vector6;
                 static const bool isDiscrete = true;
@@ -42,27 +43,30 @@ namespace sys {
                 static const Eigen::Matrix<Scalar, 3, 3> I_g_inv;
                 static const Vector3 r_rotor;
                 static const Vector3 r_tail;
+                static const Scalar r_tilt;
+                static const Vector2 r_A;
+                static const Vector2 r_B;
+                static const Vector2 r_C;
                 
-                template<typename IModelDescription = ModelDescription, typename DerivedStates, typename DerivedControl>
-                static Vector6 accPredition(const DerivedStates& x, const DerivedControl&/* u*/) {
+                template<typename IModelDescription = ModelDescription, typename DerivedFilter, typename DerivedControl>
+                static Vector6 accPredition(const DerivedFilter& filter, const DerivedControl& u) {
                     typedef typename IModelDescription::StateDescription states;
-                    typedef typename IModelDescription::ControlDescription controls;
+                    typedef typename math::models::CHelicopter controls;
 
-                    Eigen::Quaternion<typename DerivedStates::Scalar> qwb(
-                        x(states::qw),
-                        x(states::qx),
-                        x(states::qy),
-                        x(states::qz)
+                    Eigen::Quaternion<typename DerivedFilter::Scalar> qwb(
+                        filter.state(states::qw),
+                        filter.state(states::qx),
+                        filter.state(states::qy),
+                        filter.state(states::qz)
                     );
                     qwb.normalize();
 
                     auto bf2ned = qwb.toRotationMatrix(); // q^{wb}
                     //auto ned2bf = bf2ned.transpose(); // Orthonormal matrix
 
-                    // FIXME
-                    auto A = Vector3(0,0,0);
-                    auto B = Vector3(0,0,0);
-                    auto C = Vector3(0,0,0);
+                    Vector3 A; A << r_A, -r_tilt*sin(u[controls::th_a]);
+                    Vector3 B; B << r_B, -r_tilt*sin(u[controls::th_b]);
+                    Vector3 C; C << r_C, r_tilt*sin(u[controls::th_c]);
 
                     auto AB = B-A;
                     auto AC = C-A;
@@ -70,13 +74,13 @@ namespace sys {
                     auto D = abc.dot(A) / abc.z();
 
                     Vector6 xdot;
-                    auto sin2Th_tail = std::sin(2*x[states::th_tail]);
-                    auto N2 = x[states::N] * x[states::N];
-                    xdot.template segment<3>(0) = bf2ned * Vector3(0, eta_F_tail * N2 * sin2Th_tail / mass, -eta_F_rotor * D * N2 / mass) + Vector3(0, 0, math::constants::g);
+                    auto sin2Th_tail = std::sin(2*u[controls::th_tail]);
+                    auto N2 = SQUARE(u[controls::N]);
+                    xdot.template segment<3>(states::velocity) = bf2ned * Vector3(0, eta_F_tail * N2 * sin2Th_tail / mass, -eta_F_rotor * D * N2 / mass) + Vector3(0, 0, math::constants::g);
                     
                     static const Scalar cosPhi_adj = 1;
                     static const Scalar sinPhi_adj = 0;
-                    xdot.template segment<3>(3) = bf2ned * I_g_inv * (
+                    xdot.template segment<3>(states::rotationalVelocity) = bf2ned * I_g_inv * (
                             Vector3(abc.x()*sinPhi_adj + abc.y()*cosPhi_adj, abc.x()*sinPhi_adj-abc.y()*cosPhi_adj, 0) * eta_M_rotor / abc.z()
                             - eta_M_rotor * r_rotor.cross(Vector3(0,0,D * N2))
                             + eta_M_tail * r_tail.cross(Vector3(0, N2 * sin2Th_tail, 0))
@@ -87,6 +91,7 @@ namespace sys {
 
                 template<typename DerivedStates, typename DerivedControl>
                 static States controlledPrediction(const DerivedStates& x, const DerivedControl& u, const Scalar dT) {
+                    static_assert((int)DerivedStates::RowsAtCompileTime >= (int)States::RowsAtCompileTime, "x is not a superset");
                     States xnext(x.template segment<States::RowsAtCompileTime>(0));
                     USING_XYZ
 
@@ -105,7 +110,7 @@ namespace sys {
                             ).normalized();
                     }
 
-                    xnext.template segment<6>(states::velocity) = accPredition(x, u) * dT;
+                    xnext.template segment<6>(states::velocities) += accPredition(x, u) * dT;
 
                     return xnext;
                 }
@@ -116,11 +121,12 @@ namespace sys {
                     typedef typename IModelDescription::ControlDescription controls;
 
                     Eigen::Matrix<Scalar, 5, 1> xdot;
-                    xdot[0] += alpha_tail*(u[controls::th_tail] - x[states::th_tail]);
-                    xdot[1] += alpha_main*(u[controls::th_a] - x[states::th_a]);
-                    xdot[2] += alpha_main*(u[controls::th_b] - x[states::th_b]);
-                    xdot[3] += alpha_main*(u[controls::th_c] - x[states::th_c]);
-                    xdot[4] += motorConstant*(u[controls::N] - x[states::N]);
+                    xdot << 
+                            alpha_main*(u[controls::th_a] - x[states::th_a]),
+                            alpha_main*(u[controls::th_b] - x[states::th_b]),
+                            alpha_main*(u[controls::th_c] - x[states::th_c]),
+                            alpha_tail*(u[controls::th_tail] - x[states::th_tail]),
+                            motorConstant*(u[controls::N] - x[states::N]);
 
                     return xdot;
                 }
@@ -142,7 +148,7 @@ namespace sys {
                 typedef typename ModelDescription::ControlDescription controls;
                 
                 static States predict(const States& x, const Controls& u, const Scalar dT) {
-                    auto xnext = HelicopterModel<ModelDescription>::controlledPrediction(x.template segment<5>(states::controlled), x.template segment<ModelDescription::nofStates-5>(states::nonControlled), dT);
+                    auto xnext = HelicopterModel<ModelDescription>::controlledPrediction(x, x.template segment<Controls::RowsAtCompileTime>(states::controlled), dT);
                     xnext.template segment<5>(states::th_tail) = dT*HelicopterModel<ModelDescription>::controlDerivative(x, u);
                     return xnext;
                 }
@@ -177,7 +183,7 @@ namespace sys {
                 typedef typename ModelDescription::StateDescription states;
                 
                 static States predict(const States& x, const Scalar dT) {
-                    return HelicopterModel<ModelDescription>::controlledPrediction(x.template segment<5>(states::controlled), x.template segment<ModelDescription::nofStates-5>(states::nonControlled), dT);
+                    return HelicopterModel<ModelDescription>::controlledPrediction(x, x.template segment<5>(states::controlled), dT);
                 }
                 
                 static States diffStates(const States& x, const States& dx) {
@@ -205,6 +211,11 @@ namespace sys {
             template<typename ModelDescription_> const Eigen::Matrix<typename HelicopterModel<ModelDescription_>::Scalar, 3, 3> HelicopterModel<ModelDescription_>::I_g_inv(I_g.inverse());
             template<typename ModelDescription_> const typename HelicopterModel<ModelDescription_>::Vector3 HelicopterModel<ModelDescription_>::r_rotor(0, 0, -0.2);
             template<typename ModelDescription_> const typename HelicopterModel<ModelDescription_>::Vector3 HelicopterModel<ModelDescription_>::r_tail(-0.75, 0, -0.05);
+            
+            template<typename ModelDescription_> const typename HelicopterModel<ModelDescription_>::Scalar HelicopterModel<ModelDescription_>::r_tilt         = 0.032;
+            template<typename ModelDescription_> const typename HelicopterModel<ModelDescription_>::Vector2 HelicopterModel<ModelDescription_>::r_A(0.02, 0.034641);
+            template<typename ModelDescription_> const typename HelicopterModel<ModelDescription_>::Vector2 HelicopterModel<ModelDescription_>::r_B(0.02, -0.034641);
+            template<typename ModelDescription_> const typename HelicopterModel<ModelDescription_>::Vector2 HelicopterModel<ModelDescription_>::r_C(-0.04, 0);
         }
     }
 }

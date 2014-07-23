@@ -15,38 +15,27 @@ namespace sys {
                     vy = 4,
                     vz = 5,
 
-                    th_tail = 6,
-                    th_a = 7,
-                    th_b = 8,
-                    th_c = 9,
-                    N = 10,
+                    qx = 6,
+                    qy = 7,
+                    qz = 8,
+                    qw = 9,
 
-                    qx = 11,
-                    qy = 12,
-                    qz = 13,
-                    qw = 14,
+                    x = 10,
+                    y = 11,
+                    z = 12,
 
-                    x = 15,
-                    y = 16,
-                    z = 17,
+                    windX = 13,
+                    windY = 14,
+                    windZ = 15,
 
-                    wbx = 18,
-                    wby = 19,
-                    wbz = 20,
-
-                    windX = 21,
-                    windY = 22,
-                    windZ = 23,
-
-                    nofStates = 24
+                    nofStates = 16
                 };
                 enum states {
                     position = x,
                     velocity = vx,
+                    velocities = wx,
                     quaternion = qx,
                     rotationalVelocity = wx,
-                    controlled = th_tail,
-                    nonControlled = wx
                 };
 
                 static const int orientation[4];

@@ -15,5 +15,6 @@
 #include <sys/math/states/CRL.hpp>
 #include <sys/math/states/CVW.hpp>
 #include <sys/math/states/CHelicopter.hpp>
+#include <sys/math/states/A0.hpp>
 
 #endif

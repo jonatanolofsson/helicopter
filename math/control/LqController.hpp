@@ -7,6 +7,7 @@
 #include <Eigen/LU>
 #include <Eigen/Eigenvalues>
 #include <sys/types.hpp>
+#include <iostream>
 
 
 #ifndef P_DELTA_EPSILON
@@ -19,6 +20,7 @@ namespace sys {
         template<typename ModelDescription, int EXTRA_STATES = 0, int EXTRA_CONTROLS = 0>
         class LqController {
             public:
+                typedef LqController<ModelDescription, EXTRA_STATES, EXTRA_CONTROLS> Self;
                 typedef typename ModelDescription::Scalar Scalar;
                 static const int nofStates = ModelDescription::nofStates + EXTRA_STATES;
                 static const int nofControls = ModelDescription::nofControls + EXTRA_CONTROLS;
@@ -56,9 +58,9 @@ namespace sys {
                 template<bool isDiscrete>
                 void updateModel(const StateMatrix& A_, const ControlMatrix& B_) {
                     A = A_;
-                    //~ std::cout << "A::::::::::::::" << std::endl << A << std::endl << ":::::::::::::::::::::::::::::::::::::" << std::endl;
+                    LOG_EVENT(typeid(Self).name(), 50, "A::::::::::::::\n" << A << "\n:::::::::::::::::::::::::::::::::::::");
                     B = B_;
-                    //~ std::cout << "B::::::::::::::" << std::endl << B << std::endl << ":::::::::::::::::::::::::::::::::::::" << std::endl;
+                    LOG_EVENT(typeid(Self).name(), 50, "B::::::::::::::\n" << B << "\n:::::::::::::::::::::::::::::::::::::");
                     updateControlMatrices(isDiscrete);
                 }
 
@@ -101,6 +103,7 @@ namespace sys {
 
                         L = (R + B.transpose()*P*B).ldlt().solve(B.transpose()*P*A);
                     }
+                    LOG_EVENT(typeid(Self).name(), 50, "L::::::::::::::\n" << L << "\n:::::::::::::::::::::::::::::::::::::" << std::endl);
                 }
 
                 /*!

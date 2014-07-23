@@ -11,7 +11,8 @@ namespace sys {
     namespace observer {
         typedef math::models::SHelicopter       StateDescription;
         typedef math::models::C0                ControlDescription;
-        typedef math::models::Description<StateDescription, ControlDescription> ModelDescription;
+        typedef math::models::A0                AuxiliaryDescription;
+        typedef math::models::Description<StateDescription, ControlDescription, AuxiliaryDescription> ModelDescription;
 
         typedef math::EKF                                   Algorithm;
         typedef math::GaussianFilter<ModelDescription>      Filter;

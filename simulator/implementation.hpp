@@ -11,18 +11,21 @@
 
 namespace sys {
     namespace simulator {
-        template<typename MotionModel, typename... Sensors>
+        template<typename MotionModel, int HZ, typename... Sensors>
         Simulator<MotionModel, Sensors...>::Simulator()
         : d(&Self::simulate, this)
         {
             MotionModel::ModelDescription::StateDescription::initializeState(state);
         }
 
-        template<typename MotionModel, typename... Sensors>
+        template<typename MotionModel, int HZ, typename... Sensors>
         void Simulator<MotionModel, Sensors...>::simulate(const typename MotionModel::ModelDescription::ControlMessage u) {
+            static localCounter = 0
             state = MotionModel::predict(state, u.value, settings::dT);
             LOG_EVENT(typeid(Self).name(), 50, "Simulated state: " << state.transpose());
-            yieldSensorReadings<Sensors...>();
+            if ((++localCounter % (settings::systemFrequency / HZ)) == 0) {
+                yieldSensorReadings<Sensors...>();
+            }
         }
     }
 }

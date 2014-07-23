@@ -15,14 +15,17 @@ namespace sys {
             typedef typename ModelDescription::Scalar Scalar;
             typedef typename ModelDescription::States Reference;
             typedef GaussianFilter<ModelDescription> Self;
-            typedef typename Covariance<typename ModelDescription::Scalar, ModelDescription::nofStates>::Type CovarianceMatrix;
+            typedef Covariance<typename ModelDescription::Scalar, ModelDescription::nofStates> CovarianceMatrix;
             typedef typename ModelDescription::States States;
+            typedef typename ModelDescription::Auxiliaries Auxiliaries;
             CovarianceMatrix covariance;
             States state;
+            Auxiliaries auxiliaries;
 
             explicit GaussianFilter() {
                 state.setZero();
                 covariance.setZero();
+                auxiliaries.setZero();
             }
 
             States noise() {

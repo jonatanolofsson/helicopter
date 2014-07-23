@@ -67,6 +67,7 @@ namespace sys {
 
             static Matrix<typename M::Scalar, M::nofStates, M::nofStates>
             differentiate(const MS& x_, const typename M::States& dx_) {
+                std::unique_lock<std::mutex> l(leftGuard);
                 {
                     std::lock_guard<std::mutex> l(configurationGuard);
 
@@ -77,7 +78,6 @@ namespace sys {
                     cond.notify_all();
                 }
 
-                std::unique_lock<std::mutex> l(leftGuard);
                 while(left) resultCond.wait(l);
 
                 return diff;

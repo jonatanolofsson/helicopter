@@ -9,22 +9,31 @@
 namespace sys {
     namespace math {
         namespace models {
-            template<typename SDescription, typename CDescription, typename S = Scalar>
+            namespace messages {
+                template<typename States> struct StateMessage : public EigenMessage<States> { StateMessage(){} explicit StateMessage(const States& s) : EigenMessage<States>(s) {} };
+                template<typename Reference> struct ReferenceMessage : public EigenMessage<Reference> { ReferenceMessage(){} explicit ReferenceMessage(const Reference& r) : EigenMessage<Reference>(r) {} };
+                template<typename Controls> struct ControlMessage : public EigenMessage<Controls> { ControlMessage(){} explicit ControlMessage(const Controls& c) : EigenMessage<Controls>(c) {} };
+            }
+
+            template<typename SDescription, typename CDescription, typename ADescription, typename S = Scalar>
             struct Description {
                 typedef S Scalar;
                 typedef SDescription StateDescription;
                 typedef CDescription ControlDescription;
+                typedef ADescription AuxiliaryDescription;
 
                 static const int nofStates      = StateDescription::nofStates;
                 static const int nofControls    = ControlDescription::nofControls;
+                static const int nofAuxiliaries = ADescription::nofAuxiliaries;
 
-                typedef typename StateVector<Scalar, nofStates>::Type States;
+                typedef StateVector<Scalar, nofStates> States;
                 typedef States Reference;
-                typedef typename StateVector<Scalar, nofControls>::Type Controls;
+                typedef StateVector<Scalar, nofControls> Controls;
+                typedef StateVector<Scalar, nofAuxiliaries> Auxiliaries;
 
-                struct StateMessage : public EigenMessage<States> { StateMessage(){} explicit StateMessage(const States& s) : EigenMessage<States>(s) {} };
-                struct ReferenceMessage : public EigenMessage<Reference> { ReferenceMessage(){} explicit ReferenceMessage(const Reference& r) : EigenMessage<Reference>(r) {} };
-                struct ControlMessage : public EigenMessage<Controls> { ControlMessage(){} explicit ControlMessage(const Controls& c) : EigenMessage<Controls>(c) {} };
+                typedef messages::StateMessage<States> StateMessage;
+                typedef messages::ReferenceMessage<Reference> ReferenceMessage;
+                typedef messages::ControlMessage<Controls> ControlMessage;
             };
         }
     }

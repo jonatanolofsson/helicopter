@@ -5,6 +5,7 @@
 #include <cmath>
 
 #define SQUARE(a) ((a)*(a))
+#define countof(a) (sizeof(a)/sizeof(a[0]))
 
 namespace sys {
     namespace math {

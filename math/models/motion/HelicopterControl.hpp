@@ -28,9 +28,12 @@ namespace sys {
 
                 template<typename IModelDescription = IModelDescription>
                 static States derivative(const typename IModelDescription::States& x, const typename IModelDescription::Controls& u) {
-                    return (States() << 
-                            Helicopter<ModelDescription>::template accPredition<IModelDescription>(x, u), 
-                            Helicopter<ModelDescription>::template controlDerivative<IModelDescription>(x, u)).finished();
+                    return Helicopter<ModelDescription>::template accPredition<IModelDescription>(x, u);
+                    /*
+                     *return (States() << 
+                     *        Helicopter<ModelDescription>::template accPredition<IModelDescription>(x, u), 
+                     *        Helicopter<ModelDescription>::template controlDerivative<IModelDescription>(x, u)).finished();
+                     */
                 }
 
                 template<typename D>

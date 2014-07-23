@@ -10,7 +10,7 @@
 
 namespace sys {
     namespace simulator {
-        template<typename MotionModel, typename... Sensors>
+        template<typename MotionModel, int HZ, typename... Sensors>
         class Simulator {
             public:
                 typedef Simulator<MotionModel, Sensors...> Self;

@@ -15,13 +15,7 @@ namespace sys {
                     vy = 4,
                     vz = 5,
 
-                    th_tail = 6,
-                    th_a = 7,
-                    th_b = 8,
-                    th_c = 9,
-                    N = 10,
-
-                    nofStates = 11
+                    nofStates = 6
                 };
                 enum states {
                     velocity = vx,

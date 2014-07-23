@@ -24,7 +24,6 @@ namespace sys {
 
                 static States predict(const States& x, const Scalar dT) {
                     typedef typename ModelDescription::StateDescription states;
-                    typedef typename ModelDescription::ControlDescription controls;
                     States xnext(x);
 
                     xnext.template segment<3>(states::position) += x.template segment<3>(states::velocity) * dT;

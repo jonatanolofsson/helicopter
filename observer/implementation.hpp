@@ -23,7 +23,8 @@ namespace sys {
         void Observer<Algorithm, Filter, MotionModel, Trigger, Sensors...>::timeUpdate(const Trigger) {
             auto l = filter.retrieve_lock();
             Algorithm::template timeUpdate<MotionModel>(filter, settings::dT);
-            os::yield(filter.state);
+            LOG_EVENT(typeid(Self).name(), 10, "Updated observer: " << filter.state.transpose());
+            os::yield(filter.message())
         }
 
         //~ template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger>

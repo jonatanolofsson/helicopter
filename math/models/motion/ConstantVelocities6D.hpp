@@ -24,7 +24,6 @@ namespace sys {
 
                 static States predict(const States& x, const Scalar dT) {
                     typedef typename ModelDescription::StateDescription states;
-                    typedef typename ModelDescription::ControlDescription controls;
                     States xnext(x);
                     USING_XYZ
 
