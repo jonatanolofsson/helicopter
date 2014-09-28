@@ -13,10 +13,10 @@ namespace sys {
     namespace math {
         namespace models {
             using namespace Eigen;
-            template<typename ModelDescription>
+            template<typename StateDescription>
             struct Gps {
-                typedef Gps<ModelDescription> Self;
-                typedef typename ModelDescription::Scalar Scalar;
+                typedef Gps<StateDescription> Self;
+                typedef typename StateDescription::Scalar Scalar;
                 enum state {
                     x = 0,
                     y = 1,
@@ -41,8 +41,8 @@ namespace sys {
 
                 typedef Matrix<Scalar, nofMeasurements, 1> MeasurementVector;
                 typedef Matrix<Scalar, nofMeasurements, nofMeasurements> CovarianceMatrix;
-                static MeasurementVector measurement(const typename ModelDescription::States& state) {
-                    typedef typename ModelDescription::StateDescription states;
+                static MeasurementVector measurement(const typename StateDescription::StateVector& state) {
+                    typedef StateDescription states;
                     MeasurementVector m;
                     m[x] = state[states::x];
                     m[y] = state[states::y];
@@ -60,10 +60,10 @@ namespace sys {
                 static CovarianceMatrix cov;
                 static const CovarianceMatrix& covariance() { return cov; }
 
-                static Matrix<Scalar, nofMeasurements, ModelDescription::nofStates>
-                jacobian(const typename ModelDescription::States&) {
-                    typedef typename ModelDescription::StateDescription states;
-                    typedef Matrix<Scalar, nofMeasurements, ModelDescription::nofStates> JacobianMatrix;
+                static Matrix<Scalar, nofMeasurements, StateDescription::nofStates>
+                jacobian(const typename StateDescription::StateVector&) {
+                    typedef StateDescription states;
+                    typedef Matrix<Scalar, nofMeasurements, StateDescription::nofStates> JacobianMatrix;
                     JacobianMatrix J;
                     J.setZero();
 
@@ -85,8 +85,8 @@ namespace sys {
                 }
             };
 
-            template<typename ModelDescription> typename Gps<ModelDescription>::CovarianceMatrix
-            Gps<ModelDescription>::cov = (Gps<ModelDescription>::MeasurementVector() <<
+            template<typename StateDescription> typename Gps<StateDescription>::CovarianceMatrix
+            Gps<StateDescription>::cov = (Gps<StateDescription>::MeasurementVector() <<
                 1.0, 1.0, 1.0//, 1.0, 1.0, 1.0
             ).finished().asDiagonal();
         }

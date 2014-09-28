@@ -10,7 +10,7 @@ namespace sys {
                     wx = 0,
                     wy = 1,
                     wz = 2,
-                    
+
                     vx = 3,
                     vy = 4,
                     vz = 5,
@@ -28,7 +28,13 @@ namespace sys {
                     windY = 14,
                     windZ = 15,
 
-                    nofStates = 16
+                    th_a = 16,
+                    th_b = 7,
+                    th_c = 18,
+                    th_tail = 19,
+                    N = 20,
+
+                    nofStates = 21
                 };
                 enum states {
                     position = x,

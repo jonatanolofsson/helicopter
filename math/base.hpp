@@ -3,9 +3,10 @@
 #define SYS_MATH_BASE_HPP_
 
 #include <cmath>
+#include <sys/types.hpp>
 
 #define SQUARE(a) ((a)*(a))
-#define countof(a) (sizeof(a)/sizeof(a[0]))
+#define countof(a) ((sizeof(a)/sizeof(0[a])) / ((size_t)(!(sizeof(a) % sizeof(0[a])))))
 
 namespace sys {
     namespace math {

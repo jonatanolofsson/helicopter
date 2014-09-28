@@ -16,14 +16,6 @@ namespace sys {
                 filter.covariance = A*filter.covariance*A.transpose() + MotionModel::covariance(dT);
             }
 
-            template<typename MotionModel, typename Filter>
-            static void timeUpdate(Filter& filter, const typename MotionModel::Controls& u, const typename MotionModel::Scalar dT) {
-                auto A = MotionModel::systemJacobian(filter.state);
-
-                filter.state = MotionModel::predict(filter.state, u, dT);
-                filter.covariance = A*filter.covariance*A.transpose() + MotionModel::covariance(dT);
-            }
-
             template<typename Filter, typename Measurement>
             static void measurementUpdate(Filter& filter, const Measurement& measurement) {
                 auto h = Measurement::Sensor::measurement(filter.state);

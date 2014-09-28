@@ -147,24 +147,16 @@ namespace sys {
                 typedef typename ModelDescription::StateDescription states;
                 typedef typename ModelDescription::ControlDescription controls;
                 
-                static States predict(const States& x, const Controls& u, const Scalar dT) {
-                    auto xnext = HelicopterModel<ModelDescription>::controlledPrediction(x, x.template segment<Controls::RowsAtCompileTime>(states::controlled), dT);
+                static States predict(const States& x, const Scalar dT) {
+                    auto xnext = HelicopterModel<ModelDescription>::simulate(x, dT);
                     xnext.template segment<5>(states::th_tail) = dT*HelicopterModel<ModelDescription>::controlDerivative(x, u);
                     return xnext;
-                }
-
-                static States diffStates(const States& x, const Controls& u, const States& dx) {
-                    return predict(x + dx, u, 1e-2) - predict(x - dx, u, 1e-2);
-                }
-                
-                static States diffControls(const States& x, const Controls& u, const Controls& du) {
-                    return predict(x, u + du, 1e-2) - predict(x, u - du, 1e-2);
                 }
 
                 static Matrix<Scalar, ModelDescription::nofStates, ModelDescription::nofControls>
                 controlJacobian(const States& x, const Controls& u) {
                     static const Controls du = Controls::Constant(1e-2);
-                    return math::template differentiateStates<ModelDescription, States, Controls, Controls, &Self::diffControls>(x, u, du);
+                    return math::template differentiate<ModelDescription, States, Controls, Controls, &Self::diffControls>(x, u, du);
                 }
                 
                 template<typename D>
