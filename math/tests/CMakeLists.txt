@@ -1,8 +1,8 @@
 add_subdirectory(.. math)
 
-#~ make_test(DifferentiationTests)
-#~ make_test(ConstantVelocityModelTests)
-#~ target_link_libraries(ConstantVelocityModelTests models)
+make_test(DifferentiationTests)
+make_test(ConstantVelocityModelTests)
+target_link_libraries(ConstantVelocityModelTests models)
 make_test(EKFTests)
 target_link_libraries(EKFTests models)
 make_test(LqTests)
