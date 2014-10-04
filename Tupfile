@@ -1,0 +1,5 @@
+include_rules
+: foreach math/*.cpp com/*.cpp |> !cc |>
+preload ../apps/@(APP)/sys
+run $(TUP_CWD)/Tupgen.sh ../apps/@(APP)/sys/*.hpp
+: *.o |> !ar |>
