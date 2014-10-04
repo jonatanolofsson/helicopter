@@ -1,0 +1,27 @@
+ifndef CONFIG_APP
+    error Please specify application (CONFIG_APP)
+endif
+
+CFLAGS  = -std=c++0x 
+CFLAGS += -Wall 
+CFLAGS += -Werror 
+CFLAGS += -Wno-unknown-pragmas 
+CFLAGS += -pedantic-errors 
+CFLAGS += -Wextra 
+CFLAGS += -Wcast-align 
+CFLAGS += -ggdb 
+CFLAGS += -O0
+CFLAGS += -I$(TUP_CWD)
+CFLAGS += -I$(TUP_CWD)/apps/@(APP)
+CFLAGS += -isystem/usr/include/eigen3
+
+TEST_LFLAGS  = -lgtest_main -lgtest 
+TEST_LFLAGS += -lpthread 
+TEST_LFLAGS += -L../..
+TEST_LFLAGS += -los
+
+COMPILER = ccache clang++ -Qunused-arguments
+
+!cc = |> $(COMPILER) $(CFLAGS) -c %f |> %B.o
+!testcc = |> $(COMPILER) $(CFLAGS) %f -o %o $(TEST_LFLAGS) |> %B
+!ar = |> ar crs %o %f |> lib%d.a
