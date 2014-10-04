@@ -49,10 +49,6 @@
 __attribute__((constructor)) void premain() {
     init();
     pinMode(BOARD_LED_PIN, OUTPUT);
-//    Serial1.begin(115200);
-    //Spi2.begin(SPI_4_5MHZ, MSBFIRST, 0);
-    //Spi2.setup_dma();
-
     i2c_master_enable(I2C1, I2C_FAST_MODE | I2C_BUS_RESET);
 }
 
@@ -79,9 +75,10 @@ MPU6050 IMU(I2C1, 17);
 //~ AnalogSensor powerSensor(3);
 //~ AnalogSensor windSensor[2] = {{4}, {5}};
 //~
-U8 motionServo[3] = {24,25,26};
-U8 motor = 27;
-U8 cameraServo[4] = {8,9,10,11};
+static const U8 motionServo[4] = {8,9,10,11};
+static const U8 motor = 25;
+static const U8 cameraServo[2] = {26,27};
+static const U8 SEL_PIN = 14;
 
 ComputerLink computer(&Serial3);
 
@@ -209,26 +206,28 @@ void timerSetup() {
 }
 
 void servoSetup() {
-//    Serial1.end();
-//    Serial2.end();
-    Timer1.setPeriod(2000);
-    Timer2.setPeriod(2000);
-    pinMode(motionServo[0], PWM);
-    pinMode(motionServo[1], PWM);
-    pinMode(motionServo[2], PWM);
+    pinMode(SEL_PIN, OUTPUT);
+    digitalWrite(SEL_PIN, 1); // Maple controls the servos
+
+    Timer1.setPrescaleFactor(22);
+    Timer1.setOverflow(65455); // PPM limit: 6546 for 2ms
     pinMode(motor, PWM);
     pinMode(cameraServo[0], PWM);
     pinMode(cameraServo[1], PWM);
-    pinMode(cameraServo[2], PWM);
-    pinMode(cameraServo[3], PWM);
-    pwmWrite(motionServo[0], 500);
-    pwmWrite(motionServo[1], 500);
-    pwmWrite(motionServo[2], 500);
-    pwmWrite(motor, 500);
-    pwmWrite(cameraServo[0], 500);
-    pwmWrite(cameraServo[1], 500);
-    pwmWrite(cameraServo[2], 500);
-    pwmWrite(cameraServo[3], 500);
+    pwmWrite(motor, 0);
+    pwmWrite(cameraServo[0], 4909);
+    pwmWrite(cameraServo[1], 4909);
+    
+    Timer2.setPrescaleFactor(11);
+    Timer2.setOverflow(65455); // PPM limit: 6546 for 1ms
+    pinMode(motionServo[0], PWM);
+    pinMode(motionServo[1], PWM);
+    pinMode(motionServo[2], PWM);
+    pinMode(motionServo[3], PWM);
+    pwmWrite(motionServo[0], 9818);
+    pwmWrite(motionServo[1], 9818);
+    pwmWrite(motionServo[2], 9818);
+    pwmWrite(motionServo[3], 9818);
 }
 
 int main(void) {
