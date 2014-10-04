@@ -15,7 +15,7 @@ namespace sys {
         : dispatcher(&Self::timeUpdate, this)
         , sensors(this)
         {
-            MotionModel::ModelDescription::StateDescription::initialize(filter);
+            MotionModel::States::initialize(filter);
             LOG_EVENT(typeid(Self).name(), 10, "Initialized observer with " << sizeof...(Sensors) << " sensors.");
         }
 
@@ -24,7 +24,7 @@ namespace sys {
             auto l = filter.retrieve_lock();
             Algorithm::template timeUpdate<MotionModel>(filter, settings::dT);
             LOG_EVENT(typeid(Self).name(), 10, "Updated observer: " << filter.state.transpose());
-            os::yield(filter.message())
+            os::yield(filter.message());
         }
 
         //~ template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger>

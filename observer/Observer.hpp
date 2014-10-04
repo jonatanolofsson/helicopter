@@ -15,9 +15,7 @@ namespace sys {
                 typedef Observer<Algorithm, Filter, MotionModel, Trigger, Sensors...> Self;
 
             private:
-                typename std::conditional<(MotionModel::ModelDescription::nofControls > 0),
-                    os::Dispatcher<Self, Trigger, typename MotionModel::ModelDescription::ControlMessage>,
-                    os::Dispatcher<Self, Trigger>>::type dispatcher;
+                os::Dispatcher<Self, Trigger> dispatcher;
 
                 /* Sensors */
                 template<typename Sensor>
