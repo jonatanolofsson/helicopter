@@ -1,0 +1,2 @@
+include_rules
+: $(TUP_CWD)/apps/@(CONFIG_APP)/*.cpp |> !ccapp |>

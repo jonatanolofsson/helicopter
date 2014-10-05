@@ -1,4 +1,0 @@
-LFLAGS += -L../sys/libsys.a
-LFLAGS += -L../os/libos.a
-
-!ccapp = | ../../sys/libsys.a ../../os/libos.a |> $(COMPILER) $(CFLAGS) %f $(LFLAGS) |> %d
