@@ -5,9 +5,10 @@
 namespace sys {
     namespace math {
         namespace models {
-            template<typename Model_>
+            template<typename S_, typename Model_>
             struct C0 {
                 typedef Model_ Model;
+                typedef S_ Scalar;
                 static const int nofStates = 0;
             };
         }

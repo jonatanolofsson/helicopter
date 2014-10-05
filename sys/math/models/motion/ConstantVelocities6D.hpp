@@ -3,6 +3,7 @@
 #define SYS_MATH_MODELS_CONSTANT_VELOCITY_6D_HPP_
 
 #include <Eigen/Core>
+#include <sys/math/models/motion.hpp>
 #include <sys/types.hpp>
 #include <sys/math/states.hpp>
 #include <sys/math/constants.hpp>
@@ -23,10 +24,10 @@ namespace sys {
                 typedef typename ExternalStateDescription::StateVector ExternalStateVector;
                 typedef ExternalStateDescription extstates;
                 typedef SCart3DQuat<Scalar, Self> States;
-                typedef C0<Self> Controls;
+                typedef C0<Scalar, Self> Controls;
                 typedef typename States::StateVector Result;
                 static const unsigned nofStates = States::nofStates;
-                static const unsigned nofControls = Controls::nofControls;
+                static const unsigned nofControls = Controls::nofStates;
                 static const bool isDiscrete = true;
 
                 static Result predict(const ExternalStateVector& x, const Scalar dT) {

@@ -3,6 +3,7 @@
 #define SYS_MODELS_SCART3DQUAT_HPP_
 
 #include <sys/math/filtering.hpp>
+#include <sys/com/StateMessage.hpp>
 
 namespace sys {
     namespace math {

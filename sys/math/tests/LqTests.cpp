@@ -8,17 +8,16 @@
 
 using namespace Eigen;
 using namespace sys;
-typedef math::models::SCart3D states;
-typedef math::models::CVel3 controls;
-typedef math::models::Description<states, controls> ModelDescription;
-typedef math::GaussianFilter<ModelDescription> Filter;
-typedef math::models::DirectVelocities3D<ModelDescription> MotionModel;
+typedef math::models::SCart3DQuat<> StateDescription;
+typedef StateDescription states;
+typedef math::GaussianFilter<StateDescription> Filter;
+typedef math::models::ConstantVelocities6D<StateDescription> MotionModel;
 
 IOFormat HeavyFmt(FullPrecision, 0, ", ", ";\n", "[", "]", "[", "]");
 
 class LqTests : public ::testing::Test {
     public:
-        typedef math::LqController<ModelDescription> Controller;
+        typedef math::LqController<StateDescription> Controller;
         Controller controller;
         LqTests() : controller() {}
 };
@@ -26,8 +25,8 @@ class LqTests : public ::testing::Test {
 
 TEST_F(LqTests, OutputControl) {
     Filter filter;
-    ModelDescription::StateDescription::initialize(filter);
-    ModelDescription::Controls u; u.setZero();
+    StateDescription::StateDescription::initialize(filter);
+    StateDescription::Controls u; u.setZero();
     filter.state[states::x] = 10.0;
 
     controller.updateModel<MotionModel::isDiscrete>(MotionModel::systemJacobian(filter.state, u), MotionModel::controlJacobian(filter.state, u));
@@ -37,9 +36,9 @@ TEST_F(LqTests, OutputControl) {
 
 TEST_F(LqTests, StressTest3D) {
     Filter filter;
-    ModelDescription::StateDescription::initialize(filter);
+    StateDescription::StateDescription::initialize(filter);
     filter.state[states::x] = 10.0;
-    ModelDescription::Controls u; u.setZero();
+    StateDescription::Controls u; u.setZero();
 
     for(int i = 0; i < 10000; ++i) {
         controller.updateModel<MotionModel::isDiscrete>(MotionModel::systemJacobian(filter.state, u), MotionModel::controlJacobian(filter.state, u));

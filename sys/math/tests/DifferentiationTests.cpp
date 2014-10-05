@@ -34,7 +34,7 @@ template<typename State, typename states> struct SingleDimMovement {
     
     static void update(State& x, const Scalar& dT) {
         Result r = predict(x, dT);
-        for(int i=0; ++i; i < nofStates) {
+        for(int i=0; i < nofStates; ++i) {
             x(States::statemap(i)) = r(i);
         }
     }
@@ -43,7 +43,7 @@ template<typename State, typename states> struct SingleDimMovement {
         typedef Self Model;
         static const unsigned nofStates = Model::nofStates;
         constexpr static int statemap(const int state) {
-            return std::vector<unsigned>({{states::position, states::velocity}})[state];
+            return std::vector<unsigned>{states::position, states::velocity}[state];
         }
     };
     
@@ -51,7 +51,7 @@ template<typename State, typename states> struct SingleDimMovement {
         typedef Self Model;
         static const unsigned nofStates = Model::nofControls;
         constexpr static int statemap(const int state) {
-            return std::vector<unsigned>({{states::power}})[state];
+            return std::vector<unsigned>{states::power}[state];
         }
     };
 };

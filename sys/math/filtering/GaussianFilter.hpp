@@ -13,7 +13,6 @@ namespace sys {
         template<typename StateDescription>
         struct GaussianFilter : public os::ProtectedClass {
             typedef typename StateDescription::Scalar Scalar;
-            typedef typename StateDescription::StateVector Reference;
             typedef GaussianFilter<StateDescription> Self;
             typedef math::internal::Covariance<typename StateDescription::Scalar, StateDescription::nofStates> CovarianceMatrix;
             typedef typename StateDescription::StateVector StateVector;
