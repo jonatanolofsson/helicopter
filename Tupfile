@@ -1,5 +1,5 @@
 include_rules
-: foreach math/*.cpp com/*.cpp |> !cc |>
-preload ../apps/@(APP)/sys
-run $(TUP_CWD)/Tupgen.sh ../apps/@(APP)/sys/*.hpp
+preload $(TUP_CWD)/../apps/@(APP)/sys
+: foreach sys/math/*.cpp |> !cc |>
+run $(TUP_CWD)/tupgen.sh $(TUP_CWD)/../apps/@(APP)/sys/*.hpp
 : *.o |> !ar |>
