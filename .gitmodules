@@ -2,7 +2,7 @@
 	path = os
 	url = git@github.com:jonatanolofsson/helios.git
 [submodule "sys"]
-	path = modules
+	path = sys/modules
 	url = git@github.com:jonatanolofsson/heli-modules.git
 [submodule "doc"]
 	path = doc

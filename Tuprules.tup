@@ -2,6 +2,8 @@ ifndef CONFIG_APP
     error Please specify application (CONFIG_APP)
 endif
 
+TOP = $(TUP_CWD)
+
 CFLAGS  = -std=c++0x 
 CFLAGS += -Wall 
 CFLAGS += -Werror 
@@ -11,21 +13,22 @@ CFLAGS += -Wextra
 CFLAGS += -Wcast-align 
 CFLAGS += -ggdb 
 CFLAGS += -O0
-CFLAGS += -I$(TUP_CWD)
-CFLAGS += -I$(TUP_CWD)/apps/@(APP)
+CFLAGS += -I$(TOP)
+CFLAGS += -I$(TOP)/sys/modules
+CFLAGS += -I$(TOP)/apps/@(APP)
 CFLAGS += -isystem/usr/include/eigen3
 
 TEST_LFLAGS  = -lgtest_main -lgtest 
 TEST_LFLAGS += -lpthread 
 TEST_LFLAGS += -L../..
-TEST_LFLAGS += -los
 
 COMPILER = ccache clang++ -Qunused-arguments
+ifdef USE_GCC
+    COMPILER = g++
+endif
 
-APPLFLAGS += -Lsys/libsys.a
-APPLFLAGS += -Los/libos.a
-
-TOP = $(TUP_CWD)
+APPLFLAGS += -L$(TOP)/sys
+APPLFLAGS += -L$(TOP)os
 
 !cc = |> ^o^ $(COMPILER) $(CFLAGS) -c %f |> %B.o
 !ccapp = | sys/libsys.a os/libos.a |> $(COMPILER) $(CFLAGS) %f $(APPLFLAGS) |> %B
