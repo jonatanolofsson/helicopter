@@ -15,7 +15,7 @@ namespace sys {
         Simulator<MotionModel, Sensors...>::Simulator()
         : d(&Self::simulate, this)
         {
-            MotionModel::ModelDescription::StateDescription::initializeState(state);
+            MotionModel::States::initializeState(state);
         }
 
         template<typename MotionModel, int HZ, typename... Sensors>

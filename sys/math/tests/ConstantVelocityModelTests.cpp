@@ -12,7 +12,7 @@ using namespace Eigen;
 typedef math::models::SCart3DQuat<> StateDescription;
 typedef StateDescription states;
 typedef math::GaussianFilter<StateDescription> Filter;
-typedef math::models::ConstantVelocities6D<StateDescription> MotionModel;
+typedef math::models::ConstantVelocities6D MotionModel;
 typedef math::EKF Algorithm;
 
 void initializeObserver(Filter& system_state) {
@@ -26,7 +26,7 @@ TEST(ConstantVelocity, SingleDimension) {
     EXPECT_FLOAT_EQ(system_state.state[states::x], 0.0);
     EXPECT_FLOAT_EQ(system_state.state[states::qw], 1.0);
 
-    auto x = MotionModel::predict(system_state.state, 1.0);
+    auto x = MotionModel::predict<StateDescription>(system_state.state, 1.0);
     EXPECT_FLOAT_EQ(x[states::x], 1.0);
     EXPECT_FLOAT_EQ(x[states::vx], 1.0);
     EXPECT_FLOAT_EQ(x[states::y], 0.0);
@@ -42,7 +42,7 @@ TEST(ConstantVelocity, Diagonal) {
     EXPECT_FLOAT_EQ(system_state.state[states::x], 0.0);
     EXPECT_FLOAT_EQ(system_state.state[states::qw], 1.0);
 
-    auto x = MotionModel::predict(system_state.state, 1.0);
+    auto x = MotionModel::predict<StateDescription>(system_state.state, 1.0);
     EXPECT_FLOAT_EQ(x[states::x], 1.0);
     EXPECT_FLOAT_EQ(x[states::vx], 1.0);
     EXPECT_FLOAT_EQ(x[states::y], 1.0);
@@ -61,7 +61,7 @@ TEST(ConstantVelocity, RotateX) {
     initializeObserver(system_state);
     system_state.state[states::wx] = 1.0;
 
-    auto x = MotionModel::predict(system_state.state, M_PI);
+    auto x = MotionModel::predict<StateDescription>(system_state.state, M_PI);
     EXPECT_FLOAT_EQ(x[states::x], 0.0);
     EXPECT_FLOAT_EQ(x[states::vx], 0.0);
     EXPECT_FLOAT_EQ(x[states::y], 0.0);
@@ -80,7 +80,7 @@ TEST(ConstantVelocity, RotateY) {
     initializeObserver(system_state);
     system_state.state[states::wy] = 1.0;
 
-    auto x = MotionModel::predict(system_state.state, M_PI);
+    auto x = MotionModel::predict<StateDescription>(system_state.state, M_PI);
     EXPECT_FLOAT_EQ(x[states::x], 0.0);
     EXPECT_FLOAT_EQ(x[states::vx], 0.0);
     EXPECT_FLOAT_EQ(x[states::y], 0.0);
@@ -99,7 +99,7 @@ TEST(ConstantVelocity, RotateZ) {
     initializeObserver(system_state);
     system_state.state[states::wz] = -1.0;
 
-    auto x = MotionModel::predict(system_state.state, M_PI);
+    auto x = MotionModel::predict<StateDescription>(system_state.state, M_PI);
     EXPECT_FLOAT_EQ(x[states::x], 0.0);
     EXPECT_FLOAT_EQ(x[states::vx], 0.0);
     EXPECT_FLOAT_EQ(x[states::y], 0.0);
@@ -118,23 +118,23 @@ TEST(ConstantVelocity, Jacobian) {
     initializeObserver(system_state);
 
     auto static const dT = settings::dT;
-    auto J = MotionModel::systemJacobian(system_state.state);
+    auto J = MotionModel::systemJacobian<StateDescription>(system_state.state);
     //~ IOFormat CommaInitFmt(StreamPrecision, DontAlignCols, ", ", ", ", "", "", " << ", ";");
     //~ std::cout << std::endl << J.format(CommaInitFmt) << std::endl;
     Matrix<Scalar, StateDescription::nofStates, StateDescription::nofStates> Jref;
     Jref.setZero();
-    Jref << 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-            0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-            0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-            0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,  
-            0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,  
-            0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,  
-            dT, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,  
-            0, dT, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,  
-            0, 0, dT, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,  
-            0, 0, 0, -0.005, 0, 0, 0, 0, 0, 1, 0, 0, 0,  
-            0, 0, 0, 0, -0.005, 0, 0, 0, 0, 0, 1, 0, 0,  
-            0, 0, 0, 0, 0, -0.005, 0, 0, 0, 0, 0, 1, 0,  
+    Jref << 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+            dT, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+            0, dT, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+            0, 0, dT, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+            0, 0, 0, -0.005, 0, 0, 0, 0, 0, 1, 0, 0, 0,
+            0, 0, 0, 0, -0.005, 0, 0, 0, 0, 0, 1, 0, 0,
+            0, 0, 0, 0, 0, -0.005, 0, 0, 0, 0, 0, 1, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.00003;
     EXPECT_LT((J-Jref).maxCoeff(), 1e-5) << J-Jref;
 }

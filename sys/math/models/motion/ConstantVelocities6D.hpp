@@ -16,21 +16,17 @@ namespace sys {
     namespace math {
         namespace models {
             using namespace Eigen;
-            template<typename ExternalStateDescription_, typename S_ = Scalar>
             struct ConstantVelocities6D {
-                typedef ConstantVelocities6D<ExternalStateDescription_, S_> Self;
-                typedef ExternalStateDescription_ ExternalStateDescription;
-                typedef S_ Scalar;
-                typedef typename ExternalStateDescription::StateVector ExternalStateVector;
-                typedef ExternalStateDescription extstates;
-                typedef SCart3DQuat<Scalar, Self> States;
-                typedef C0<Scalar, Self> Controls;
+                typedef ConstantVelocities6D Self;
+                typedef SCart3DQuat<Self> States;
                 typedef typename States::StateVector Result;
                 static const unsigned nofStates = States::nofStates;
-                static const unsigned nofControls = Controls::nofStates;
                 static const bool isDiscrete = true;
 
-                static Result predict(const ExternalStateVector& x, const Scalar dT) {
+
+                template<typename ExternalStateDescription>
+                static Result predict(const ExternalStateDescription::StateVector& x, const Scalar dT) {
+                    typedef ExternalStateDescription extstates;
                     Result xnext;
                     USING_XYZ
 
@@ -58,25 +54,19 @@ namespace sys {
                     return xnext;
                 }
 
-                static auto
-                systemJacobian(const ExternalStateVector& x) -> decltype(math::template differentiate<States, Scalar>(ExternalStateVector(),Scalar()))
-                {
-                    return math::template differentiate<States>(x);
-                }
-
-                static Matrix<Scalar, ExternalStateDescription::nofStates, ExternalStateDescription::nofStates>
+                static Matrix<Scalar, nofStates, nofStates>
                 covariance(const Scalar dT) {
-                    typedef Matrix<Scalar, ExternalStateDescription::nofStates, ExternalStateDescription::nofStates> RetType;
+                    typedef Matrix<Scalar, nofStates, nofStates> RetType;
                     return RetType::Identity() * dT;
                 }
-               
-                static void update(ExternalStateVector& x, const Scalar dT) {
-                    Result r = predict(x, dT);
+
+                template<typename ExternalStateDescription>
+                static void update(ExternalStateDescription::StateVector& x, const Scalar dT) {
+                    Result r = predict<ExternalStateDescription>(x, dT);
                     for(int i=0; ++i; i < States::nofStates) {
-                        x(States::statemap(i)) = r(i);
+                        x(States::statemap<ExternalStateDescription>(i)) = r(i);
                     }
                 }
-    
             };
         }
     }

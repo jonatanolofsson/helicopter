@@ -10,12 +10,12 @@
 
 namespace sys {
     namespace math {
-        template<typename StateDescription>
+        template<typename States_>
         struct GaussianFilter : public os::ProtectedClass {
-            typedef typename StateDescription::Scalar Scalar;
-            typedef GaussianFilter<StateDescription> Self;
-            typedef math::internal::Covariance<typename StateDescription::Scalar, StateDescription::nofStates> CovarianceMatrix;
-            typedef typename StateDescription::StateVector StateVector;
+            typedef States_ States_;
+            typedef GaussianFilter<States> Self;
+            typedef math::internal::Covariance<States::nofStates> CovarianceMatrix;
+            typedef typename States::StateVector StateVector;
             CovarianceMatrix covariance;
             StateVector state;
 
@@ -34,7 +34,7 @@ namespace sys {
             typedef Sensor_ Sensor;
             typedef typename Sensor::MeasurementVector MeasurementVector;
             MeasurementVector z;
-            Matrix<typename Sensor::Scalar, Sensor::nofMeasurements, Sensor::nofMeasurements> R;
+            Matrix<Scalar, Sensor::nofMeasurements, Sensor::nofMeasurements> R;
             template<typename StateVector>
             MeasurementVector measurement(const StateVector& state) const {
                 return Sensor::measurement(state);
@@ -51,8 +51,8 @@ namespace sys {
             typedef typename Sensor::MeasurementVector MeasurementVector;
             MeasurementVector z;
             Sensor* sensor;
-            Matrix<typename Sensor::Scalar, Sensor::nofMeasurements, Sensor::nofMeasurements> R;
-            GaussianMeasurement() : sensor(nullptr) 
+            Matrix<typename Scalar, Sensor::nofMeasurements, Sensor::nofMeasurements> R;
+            GaussianMeasurement() : sensor(nullptr)
             {
                 z.setZero();
                 R = Sensor::covariance();

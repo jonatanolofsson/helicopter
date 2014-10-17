@@ -9,10 +9,10 @@ namespace sys {
     namespace math {
         struct EKF {
             template<typename MotionModel, typename Filter>
-            static void timeUpdate(Filter& filter, const typename Filter::Scalar dT) {
-                auto A = MotionModel::systemJacobian(filter.state);
+            static void timeUpdate(Filter& filter, const Scalar dT) {
+                auto A = template math::differentiate<MotionModel::States, Filter::States>(filter.state);
 
-                filter.state = MotionModel::predict(filter.state, dT);
+                filter.state = MotionModel::predict<Filter::States>(filter.state, dT);
                 filter.covariance = A*filter.covariance*A.transpose() + MotionModel::covariance(dT);
             }
 

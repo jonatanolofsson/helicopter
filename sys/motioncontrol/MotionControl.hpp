@@ -13,9 +13,9 @@ namespace sys {
                 typedef MotionControl<ModelDescription, ControllerType, ControlState, ControlModel, SystemState, SystemModelDescription> Self;
                 typedef typename ModelDescription::ReferenceMessage ReferenceMessage;
                 typedef typename ControlModel::Controls Controls;
-                typedef Eigen::Matrix<typename ModelDescription::Scalar, ModelDescription::nofStates+1, ModelDescription::nofStates+1> ExtendedStateMatrix;
-                typedef Eigen::Matrix<typename ModelDescription::Scalar, ModelDescription::nofStates+1, ModelDescription::nofControls> ExtendedControlMatrix;
-                typedef Eigen::Matrix<typename ModelDescription::Scalar, ModelDescription::nofStates+1, 1> ExtendedControlState;
+                typedef Eigen::Matrix<Scalar, ModelDescription::nofStates+1, ModelDescription::nofStates+1> ExtendedStateMatrix;
+                typedef Eigen::Matrix<Scalar, ModelDescription::nofStates+1, ModelDescription::nofControls> ExtendedControlMatrix;
+                typedef Eigen::Matrix<Scalar, ModelDescription::nofStates+1, 1> ExtendedControlState;
 
             private:
                 ControllerType controller;

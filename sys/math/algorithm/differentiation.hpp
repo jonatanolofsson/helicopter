@@ -17,15 +17,15 @@ namespace sys {
         using namespace Eigen;
 
 
-        template<typename M, typename S, typename D, typename Scalar>
+        template<typename SD, typename ESD>
         struct DifferentiationThread {
-            typedef DifferentiationThread<M,S,D,Scalar> Self;
-            typedef decltype(M::Model::predict(S(),Scalar())) R;
+            typedef DifferentiationThread<SD,ESD> Self;
+            typedef decltype(SD::Model::predict<SD>(S()())) R;
             static const unsigned J = R::RowsAtCompileTime;
-            static const unsigned K = M::nofStates;
+            static const unsigned K = SD::nofStates;
             static Matrix<Scalar, J, K> diff;
-            static const S* x;
-            static const D* dx;
+            static const ESD::StateVector* x;
+            static const SD::StateVector* dx;
             static Scalar dT;
             static int id;
             static std::atomic<int> counter;
@@ -47,10 +47,10 @@ namespace sys {
                             if(dying) throw os::HaltException();
                             lastId = id;
                         }
-                        S xp(*x); xp(M::statemap(n)) += (*dx)(n);
-                        S xm(*x); xm(M::statemap(n)) -= (*dx)(n);
+                        S xp(*x); xp(SD::statemap<ESD>(n)) += (*dx)(n);
+                        S xm(*x); xm(SD::statemap<ESD>(n)) -= (*dx)(n);
                         Scalar m = 1.0 / (2.0 * (*dx)(n));
-                        diff.col(n) = (M::Model::predict(xp, dT) * m - M::Model::predict(xm, dT) * m);
+                        diff.col(n) = (SD::Model::predict<ESD>(xp, dT) * m - SD::Model::predict<ESD>(xm, dT) * m);
                         --left;
                         if(left == 0) {
                             resultCond.notify_all();
@@ -95,40 +95,38 @@ namespace sys {
             }
         };
 
-        template<typename M, typename S, typename D, typename Scalar> Matrix<Scalar, DifferentiationThread<M,S,D,Scalar>::J, DifferentiationThread<M,S,D,Scalar>::K> DifferentiationThread<M,S,D,Scalar>::diff;
-        template<typename M, typename S, typename D, typename Scalar> const S* DifferentiationThread<M,S,D,Scalar>::x;
-        template<typename M, typename S, typename D, typename Scalar> const D* DifferentiationThread<M,S,D,Scalar>::dx;
-        template<typename M, typename S, typename D, typename Scalar> Scalar DifferentiationThread<M,S,D,Scalar>::dT;
-        template<typename M, typename S, typename D, typename Scalar> std::atomic<int> DifferentiationThread<M,S,D,Scalar>::counter;
-        template<typename M, typename S, typename D, typename Scalar> std::atomic<int> DifferentiationThread<M,S,D,Scalar>::left;
-        template<typename M, typename S, typename D, typename Scalar> std::mutex DifferentiationThread<M,S,D,Scalar>::leftGuard;
-        template<typename M, typename S, typename D, typename Scalar> std::mutex DifferentiationThread<M,S,D,Scalar>::runGuard;
-        template<typename M, typename S, typename D, typename Scalar> std::mutex DifferentiationThread<M,S,D,Scalar>::configurationGuard;
-        template<typename M, typename S, typename D, typename Scalar> std::condition_variable DifferentiationThread<M,S,D,Scalar>::resultCond;
-        template<typename M, typename S, typename D, typename Scalar> std::condition_variable DifferentiationThread<M,S,D,Scalar>::cond;
-        template<typename M, typename S, typename D, typename Scalar> int DifferentiationThread<M,S,D,Scalar>::id = 0;
-        template<typename M, typename S, typename D, typename Scalar> bool DifferentiationThread<M,S,D,Scalar>::dying = false;
+        template<typename SD, typename ESD> Matrix<Scalar, DifferentiationThread<SD,S,D>::J, DifferentiationThread<SD,S,D>::K> DifferentiationThread<SD,S,D>::diff;
+        template<typename SD, typename ESD> const S* DifferentiationThread<SD,S,D>::x;
+        template<typename SD, typename ESD> const D* DifferentiationThread<SD,S,D>::dx;
+        template<typename SD, typename ESD> Scalar DifferentiationThread<SD,S,D>::dT;
+        template<typename SD, typename ESD> std::atomic<int> DifferentiationThread<SD,S,D>::counter;
+        template<typename SD, typename ESD> std::atomic<int> DifferentiationThread<SD,S,D>::left;
+        template<typename SD, typename ESD> std::mutex DifferentiationThread<SD,S,D>::leftGuard;
+        template<typename SD, typename ESD> std::mutex DifferentiationThread<SD,S,D>::runGuard;
+        template<typename SD, typename ESD> std::mutex DifferentiationThread<SD,S,D>::configurationGuard;
+        template<typename SD, typename ESD> std::condition_variable DifferentiationThread<SD,S,D>::resultCond;
+        template<typename SD, typename ESD> std::condition_variable DifferentiationThread<SD,S,D>::cond;
+        template<typename SD, typename ESD> int DifferentiationThread<SD,S,D>::id = 0;
+        template<typename SD, typename ESD> bool DifferentiationThread<SD,S,D>::dying = false;
 
 
-        template<typename M, typename Scalar = sys::Scalar, typename S, typename D>
-        auto differentiate(const S& x, const D& dx, const Scalar dT) -> decltype(DifferentiationThread<M,S,D,Scalar>::differentiate(x, dx, Scalar())) {
-            typedef DifferentiationThread<M,S,D,Scalar> DThread;
+        template<typename SD, typename ESD>
+        auto differentiate(const ESD::StateVector& x, const SD::StateVector& dx, const Scalar dT) -> decltype(DifferentiationThread<SD,ESD>::differentiate(x, dx, Scalar())) {
+            typedef DifferentiationThread<SD,ESD> DThread;
             #pragma clang diagnostic push
             #pragma clang diagnostic ignored "-Wunused-variable"
 
-            static DThread threads[M::nofStates];
+            static DThread threads[SD::nofStates];
 
             #pragma clang diagnostic pop
 
             return DThread::differentiate(x, dx, dT);
         }
-        
-        template<typename M, typename Scalar = sys::Scalar, typename S>
-        auto differentiate(const S& x, const Scalar dT = settings::dT) -> decltype(differentiate<M,Scalar,S,decltype(M::Model::predict(S(),Scalar()))>(x,decltype(M::Model::predict(S(),Scalar()))(),dT)) {
-            typedef decltype(M::Model::predict(S(),Scalar())) D;
 
-            D dx = D::Constant(1e-3);
-            return differentiate<M,Scalar,S,D>(x, dx, dT);
+        template<typename SD, typename ESD>
+        auto differentiate(const ESD::StateVector& x, const Scalar dT = settings::dT) -> decltype(differentiate<SD,S,decltype(SD::Model::predict<SD>(S()()))>(x,decltype(SD::Model::predict<SD>(S()()))(),dT)) {
+            SD::StateVector dx = SD::StateVector::Constant(1e-3);
+            return differentiate<SD,ESD>(x, dx, dT);
         }
     }
 }

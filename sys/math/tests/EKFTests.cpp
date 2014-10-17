@@ -2,17 +2,16 @@
 
 #include <sys/math/models.hpp>
 #include <sys/math/filtering.hpp>
-#include <sys/math/states.hpp>
+#include <sys/math/States.hpp>
 #include <Eigen/Core>
 
 
 using namespace Eigen;
 using namespace sys;
 
-typedef math::models::SCart3DQuat<> StateDescription;
-typedef StateDescription states;
-typedef math::GaussianFilter<StateDescription> Filter;
-typedef math::models::ConstantVelocities6D<StateDescription> MotionModel;
+typedef math::models::SCart3DQuat<> States;
+typedef math::GaussianFilter<States> Filter;
+typedef math::models::ConstantVelocities6D MotionModel;
 typedef math::EKF Algorithm;
 
 
@@ -21,7 +20,7 @@ class EKFTests : public ::testing::Test {
         Filter filter;
         EKFTests()
         {
-            states::initialize(filter);
+            States::initialize(filter);
         }
 };
 
@@ -32,38 +31,38 @@ TEST_F(EKFTests, TimeUpdateStandStill) {
 }
 
 TEST_F(EKFTests, TimeUpdateMovingPositiveX) {
-    filter.state[states::vx] = 1.0;
+    filter.state[States::vx] = 1.0;
     auto reference = filter.state;
-    reference[states::x] = 1.0;
+    reference[States::x] = 1.0;
 
     Algorithm::timeUpdate<MotionModel>(filter, 1.0);
     EXPECT_TRUE((reference-filter.state).norm() < 1e-3) << reference.transpose() << " = " << filter.state.transpose() << "  [ " << (reference-filter.state).transpose() << " ]";
 }
 
 TEST_F(EKFTests, TimeUpdateMovingNegativeX) {
-    filter.state[states::vx] = -1.0;
+    filter.state[States::vx] = -1.0;
     auto reference = filter.state;
-    reference[states::x] = -1.0;
+    reference[States::x] = -1.0;
 
     Algorithm::timeUpdate<MotionModel>(filter, 1.0);
     EXPECT_TRUE((reference-filter.state).norm() < 1e-3) << reference.transpose() << " = " << filter.state.transpose() << "  [ " << (reference-filter.state).transpose() << " ]";
 }
 
 TEST_F(EKFTests, TimeUpdateRotationPositiveX) {
-    filter.state[states::wx] = 1.0;
+    filter.state[States::wx] = 1.0;
     auto reference = filter.state;
-    reference[states::qw] = 0;
-    reference[states::qx] = -1.0;
+    reference[States::qw] = 0;
+    reference[States::qx] = -1.0;
 
     Algorithm::timeUpdate<MotionModel>(filter, M_PI);
     EXPECT_TRUE((reference-filter.state).norm() < 1e-7) << reference.transpose() << " = " << filter.state.transpose();
 }
 
 TEST_F(EKFTests, TimeUpdateRepeatedRotationPositiveX) {
-    filter.state[states::wx] = 1.0;
+    filter.state[States::wx] = 1.0;
     auto reference = filter.state;
-    reference[states::qw] = 0;
-    reference[states::qx] = -1.0;
+    reference[States::qw] = 0;
+    reference[States::qx] = -1.0;
 
     for(int i = 0; i < 100; ++i) {
         Algorithm::timeUpdate<MotionModel>(filter, M_PI/100);
@@ -74,9 +73,9 @@ TEST_F(EKFTests, TimeUpdateRepeatedRotationPositiveX) {
 
 TEST_F(EKFTests, MeasurementUpdateGPS) {
     auto reference = filter.state;
-    reference[states::x] = reference[states::y] = reference[states::z] = 0.5;
+    reference[States::x] = reference[States::y] = reference[States::z] = 0.5;
 
-    math::GaussianMeasurement<sys::math::models::Gps<StateDescription>> m;
+    math::GaussianMeasurement<sys::math::models::Gps<States>> m;
     m.z << 1, 1, 1;
     m.R.setIdentity();
 

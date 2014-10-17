@@ -17,14 +17,15 @@
 namespace sys {
     namespace math {
         using namespace Eigen;
-        template<typename ModelDescription, int EXTRA_STATES = 0, int EXTRA_CONTROLS = 0>
+        template<int StateDescription_, int ControlDescription_>
         class LqController {
             public:
-                typedef LqController<ModelDescription, EXTRA_STATES, EXTRA_CONTROLS> Self;
-                typedef typename ModelDescription::Scalar Scalar;
-                static const int nofStates = ModelDescription::nofStates + EXTRA_STATES;
-                static const int nofControls = ModelDescription::nofControls + EXTRA_CONTROLS;
-                typedef Matrix<Scalar, nofStates, nofStates> StateMatrix; ///< A state (propagation) matrix describes how the model state evolves in time, given no control
+                typedef StateDescription_ StateDescription;
+                typedef ControlDescription_ ControlDescription;
+                typedef LqController<StateDescription, ControlDescription> Self;
+                static const int nofStates = StateDescription::nofStates;
+                static const int nofControls = ControlDescription::nofStates;
+                typedef Matrix<Scalar, nofStates, nofStates> StateMatrix; ///< A state propagation matrix describes how the model state evolves in time, given no control
                 typedef Matrix<Scalar, nofStates, nofControls> ControlMatrix; ///<
                 typedef Matrix<Scalar, nofStates, 1> StateVector; ///< A state vector describes the state in which the system is (currently) in
                 typedef Matrix<Scalar, nofControls, 1> ControlVector; ///< A state vector describes the state in which the system is (currently) in
@@ -61,48 +62,56 @@ namespace sys {
                     LOG_EVENT(typeid(Self).name(), 50, "A::::::::::::::\n" << A << "\n:::::::::::::::::::::::::::::::::::::");
                     B = B_;
                     LOG_EVENT(typeid(Self).name(), 50, "B::::::::::::::\n" << B << "\n:::::::::::::::::::::::::::::::::::::");
-                    updateControlMatrices(isDiscrete);
+                    updateControlMatrices<isDiscrete>();
                 }
 
-                void updateControlMatrices(const bool modelIsDiscrete) {
+
+                template<bool isDiscrete>
+                void updateControlMatrices() {
                     Scalar measure = 1000;
                     Scalar newMeasure;
-                    if(modelIsDiscrete) {
-                        auto Rinv = R.householderQr();
-                        auto BRB = B*Rinv.solve(B.transpose());
-                        StateMatrix deltaP;
-                        do {
-                            deltaP = alpha*(A.transpose()*P + P*A - P*BRB*P + Q).householderQr().solve(P);
-                            P += deltaP;
-                            newMeasure = deltaP.cwiseAbs2().maxCoeff();
-                            //~ std::cout << "(c) Iteration! (" << newMeasure << ")" << std::endl;
-                            if(newMeasure > measure) {
-                                //~ std::cout << "(c) Wrong way!" << std::endl;
-                                break;
-                            }
-                            measure = newMeasure;
-                        } while(measure > P_DELTA_EPSILON);
+                    auto Rinv = R.householderQr();
+                    auto BRB = B*Rinv.solve(B.transpose());
+                    StateMatrix deltaP;
 
-                        L = Rinv.solve(B.transpose()*P);
-                    } else {
-                        StateMatrix Pprev;
+                    do {
+                        deltaP = alpha*(A.transpose()*P + P*A - P*BRB*P + Q).householderQr().solve(P);
+                        P += deltaP;
+                        newMeasure = deltaP.cwiseAbs2().maxCoeff();
+                        //~ std::cout << "(c) Iteration! (" << newMeasure << ")" << std::endl;
+                        if(newMeasure > measure) {
+                            //~ std::cout << "(c) Wrong way!" << std::endl;
+                            break;
+                        }
+                        measure = newMeasure;
+                    } while(measure > P_DELTA_EPSILON);
 
-                        //~ std::cout << "Eig(A): :::::::::::::::::::::::::::" << std::endl << A.eigenvalues().transpose() << std::endl;
+                    L = Rinv.solve(B.transpose()*P);
 
-                        do {
-                            Pprev = P;
-                            P = Q + A.transpose()*(P - P*B*(R + B.transpose()*P*B).ldlt().solve(B.transpose()*P))*A;
+                    LOG_EVENT(typeid(Self).name(), 50, "L::::::::::::::\n" << L << "\n:::::::::::::::::::::::::::::::::::::" << std::endl);
+                }
 
-                            newMeasure = (P-Pprev).cwiseAbs2().maxCoeff();
-                            if(newMeasure > measure) {
-                                //~ std::cout << "(d) Wrong way!" << std::endl;
-                                break;
-                            }
-                            measure = newMeasure;
-                        } while(measure > P_DELTA_EPSILON);
+                template<>
+                void updateControlMatrices<false>() {
+                    Scalar measure = 1000;
+                    Scalar newMeasure;
+                    StateMatrix Pprev;
 
-                        L = (R + B.transpose()*P*B).ldlt().solve(B.transpose()*P*A);
-                    }
+                    //~ std::cout << "Eig(A): :::::::::::::::::::::::::::" << std::endl << A.eigenvalues().transpose() << std::endl;
+
+                    do {
+                        Pprev = P;
+                        P = Q + A.transpose()*(P - P*B*(R + B.transpose()*P*B).ldlt().solve(B.transpose()*P))*A;
+
+                        newMeasure = (P-Pprev).cwiseAbs2().maxCoeff();
+                        if(newMeasure > measure) {
+                            //~ std::cout << "(d) Wrong way!" << std::endl;
+                            break;
+                        }
+                        measure = newMeasure;
+                    } while(measure > P_DELTA_EPSILON);
+
+                    L = (R + B.transpose()*P*B).ldlt().solve(B.transpose()*P*A);
                     LOG_EVENT(typeid(Self).name(), 50, "L::::::::::::::\n" << L << "\n:::::::::::::::::::::::::::::::::::::" << std::endl);
                 }
 
@@ -117,8 +126,10 @@ namespace sys {
                     return u;
                 }
 
-                const ControlVector& operator()(const StateVector& x) {
-                    return control_signal(x);
+                template<typename ExternalStateDescription>
+                const ControlVector& operator()(const ExternalStateDescription::StateVector& x) {
+                    StateVector x_ = StateDescription::extract<ExternalStateDescription>(x);
+                    return control_signal(x_);
                 }
 
                 const ControlVector& operator()(const StateVector& x, const StateVector& r) {

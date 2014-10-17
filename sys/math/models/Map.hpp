@@ -24,7 +24,6 @@ namespace sys {
             Scalar getIntersection(const typename ModelDescription::States& state) const {
                 //~ std::cout << "Finding intersection for sensor state " << state.transpose() << std::endl;
                 typedef typename ModelDescription::StateDescription states;
-                typedef typename ModelDescription::Scalar Scalar;
                 Scalar ix, minx, maxx;
                 Scalar iy, miny, maxy;
                 Scalar dist;
