@@ -4,22 +4,22 @@ endif
 
 TOP = $(TUP_CWD)
 
-CFLAGS  = -std=c++0x 
-CFLAGS += -Wall 
-CFLAGS += -Werror 
-CFLAGS += -Wno-unknown-pragmas 
-CFLAGS += -pedantic-errors 
-CFLAGS += -Wextra 
-CFLAGS += -Wcast-align 
-CFLAGS += -ggdb 
+CFLAGS  = -std=c++0x
+CFLAGS += -Wall
+CFLAGS += -Werror
+CFLAGS += -Wno-unknown-pragmas
+CFLAGS += -pedantic-errors
+CFLAGS += -Wextra
+CFLAGS += -Wcast-align
+CFLAGS += -ggdb
 CFLAGS += -O0
 CFLAGS += -I$(TOP)
 CFLAGS += -I$(TOP)/sys/modules
 CFLAGS += -I$(TOP)/apps/@(APP)
 CFLAGS += -isystem/usr/include/eigen3
 
-TEST_LFLAGS  = -lgtest_main -lgtest 
-TEST_LFLAGS += -lpthread 
+TEST_LFLAGS  = -lgtest_main -lgtest
+TEST_LFLAGS += -lpthread
 TEST_LFLAGS += -L../..
 
 COMPILER = ccache clang++ -Qunused-arguments
