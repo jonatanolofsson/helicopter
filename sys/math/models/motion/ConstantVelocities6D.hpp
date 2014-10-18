@@ -18,15 +18,15 @@ namespace sys {
             using namespace Eigen;
             struct ConstantVelocities6D {
                 typedef ConstantVelocities6D Self;
-                typedef SCart3DQuat<Self> States;
+                typedef SCart3DQuat States;
                 typedef typename States::StateVector Result;
-                static const unsigned nofStates = States::nofStates;
+                static const int nofStates = States::nofStates;
                 static const bool isDiscrete = true;
 
 
-                template<typename ExternalStateDescription>
-                static Result predict(const ExternalStateDescription::StateVector& x, const Scalar dT) {
-                    typedef ExternalStateDescription extstates;
+                template<typename ExternalStates>
+                static Result predict(const typename ExternalStates::StateVector& x, const Scalar dT) {
+                    typedef ExternalStates extstates;
                     Result xnext;
                     USING_XYZ
 
@@ -60,11 +60,11 @@ namespace sys {
                     return RetType::Identity() * dT;
                 }
 
-                template<typename ExternalStateDescription>
-                static void update(ExternalStateDescription::StateVector& x, const Scalar dT) {
-                    Result r = predict<ExternalStateDescription>(x, dT);
-                    for(int i=0; ++i; i < States::nofStates) {
-                        x(States::statemap<ExternalStateDescription>(i)) = r(i);
+                template<typename ExternalStates>
+                static void update(typename ExternalStates::StateVector& x, const Scalar dT) {
+                    Result r = predict<ExternalStates>(x, dT);
+                    for(int i=0; i < nofStates; ++i) {
+                        x(States::template statemap<ExternalStates>(i)) = r(i);
                     }
                 }
             };

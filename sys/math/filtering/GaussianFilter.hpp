@@ -12,7 +12,7 @@ namespace sys {
     namespace math {
         template<typename States_>
         struct GaussianFilter : public os::ProtectedClass {
-            typedef States_ States_;
+            typedef States_ States;
             typedef GaussianFilter<States> Self;
             typedef math::internal::Covariance<States::nofStates> CovarianceMatrix;
             typedef typename States::StateVector StateVector;
@@ -32,12 +32,13 @@ namespace sys {
         template<typename Sensor_, bool CALL_WITH_OBJECT = false>
         struct GaussianMeasurement {
             typedef Sensor_ Sensor;
-            typedef typename Sensor::MeasurementVector MeasurementVector;
-            MeasurementVector z;
-            Matrix<Scalar, Sensor::nofMeasurements, Sensor::nofMeasurements> R;
-            template<typename StateVector>
-            MeasurementVector measurement(const StateVector& state) const {
-                return Sensor::measurement(state);
+            typedef typename Sensor::States States;
+            typedef typename Sensor::States::StateVector StateVector;
+            StateVector z;
+            Matrix<Scalar, Sensor::nofStates, Sensor::nofStates> R;
+            template<typename ExternalStates>
+            StateVector measurement(const typename ExternalStates::StateVector& state) const {
+                return Sensor::template measurement<ExternalStates>(state);
             }
             GaussianMeasurement() {
                 z.setZero();
@@ -48,17 +49,18 @@ namespace sys {
         template<typename Sensor_>
         struct GaussianMeasurement<Sensor_, true> {
             typedef Sensor_ Sensor;
-            typedef typename Sensor::MeasurementVector MeasurementVector;
-            MeasurementVector z;
+            typedef typename Sensor::States States;
+            typedef typename Sensor::States::StateVector StateVector;
+            StateVector z;
             Sensor* sensor;
-            Matrix<typename Scalar, Sensor::nofMeasurements, Sensor::nofMeasurements> R;
+            Matrix<Scalar, Sensor::nofStates, Sensor::nofStates> R;
             GaussianMeasurement() : sensor(nullptr)
             {
                 z.setZero();
                 R = Sensor::covariance();
             }
-            template<typename StateVector>
-            MeasurementVector measurement(const StateVector& state) const {
+            template<typename ExternalStates>
+            StateVector measurement(const typename ExternalStates::StateVector& state) const {
                 assert(sensor);
                 return sensor->measurement(state);
             }

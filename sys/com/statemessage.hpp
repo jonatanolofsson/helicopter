@@ -4,7 +4,7 @@
 
 #include <sys/types.hpp>
 #include <sys/math/filtering.hpp>
-#include <sys/com/EigenMessage.hpp>
+#include <sys/com/eigenmessage.hpp>
 
 namespace sys {
     namespace math {

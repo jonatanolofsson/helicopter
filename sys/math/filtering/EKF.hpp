@@ -3,6 +3,7 @@
 #define SYS_MATH_FILTERING_EKF_HPP_
 
 #include <sys/math/filtering/GaussianFilter.hpp>
+#include <sys/math/algorithm/differentiation.hpp>
 #include <Eigen/Cholesky>
 
 namespace sys {
@@ -10,16 +11,16 @@ namespace sys {
         struct EKF {
             template<typename MotionModel, typename Filter>
             static void timeUpdate(Filter& filter, const Scalar dT) {
-                auto A = template math::differentiate<MotionModel::States, Filter::States>(filter.state);
+                auto A = math::differentiate<MotionModel, typename MotionModel::States, typename Filter::States>(filter.state);
 
-                filter.state = MotionModel::predict<Filter::States>(filter.state, dT);
+                filter.state = MotionModel::template predict<typename Filter::States>(filter.state, dT);
                 filter.covariance = A*filter.covariance*A.transpose() + MotionModel::covariance(dT);
             }
 
             template<typename Filter, typename Measurement>
             static void measurementUpdate(Filter& filter, const Measurement& measurement) {
-                auto h = Measurement::Sensor::measurement(filter.state);
-                auto H = Measurement::Sensor::jacobian(filter.state);
+                auto h = Measurement::Sensor::template measurement<typename Filter::States>(filter.state);
+                auto H = Measurement::Sensor::template observationMatrix<typename Filter::States, typename Filter::States>(filter.state);
 
                 auto KA = filter.covariance * H.transpose();
 

@@ -11,7 +11,6 @@ namespace sys {
 }
 
 
-#include <sys/math/control/ControlState.hpp>
 #include <sys/math/control/LqController.hpp>
 
 #endif

@@ -3,16 +3,13 @@
 #define SYS_MODELS_SCART3DQUAT_HPP_
 
 #include <sys/math/filtering.hpp>
-#include <sys/com/StateMessage.hpp>
+#include <sys/math/states.hpp>
 #include <type_traits>
 
 namespace sys {
     namespace math {
         namespace models {
-            template<typename Model_ = void>
-            struct SCart3DQuat {
-                typedef Model_ Model;
-
+            struct SCart3DQuat : public State<SCart3DQuat, 13> {
                 enum state {
                     vx = 0,
                     vy = 1,
@@ -30,8 +27,6 @@ namespace sys {
                     qy = 10,
                     qz = 11,
                     qw = 12,
-
-                    nofStates = 13
                 };
                 enum states {
                     position = x,
@@ -39,9 +34,6 @@ namespace sys {
                     quaternion = qx,
                     omega = wx
                 };
-
-                typedef math::internal::StateVector<Scalar, nofStates> StateVector;
-                typedef messages::StateMessage<StateVector> StateMessage;
 
                 static const int velocities[3];
                 static const int omegas[3];
@@ -52,31 +44,22 @@ namespace sys {
                  * Returns, for a given internal state number, the corresponding state number in
                  * the external state description.
                  */
-                template<typename ExternalStateDescription = Model::ExternalStateDescription>
+                template<typename ExternalStates>
                 constexpr static int statemap(const int state) {
                     return math::internal::StateMap{
-                            ExternalStateDescription::velocities[0],
-                            ExternalStateDescription::velocities[1],
-                            ExternalStateDescription::velocities[2],
-                            ExternalStateDescription::omegas[0],
-                            ExternalStateDescription::omegas[1],
-                            ExternalStateDescription::omegas[2],
-                            ExternalStateDescription::positions[0],
-                            ExternalStateDescription::positions[1],
-                            ExternalStateDescription::positions[2],
-                            ExternalStateDescription::quaternions[0],
-                            ExternalStateDescription::quaternions[1],
-                            ExternalStateDescription::quaternions[2],
-                            ExternalStateDescription::quaternions[3]}[state];
-                }
-
-                template<typename ExternalStateDescription = Model::ExternalStateDescription>
-                StateVector extract(const ExternalStateDescription::StateVector& x) {
-                    StateVector r;
-                    for(int i = 0; i < nofStates; ++i) {
-                        r(i) = x(statemap<ExternalStateDescription>(i));
-                    }
-                    return r;
+                            ExternalStates::velocities[0],
+                            ExternalStates::velocities[1],
+                            ExternalStates::velocities[2],
+                            ExternalStates::omegas[0],
+                            ExternalStates::omegas[1],
+                            ExternalStates::omegas[2],
+                            ExternalStates::positions[0],
+                            ExternalStates::positions[1],
+                            ExternalStates::positions[2],
+                            ExternalStates::quaternions[0],
+                            ExternalStates::quaternions[1],
+                            ExternalStates::quaternions[2],
+                            ExternalStates::quaternions[3]}[state];
                 }
 
                 template<typename T>
@@ -88,10 +71,10 @@ namespace sys {
                     filter.covariance.setIdentity();
                 }
             };
-            template<typename Model_> const int SCart3DQuat<Model_>::velocities[3] = {SCart3DQuat<Model_>::vxCart3DQuat<Model_>::vyCart3DQuat<Model_>::vz};
-            template<typename Model_> const int SCart3DQuat<Model_>::omegas[3] = {SCart3DQuat<Model_>::wxCart3DQuat<Model_>::wyCart3DQuat<Model_>::wz};
-            template<typename Model_> const int SCart3DQuat<Model_>::positions[3] = {SCart3DQuat<Model_>::xCart3DQuat<Model_>::yCart3DQuat<Model_>::z};
-            template<typename Model_> const int SCart3DQuat<Model_>::quaternions[4] = {SCart3DQuat<Model_>::qxCart3DQuat<Model_>::qyCart3DQuat<Model_>::qzCart3DQuat<Model_>::qw};
+            const int SCart3DQuat::velocities[3] = {SCart3DQuat::vx, SCart3DQuat::vy, SCart3DQuat::vz};
+            const int SCart3DQuat::omegas[3] = {SCart3DQuat::wx, SCart3DQuat::wy, SCart3DQuat::wz};
+            const int SCart3DQuat::positions[3] = {SCart3DQuat::x, SCart3DQuat::y, SCart3DQuat::z};
+            const int SCart3DQuat::quaternions[4] = {SCart3DQuat::qx, SCart3DQuat::qy, SCart3DQuat::qz, SCart3DQuat::qw};
         }
     }
 }

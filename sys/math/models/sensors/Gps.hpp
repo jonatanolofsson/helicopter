@@ -15,9 +15,9 @@ namespace sys {
             using namespace Eigen;
             struct Gps {
                 typedef Gps Self;
-                typedef SCart3D<Scalar> States;
+                typedef SCart3D States;
                 typedef States::StateVector Result;
-                typedef nofMeasurements = States::nofStates;
+                static const int nofStates = States::nofStates;
 
                 template<typename ExternalStates>
                 static Result measurement(const typename ExternalStates::StateVector& state) {
@@ -36,22 +36,21 @@ namespace sys {
                     return m;
                 }
 
-                static Matrix<Scalar, nofStates, nofStates>
-                CovarianceMatrix& covariance() {
+                static internal::Covariance<nofStates> covariance() {
                     typedef Matrix<Scalar, nofStates, nofStates> RetType;
                     return RetType::Identity();
                 }
 
-                template<typename ExternalStates>
-                static Matrix<Scalar, nofMeasurements, ExternalStates::nofStates>
-                jacobian(const typename ExternalStates::StateVector&) {
-                    typedef Matrix<Scalar, nofMeasurements, nofMeasurements> JacobianMatrix;
+                template<typename DerivationStates, typename ExternalStates>
+                static Matrix<Scalar, nofStates, DerivationStates::nofStates>
+                observationMatrix(const typename ExternalStates::StateVector&) {
+                    typedef Matrix<Scalar, nofStates, DerivationStates::nofStates> JacobianMatrix;
                     JacobianMatrix J;
                     J.setZero();
 
-                    J(States::x, States::x) = 1;
-                    J(States::y, States::y) = 1;
-                    J(States::x, States::z) = 1;
+                    J(States::x, DerivationStates::x) = 1;
+                    J(States::y, DerivationStates::y) = 1;
+                    J(States::z, DerivationStates::z) = 1;
 
                     /*
                      *J(States::vx, States::vx) = 1;
@@ -62,7 +61,7 @@ namespace sys {
                     return J;
                 }
 
-                static MeasurementVector noise() {
+                static Result noise() {
                     return math::normalSample(covariance());
                 }
             };

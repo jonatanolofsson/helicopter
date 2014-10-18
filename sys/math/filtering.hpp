@@ -4,12 +4,13 @@
 
 #include <Eigen/Core>
 #include <vector>
+#include <sys/types.hpp>
 
 namespace sys {
     namespace math {
         namespace internal {
-            template<typename S, int N> using StateVector = Eigen::Matrix<S, N, 1>;
-            template<typename S, int N> using Covariance = Eigen::Matrix<S, N, N>;
+            template<int N> using StateVector = Eigen::Matrix<Scalar, N, 1>;
+            template<int N> using Covariance = Eigen::Matrix<Scalar, N, N>;
             typedef std::vector<int> StateMap;
         }
     }

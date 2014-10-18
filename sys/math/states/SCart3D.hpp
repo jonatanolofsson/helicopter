@@ -2,31 +2,31 @@
 #ifndef SYS_MODELS_SCART3D_HPP_
 #define SYS_MODELS_SCART3D_HPP_
 
+#include <sys/math/states.hpp>
+
 namespace sys {
     namespace math {
         namespace models {
-            struct SCart3D {
+            struct SCart3D : public State<SCart3D, 3> {
                 enum state {
                     x = 0,
                     y = 1,
-                    z = 2,
-
-                    nofStates = 3
+                    z = 2
                 };
                 enum states {
                     position = x
                 };
 
-                template<typename T>
-                static void initializeState(T& state) {
-                    state.setZero();
-                }
-
-                template<typename T>
-                static void initialize(T& filter) {
-                    auto l = filter.retrieve_lock();
-                    initializeState(filter.state);
-                    filter.covariance.setIdentity();
+                /*
+                 * Returns, for a given internal state number, the corresponding state number in
+                 * the external state description.
+                 */
+                template<typename ExternalStates>
+                constexpr static int statemap(const int state) {
+                    return math::internal::StateMap{
+                            ExternalStates::x,
+                            ExternalStates::y,
+                            ExternalStates::z}[state];
                 }
             };
         }

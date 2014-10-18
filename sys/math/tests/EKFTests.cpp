@@ -2,14 +2,14 @@
 
 #include <sys/math/models.hpp>
 #include <sys/math/filtering.hpp>
-#include <sys/math/States.hpp>
+#include <sys/math/states.hpp>
 #include <Eigen/Core>
 
 
 using namespace Eigen;
 using namespace sys;
 
-typedef math::models::SCart3DQuat<> States;
+typedef math::models::SCart3DQuat States;
 typedef math::GaussianFilter<States> Filter;
 typedef math::models::ConstantVelocities6D MotionModel;
 typedef math::EKF Algorithm;
@@ -75,7 +75,7 @@ TEST_F(EKFTests, MeasurementUpdateGPS) {
     auto reference = filter.state;
     reference[States::x] = reference[States::y] = reference[States::z] = 0.5;
 
-    math::GaussianMeasurement<sys::math::models::Gps<States>> m;
+    math::GaussianMeasurement<sys::math::models::Gps> m;
     m.z << 1, 1, 1;
     m.R.setIdentity();
 
