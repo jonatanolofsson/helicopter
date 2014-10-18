@@ -9,7 +9,7 @@
 namespace sys {
     namespace observer {
         typedef math::models::SCart3DQuat<>                 StateDescription;
-        typedef math::models::ConstantVelocities6D<StateDescription> MotionModel;
+        typedef math::models::ConstantVelocities6D MotionModel;
 
         typedef math::EKF                                   Algorithm;
         typedef math::GaussianFilter<StateDescription>      Filter;
@@ -18,14 +18,14 @@ namespace sys {
         typedef StateDescription::StateVector               SystemState;
 
         namespace sensors {
-            typedef math::GaussianMeasurement<math::models::Gps<StateDescription>> Gps;
+            typedef math::GaussianMeasurement<math::models::Gps> Gps;
         }
     }
 }
 #include <sys/observer/Observer.hpp>
 
 namespace sys {
-#define OBSERVER_CLASS observer::Observer<observer::Algorithm, observer::Filter, observer::MotionModel, observer::TriggerType, observer::sensors::Gps> 
+#define OBSERVER_CLASS observer::Observer<observer::Algorithm, observer::Filter, observer::MotionModel, observer::TriggerType, observer::sensors::Gps>
     typedef OBSERVER_CLASS Observer;
 }
 
