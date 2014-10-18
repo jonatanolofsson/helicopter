@@ -1,6 +1,3 @@
 [submodule "os"]
 	path = os
 	url = git@github.com:jonatanolofsson/helios.git
-[submodule "ac"]
-	path = ac
-	url = git@github.com:jonatanolofsson/heliac.git
