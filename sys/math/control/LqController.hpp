@@ -1,11 +1,12 @@
 #pragma once
-#ifndef SYS_MATH_LQ_CONTROLLER_HPP_
-#define SYS_MATH_LQ_CONTROLLER_HPP_
+#ifndef SYS_MATH_LQCONTROLLER_HPP_
+#define SYS_MATH_LQCONTROLLER_HPP_
 
 #include <Eigen/Core>
 #include <Eigen/QR>
 #include <Eigen/LU>
 #include <Eigen/Eigenvalues>
+#include <os/utils/eventlog.hpp>
 #include <sys/types.hpp>
 #include <iostream>
 
@@ -65,7 +66,6 @@ namespace sys {
                     updateControlMatrices<isDiscrete>();
                 }
 
-
                 template<bool isDiscrete>
                 void updateControlMatrices() {
                     Scalar measure = 1000;
@@ -116,21 +116,10 @@ namespace sys {
                  * \return  Optimal control signal, given cost matrices of model
                  */
                 template<typename ExternalStates>
-                const ControlVector& control_signal(const typename ExternalStates::StateVector& x) {
+                const ControlVector& eval(const typename ExternalStates::StateVector& x) {
                     /// [2] eq. 9.11: u = L*x, r = 0
                     u = -L*x;
                     return u;
-                }
-
-                template<typename ExternalStates>
-                const ControlVector& operator()(const typename ExternalStates::StateVector& x) {
-                    StateVector x_ = States::template extract<ExternalStates>(x);
-                    return control_signal<ExternalStates>(x_);
-                }
-
-                template<typename ExternalStates>
-                const ControlVector& operator()(const typename ExternalStates::StateVector& x, const typename ExternalStates::StateVector& r) {
-                    return control_signal<ExternalStates>(x-r);
                 }
         };
     }

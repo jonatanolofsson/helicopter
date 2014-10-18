@@ -8,11 +8,11 @@
 
 namespace sys {
     namespace observer {
-        typedef math::models::SCart3DQuat<>                 StateDescription;
+        typedef math::models::VWXQ_3D States;
         typedef math::models::ConstantVelocities6D MotionModel;
 
         typedef math::EKF                                   Algorithm;
-        typedef math::GaussianFilter<StateDescription>      Filter;
+        typedef math::GaussianFilter<States>      Filter;
         typedef os::SystemTime                              TriggerType;
 
         typedef StateDescription::StateVector               SystemState;

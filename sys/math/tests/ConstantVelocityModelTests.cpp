@@ -9,7 +9,7 @@
 using namespace sys;
 using namespace Eigen;
 
-typedef math::models::SCart3DQuat States;
+typedef math::models::VWXQ_3D States;
 typedef math::GaussianFilter<States> Filter;
 typedef math::models::ConstantVelocities6D MotionModel;
 typedef math::EKF Algorithm;

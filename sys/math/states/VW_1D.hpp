@@ -1,20 +1,14 @@
 #pragma once
-#ifndef SYS_MODELS_SCART3D_HPP_
-#define SYS_MODELS_SCART3D_HPP_
-
-#include <sys/math/states.hpp>
+#ifndef SYS_MODELS_VW_1D_HPP_
+#define SYS_MODELS_VW_1D_HPP_
 
 namespace sys {
     namespace math {
         namespace models {
-            struct SCart3D : public State<SCart3D, 3> {
+            struct VW_1D : public State<VW_1D, 2> {
                 enum state {
-                    x = 0,
-                    y = 1,
-                    z = 2
-                };
-                enum states {
-                    position = x
+                    v = 0,
+                    w = 1
                 };
 
                 /*
@@ -24,9 +18,8 @@ namespace sys {
                 template<typename ExternalStates>
                 constexpr static int statemap(const int state) {
                     return math::internal::StateMap{
-                            ExternalStates::x,
-                            ExternalStates::y,
-                            ExternalStates::z}[state];
+                        ExternalStates::v,
+                        ExternalStates::w}[state];
                 }
             };
         }

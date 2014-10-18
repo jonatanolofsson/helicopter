@@ -18,17 +18,15 @@ namespace sys {
             using namespace Eigen;
             struct ConstantVelocities6D {
                 typedef ConstantVelocities6D Self;
-                typedef SCart3DQuat States;
+                typedef VWXQ_3D States;
                 typedef typename States::StateVector Result;
                 static const int nofStates = States::nofStates;
                 static const bool isDiscrete = true;
-
 
                 template<typename ExternalStates>
                 static Result predict(const typename ExternalStates::StateVector& x, const Scalar dT) {
                     typedef ExternalStates extstates;
                     Result xnext;
-                    USING_XYZ
 
                     xnext.template segment<3>(States::position) = x.template segment<3>(extstates::position) + x.template segment<3>(extstates::velocity) * dT;
                     xnext.template segment<3>(States::velocity) = x.template segment<3>(extstates::velocity);
@@ -37,7 +35,7 @@ namespace sys {
                     // Note that this skew-symmetric matrix is diagonally shifted upwards-left compared
                     // to many representations, due to the storage model used by Eigen for quaternions: qx, qy, qz, qw
                     Matrix<Scalar, 4, 4> S;
-                    S << QUATERNION_ROTATION_FROM_ROTVEL(x(extstates::omegas[X]), x(extstates::omegas[Y]), x(extstates::omegas[Z]));
+                    S << QUATERNION_ROTATION_FROM_ROTVEL(x(extstates::wx), x(extstates::wy), x(extstates::wz));
 
                     const Scalar wnorm     = x.template segment<3>(extstates::omega).norm();
 

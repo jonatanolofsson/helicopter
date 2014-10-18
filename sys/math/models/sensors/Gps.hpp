@@ -15,7 +15,7 @@ namespace sys {
             using namespace Eigen;
             struct Gps {
                 typedef Gps Self;
-                typedef SCart3D States;
+                typedef X_3D States;
                 typedef States::StateVector Result;
                 static const int nofStates = States::nofStates;
 

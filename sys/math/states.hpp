@@ -60,8 +60,16 @@ namespace sys {
     }
 }
 
-#include <sys/math/states/SCart3DQuat.hpp>
-#include <sys/math/states/SCart3D.hpp>
-#include <sys/math/states/C0.hpp>
+#include <sys/math/states/Helicopter.hpp>
+#include <sys/math/states/HelicopterControls.hpp>
+#include <sys/math/states/VWXALQ_3D.hpp>
+#include <sys/math/states/VWXQ_3D.hpp>
+#include <sys/math/states/VW_1D.hpp>
+#include <sys/math/states/VW_3D.hpp>
+#include <sys/math/states/V_3D.hpp>
+#include <sys/math/states/XQ_3D.hpp>
+#include <sys/math/states/XYTVWA_1D.hpp>
+#include <sys/math/states/XYT_1D.hpp>
+#include <sys/math/states/X_3D.hpp>
 
 #endif

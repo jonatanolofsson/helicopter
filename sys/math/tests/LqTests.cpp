@@ -8,10 +8,10 @@
 
 using namespace Eigen;
 using namespace sys;
-typedef math::models::SCart3DQuat States;
-typedef math::models::CVW Controls;
-typedef math::GaussianFilter<States> Filter;
 typedef math::models::ConstantVelocities6D MotionModel;
+typedef math::GaussianFilter<MotionModel::States> Filter;
+typedef math::models::XQ_3D States;
+typedef math::models::VW_3D Controls;
 typedef math::LqController<States, Controls> Controller;
 
 IOFormat HeavyFmt(FullPrecision, 0, ", ", ";\n", "[", "]", "[", "]");
@@ -31,7 +31,7 @@ TEST_F(LqTests, OutputControl) {
     controller.updateModel<MotionModel::isDiscrete>(
         math::differentiate<MotionModel, States, Filter::States>(filter.state),
         math::differentiate<MotionModel, Controls, Filter::States>(filter.state));
-    controller(filter.state);
+    controller.eval<Filter::States>(filter.state);
 }
 
 
@@ -44,6 +44,6 @@ TEST_F(LqTests, StressTest3D) {
         controller.updateModel<MotionModel::isDiscrete>(
             math::differentiate<MotionModel, States, Filter::States>(filter.state),
             math::differentiate<MotionModel, Controls, Filter::States>(filter.state));
-        controller(filter.state);
+        controller.eval<Filter::States>(filter.state);
     }
 }
