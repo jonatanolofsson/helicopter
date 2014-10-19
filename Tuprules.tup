@@ -20,7 +20,6 @@ CFLAGS += -isystem/usr/include/eigen3
 
 TEST_LFLAGS  = -lgtest_main -lgtest
 TEST_LFLAGS += -lpthread
-TEST_LFLAGS += -L$(TOP)/sys
 TEST_LFLAGS += -L$(TOP)/os -los
 
 COMPILER = ccache clang++ -Qunused-arguments
@@ -28,11 +27,11 @@ ifdef USE_GCC
     COMPILER = g++
 endif
 
-APPLFLAGS += -L$(TOP)/sys
-APPLFLAGS += -L$(TOP)/os
+APPLFLAGS += -L$(TOP)/sys -lsys
+APPLFLAGS += -L$(TOP)/os -los
 
 !cc = |> ^o^ $(COMPILER) $(CFLAGS) -c %f |> %B.o
-!ccapp = | sys/libsys.a os/libos.a |> $(COMPILER) $(CFLAGS) %f $(APPLFLAGS) |> %B
+!ccapp = | sys/libsys.a os/libos.a |> $(COMPILER) $(CFLAGS) %f $(APPLFLAGS) -o %B |> %B
 !testcc = | $(TOP)/os/libos.a |> $(COMPILER) $(CFLAGS) %f -o %o $(TEST_LFLAGS) |> %B
 !ar = |> ar crs %o %f |> lib%d.a
 

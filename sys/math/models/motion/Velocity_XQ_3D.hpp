@@ -24,7 +24,7 @@ namespace sys {
                 using StateVector = typename Base::StateVector;
 
                 template<typename ExternalStates>
-                static StateVector predict(const typename ExternalStates::StateVector& x, const Scalar dT) {
+                static StateVector predict(const typename ExternalStates::StateVector& x, const Scalar dT = settings::dT) {
                     typedef ExternalStates extstates;
                     StateVector xnext = States::template translate<ExternalStates>(x);
 

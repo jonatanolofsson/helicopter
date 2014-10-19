@@ -6,7 +6,7 @@
 
 namespace sys {
     namespace settings {
-        static const Scalar systemFrequency     = 100; ///< System frequency, in Hz
+        static const int systemFrequency     = 100; ///< System frequency, in Hz
         static const Scalar dT                  = 1/systemFrequency; ///< System steptime
     }
 }

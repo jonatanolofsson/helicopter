@@ -8,7 +8,7 @@
 #include <sys/MotionControl.hpp>
 
 namespace sys {
-#define LOGGERCLASS logger::Logger<os::SystemTime, observer::Filter::States, motioncontrol::ModelDescription::ReferenceMessage, motioncontrol::ModelDescription::ControlMessage>
+#define LOGGERCLASS logger::Logger<os::SystemTime, observer::StateVector, motioncontrol::Reference, motioncontrol::ControlMessage>
     typedef LOGGERCLASS Logger;
 }
 

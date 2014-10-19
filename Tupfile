@@ -1,2 +1,2 @@
 include_rules
-: $(TUP_CWD)/apps/@(APP)/*.cpp |> !ccapp |>
+: foreach $(TUP_CWD)/apps/@(APP)/*.cpp |> !ccapp |>

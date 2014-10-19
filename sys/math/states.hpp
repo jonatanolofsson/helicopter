@@ -15,7 +15,7 @@ namespace sys {
                 static const int nofStates = NOF_STATES;
                 typedef math::internal::StateVector<nofStates> StateVector;
                 typedef math::internal::Covariance<nofStates> Covariance;
-                typedef messages::StateMessage<StateVector> StateMessage;
+                typedef StateMessage<StateVector> StateMessage;
 
                 template<typename ExternalStates>
                 static StateVector translate(const typename ExternalStates::StateVector& x) {
@@ -38,6 +38,13 @@ namespace sys {
                     return res;
                 }
 
+                template<typename ExternalStates>
+                static void update(typename ExternalStates::StateVector& x, const StateVector& xmine) {
+                    for(int i = 0; i < nofStates; ++i) {
+                        x(Parent::template statemap<ExternalStates>(i)) = xmine(i);
+                    }
+                }
+
                 template<typename T>
                 static void initializeState(T& state) {
                     state.setZero();
@@ -54,8 +61,8 @@ namespace sys {
     }
 }
 
-#include <sys/math/states/Helicopter.hpp>
-#include <sys/math/states/HelicopterControls.hpp>
+//#include <sys/math/states/Helicopter.hpp>
+//#include <sys/math/states/HelicopterControls.hpp>
 #include <sys/math/states/VWXALQ_3D.hpp>
 #include <sys/math/states/VWXQ_3D.hpp>
 #include <sys/math/states/VW_1D.hpp>

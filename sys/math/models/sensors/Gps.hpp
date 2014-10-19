@@ -18,6 +18,7 @@ namespace sys {
                 typedef X_3D States;
                 typedef States::StateVector Result;
                 static const int nofStates = States::nofStates;
+                static const int frequency = 10;
 
                 template<typename ExternalStates>
                 static Result measurement(const typename ExternalStates::StateVector& state) {

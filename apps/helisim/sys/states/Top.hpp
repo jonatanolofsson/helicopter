@@ -13,7 +13,7 @@
 #include <sys/com/Maple.hpp>
 #include <sys/states/events.hpp>
 
-#include <sys/states/Helicopter.hpp>
+#include <sys/StateMachine.hpp>
 
 
 namespace sys {
@@ -22,7 +22,7 @@ namespace sys {
 
     namespace states {
         struct Fly;
-        struct Top : sc::simple_state<Top, Helicopter, Fly>
+        struct Top : sc::simple_state<Top, statemachine::StateMachineEngine, Fly>
         {
             Observer observer;
 

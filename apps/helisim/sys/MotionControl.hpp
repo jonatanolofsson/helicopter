@@ -1,23 +1,27 @@
 #pragma once
-#ifndef SYS_MOTIONCONTROL_API_HPP_
-#define SYS_MOTIONCONTROL_API_HPP_
+#ifndef APP_SYS_MOTIONCONTROL_HPP_
+#define APP_SYS_MOTIONCONTROL_HPP_
 
 #include <sys/motioncontrol/MotionControl.hpp>
 #include <sys/math/models.hpp>
 #include <sys/math/states.hpp>
 #include <sys/math/control/LqController.hpp>
+#include <sys/com/statemessage.hpp>
 #include <sys/Observer.hpp>
 
 namespace sys {
     namespace motioncontrol {
-        typedef math::models::SHelicopterControl        States;
-        typedef math::models::CHelicopter               Controls;
+        typedef math::models::XQ_3D States;
+        typedef math::models::VW_3D Controls;
 
-        typedef math::LqController<States, Controls> Controller;
-        typedef math::models::HelicopterControl MotionModel;
-        typedef observer::SystemState SystemState;
+        typedef math::LqController<States, Controls, true> Controller;
+        typedef math::models::Velocity_XQ_3D<math::models::XQ_3D> MotionModel;
+        typedef Observer::StateMessage SystemStateMessage;
+        typedef ReferenceMessage<States> Reference;
+        typedef ControlMessage<States> ControlMessage;
     }
 
-    typedef motioncontrol::MotionControl<motioncontrol::Controller, motioncontrol::MotionModel, motioncontrol::SystemState> MotionControl;
+#define MOTIONCONTROL_CLASS motioncontrol::MotionControl<motioncontrol::Controller, motioncontrol::MotionModel, motioncontrol::SystemStateMessage, motioncontrol::Reference, motioncontrol::ControlMessage>
+    typedef MOTIONCONTROL_CLASS MotionControl;
 }
 #endif

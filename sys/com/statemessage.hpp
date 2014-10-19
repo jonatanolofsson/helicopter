@@ -7,13 +7,9 @@
 #include <sys/com/eigenmessage.hpp>
 
 namespace sys {
-    namespace math {
-        namespace models {
-            namespace messages {
-                template<typename States> struct StateMessage : public EigenMessage<States> { StateMessage(){} explicit StateMessage(const States& s) : EigenMessage<States>(s) {} };
-            }
-        }
-    }
+    template<typename States> struct StateMessage : public EigenMessage<States> { StateMessage(){} StateMessage(const typename States::StateVector& s) : EigenMessage<States>(s) {} };
+    template<typename States> struct ReferenceMessage : public EigenMessage<States> { ReferenceMessage(){} ReferenceMessage(const typename States::StateVector& s) : EigenMessage<States>(s) {} };
+    template<typename States> struct ControlMessage : public EigenMessage<States> { ControlMessage(){} ControlMessage(const typename States::StateVector& s) : EigenMessage<States>(s) {} };
 }
 
 #endif

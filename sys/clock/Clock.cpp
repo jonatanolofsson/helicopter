@@ -5,7 +5,7 @@
 #include <os/utils/eventlog.hpp>
 #include <iostream>
 
-#include <sys/States.hpp>
+#include <sys/StateMachine.hpp>
 
 namespace sys {
     namespace clock {
@@ -30,7 +30,7 @@ namespace sys {
             std::this_thread::sleep_until(nextInvokation);
             if(time.value >= 2000) {
                 stop();
-                killStateMachine();
+                StateMachine::kill();
                 return;
             }
             os::yield(++time);

@@ -9,13 +9,13 @@
 namespace sys {
     namespace observer {
         typedef math::models::VWXQ_3D States;
-        typedef math::models::ConstantVelocities6D MotionModel;
+        typedef math::models::Velocity_XQ_3D<States> MotionModel;
 
-        typedef math::EKF                                   Algorithm;
-        typedef math::GaussianFilter<States>      Filter;
-        typedef os::SystemTime                              TriggerType;
+        typedef math::EKF Algorithm;
+        typedef math::GaussianFilter<States> Filter;
+        typedef os::SystemTime TriggerType;
 
-        typedef StateDescription::StateVector               SystemState;
+        typedef States::StateVector StateVector;
 
         namespace sensors {
             typedef math::GaussianMeasurement<math::models::Gps> Gps;

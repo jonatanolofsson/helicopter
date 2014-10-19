@@ -10,19 +10,24 @@
 
 namespace sys {
     namespace simulator {
-        template<typename MotionModel, int HZ, typename... Sensors>
+        template<typename MotionModel, typename ControlMessage, typename... Sensors>
         class Simulator {
             public:
-                typedef Simulator<MotionModel, Sensors...> Self;
+                typedef Simulator<MotionModel, ControlMessage, Sensors...> Self;
+                typedef typename MotionModel::States States;
 
-                typename MotionModel::States state;
-                os::Dispatcher<Self, typename MotionModel::ModelDescription::ControlMessage> d;
+                typename MotionModel::StateVector state;
+                os::Dispatcher<Self, ControlMessage> d;
 
-                template<typename Sensor>
+                template<typename SensorMeasurement>
                 void yieldSensorReading() {
-                    static Sensor m;
-                    m.z = Sensor::Sensor::measurement(state);
-                    LOG_EVENT(typeid(Self).name(), 50, "Sensor " << os::demangle(typeid(Sensor).name()) << ": " << m.z.transpose());
+                    static SensorMeasurement m;
+                    static unsigned callCount = 0;
+                    if ((++callCount % (settings::systemFrequency / SensorMeasurement::Sensor::frequency)) != 0) {
+                        return;
+                    }
+                    m.z = SensorMeasurement::Sensor::template measurement<States>(state);
+                    LOG_EVENT(typeid(Self).name(), 50, "Sensor " << os::demangle(typeid(SensorMeasurement).name()) << ": " << m.z.transpose());
                     os::yield(m);
                 }
 
@@ -34,7 +39,7 @@ namespace sys {
 
                 Simulator();
 
-                void simulate(const typename MotionModel::ModelDescription::ControlMessage);
+                void simulate(const ControlMessage);
         };
     }
 }

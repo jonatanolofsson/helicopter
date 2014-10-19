@@ -4,19 +4,16 @@
 
 #include <sys/math/states.hpp>
 #include <sys/math/models.hpp>
-#include <os/clock.hpp>
 #include <sys/simulator/Simulator.hpp>
-#include <sys/Observer.hpp>
+#include <sys/MotionControl.hpp>
 
 namespace sys {
     namespace simulator {
-        typedef math::models::SHelicopter       StateDescription;
-        typedef math::models::CHelicopter       ControlDescription;
-        typedef math::models::Description<StateDescription, ControlDescription> ModelDescription;
-
-        typedef math::models::Helicopter<ModelDescription> MotionModel;
+        typedef math::models::VWXQ_3D States;
+        typedef math::models::Velocity_XQ_3D<States> MotionModel;
+        typedef motioncontrol::ControlMessage ControlMessage;
     }
-    typedef simulator::Simulator<simulator::MotionModel, 10, observer::sensors::Gps> Simulator;
+    typedef simulator::Simulator<simulator::MotionModel, simulator::ControlMessage, observer::sensors::Gps> Simulator;
 }
 
 #endif

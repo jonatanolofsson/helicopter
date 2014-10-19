@@ -18,14 +18,16 @@
 namespace sys {
     namespace math {
         using namespace Eigen;
-        template<typename States_, typename Controls_>
+        template<typename States_, typename Controls_, bool EXTRA_STATE = false>
         class LqController {
             public:
                 typedef States_ States;
                 typedef Controls_ Controls;
                 typedef LqController<States, Controls> Self;
-                static const int nofStates = States::nofStates;
+                static const int nofStates = States::nofStates + (EXTRA_STATE ? 1 : 0);
                 static const int nofControls = Controls::nofStates;
+                static const int linState = States::nofStates;
+
                 typedef Matrix<Scalar, nofStates, nofStates> StateMatrix; ///< A state propagation matrix describes how the model state evolves in time, given no control
                 typedef Matrix<Scalar, nofStates, nofControls> ControlMatrix; ///<
                 typedef Matrix<Scalar, nofStates, 1> StateVector; ///< A state vector describes the state in which the system is (currently) in
@@ -116,9 +118,16 @@ namespace sys {
                  * \return  Optimal control signal, given cost matrices of model
                  */
                 template<typename ExternalStates>
-                const ControlVector& eval(const typename ExternalStates::StateVector& x_) {
+                const ControlVector& eval(const typename ExternalStates::StateVector& x) {
                     /// [2] eq. 9.11: u = L*x, r = 0
-                    u = -L * States::template translate<ExternalStates>(x_);
+                    u = -L * States::template translate<ExternalStates>(x);
+                    return u;
+                }
+
+                template<typename Derived>
+                const ControlVector& direct_eval(const Derived& x) {
+                    /// [2] eq. 9.11: u = L*x, r = 0
+                    u = -L * x;
                     return u;
                 }
         };

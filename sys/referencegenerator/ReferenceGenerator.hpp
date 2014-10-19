@@ -15,19 +15,18 @@ namespace sys {
             Reference reference;
         };
 
-        template<typename ModelDescription, typename Trigger>
+        template<typename ReferenceMessage, typename Trigger>
         class ReferenceGenerator {
             public:
-                typedef ReferenceGenerator<ModelDescription, Trigger> Self;
-                typedef typename ModelDescription::Reference Reference;
-                typedef typename ModelDescription::ReferenceMessage ReferenceMessage;
-                typedef ReferenceWithTime<Reference> TemporalReference;
+                typedef ReferenceGenerator<ReferenceMessage, Trigger> Self;
+                typedef typename ReferenceMessage::StateVector ReferenceVector;
+                typedef ReferenceWithTime<ReferenceVector> TemporalReference;
 
             private:
                 void yieldReference(const Trigger t);
 
                 const TemporalReference*const reference;
-                unsigned nofReferences, i;
+                int nofReferences, i;
 
                 os::Dispatcher<Self, Trigger> d;
 

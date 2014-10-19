@@ -3,7 +3,7 @@
 #define SYS_LOGGER_HPP_
 
 #include <os/com/Dispatcher.hpp>
-#include <sys/com/EigenMessage.hpp>
+#include <sys/com/eigenmessage.hpp>
 #include <Eigen/Core>
 #include <fstream>
 #include <type_traits>
@@ -24,14 +24,14 @@ namespace sys {
                 return os << o.format(eigenformat);
             }
         };
-        
+
         template<typename Derived>
         struct Formatter<Derived, typename std::enable_if<std::is_base_of<EigenMessageBase, Derived>::value>::type> {
             static std::ostream& format(std::ostream& os, const Derived& o) {
-                return Formatter<typename Derived::Contained>::format(os, o.value);
+                return Formatter<typename Derived::States::StateVector>::format(os, o.value);
             }
         };
-        
+
         template<typename... DataTypes>
         class Logger {
             public:
@@ -55,9 +55,9 @@ namespace sys {
             public:
                 std::string filename;
                 std::ofstream logfile;
-                explicit Logger(const std::string filename_) 
+                explicit Logger(const std::string filename_)
                 : filename(filename_)
-                , logfile(filename) 
+                , logfile(filename)
                 , logDispatcher(&Self::log, this)
                 {}
 

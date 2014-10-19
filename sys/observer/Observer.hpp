@@ -13,13 +13,14 @@ namespace sys {
         class Observer {
             public:
                 typedef Observer<Algorithm, Filter, MotionModel, Trigger, Sensors...> Self;
+                typedef StateMessage<typename Filter::States> StateMessage;
 
             private:
                 os::Dispatcher<Self, Trigger> dispatcher;
 
                 /* Sensors */
                 template<typename Sensor>
-                struct SingleSensorWrapper { 
+                struct SingleSensorWrapper {
                     os::Dispatcher<Self, Sensor> d;
                     explicit SingleSensorWrapper(Self*& self) : d(&Self::measurementUpdate<Sensor>, self) {
                         LOG_EVENT(typeid(Self).name(), 10, "Observing sensor " << os::demangle(typeid(Sensor).name()));

@@ -8,16 +8,13 @@
 
 namespace sys {
     namespace referencegenerator {
-        template<typename ModelDescription, typename Trigger>
-        ReferenceGenerator<ModelDescription, Trigger>::ReferenceGenerator(const TemporalReference*const ref, unsigned N)
-        : reference(ref)
-        , nofReferences(N)
-        , i(0)
-        , d(&Self::yieldReference, this)
+        template<typename ReferenceMessage, typename Trigger>
+        ReferenceGenerator<ReferenceMessage, Trigger>::ReferenceGenerator(const TemporalReference*const ref, unsigned N)
+        : reference(ref), nofReferences(N), i(0), d(&Self::yieldReference, this)
         {}
 
-        template<typename ModelDescription, typename Trigger>
-        void ReferenceGenerator<ModelDescription, Trigger>::yieldReference(const Trigger t) {
+        template<typename ReferenceMessage, typename Trigger>
+        void ReferenceGenerator<ReferenceMessage, Trigger>::yieldReference(const Trigger t) {
             while(((i+1) < nofReferences) && (t.value >= reference[i+1].time)) ++i;
             LOG_EVENT(typeid(Self).name(), 0, "Reference at time " << t.value);
             os::yield(ReferenceMessage(reference[i].reference));

@@ -4,6 +4,6 @@
 
 namespace sys {
     namespace simulator {
-        template class Simulator<MotionModel, observer::sensors::Gps>;
+        template class Simulator<MotionModel, ControlMessage, observer::sensors::Gps>;
     }
 }

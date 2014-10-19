@@ -5,6 +5,6 @@ do
     module=${module%.*}
     module=${module,,}
     if [ -d "${module}" ]; then
-        echo ": ${module}/*.cpp |> !cc |> ${module}.o"
+        echo ": ${module}/*.cpp |> !cc -o ${module}.o |> ${module}.o"
     fi
 done

@@ -1,10 +1,10 @@
 #include <sys/motioncontrol/implementation.hpp>
 #include <os/com/getSignal.hpp>
 
-INSTANTIATE_SIGNAL(sys::motioncontrol::ModelDescription::ControlMessage);
+INSTANTIATE_SIGNAL(sys::motioncontrol::ControlMessage);
 
 namespace sys {
     namespace motioncontrol {
-        template class MotionControl<motioncontrol::ModelDescription, motioncontrol::Controller, motioncontrol::ControlState, motioncontrol::ControlModel, motioncontrol::SystemState, motioncontrol::SystemModelDescription>;
+        template class MOTIONCONTROL_CLASS;
     }
 }

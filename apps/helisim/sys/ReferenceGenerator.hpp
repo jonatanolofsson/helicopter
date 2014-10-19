@@ -4,14 +4,16 @@
 
 #include <sys/types.hpp>
 #include <sys/referencegenerator/ReferenceGenerator.hpp>
+#include <sys/MotionControl.hpp>
+#include <sys/com/statemessage.hpp>
 
 namespace sys {
     namespace referencegenerator {
-        typedef motioncontrol::ModelDescription ModelDescription;
+        typedef ReferenceMessage<motioncontrol::States> ReferenceMessage;
         typedef os::SystemTime Trigger;
     }
-    
-    typedef referencegenerator::ReferenceGenerator<referencegenerator::ModelDescription, referencegenerator::Trigger> ReferenceGenerator;
+
+    typedef referencegenerator::ReferenceGenerator<referencegenerator::ReferenceMessage, referencegenerator::Trigger> ReferenceGenerator;
 }
 
 #endif

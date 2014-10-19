@@ -7,22 +7,20 @@
 
 namespace sys {
     namespace motioncontrol {
-        template<typename ModelDescription, typename ControllerType, typename ControlState, typename ControlModel, typename SystemState, typename SystemModelDescription>
+        template<typename Algorithm, typename MotionModel, typename SystemStateMessage, typename Reference, typename ControlMessage>
         class MotionControl {
             public:
-                typedef MotionControl<ModelDescription, ControllerType, ControlState, ControlModel, SystemState, SystemModelDescription> Self;
-                typedef typename ModelDescription::ReferenceMessage ReferenceMessage;
-                typedef typename ControlModel::Controls Controls;
-                typedef Eigen::Matrix<Scalar, ModelDescription::nofStates+1, ModelDescription::nofStates+1> ExtendedStateMatrix;
-                typedef Eigen::Matrix<Scalar, ModelDescription::nofStates+1, ModelDescription::nofControls> ExtendedControlMatrix;
-                typedef Eigen::Matrix<Scalar, ModelDescription::nofStates+1, 1> ExtendedControlState;
+                typedef MotionControl<Algorithm, MotionModel, SystemStateMessage, Reference, ControlMessage> Self;
 
             private:
-                ControllerType controller;
-                os::Dispatcher<Self, SystemState, ReferenceMessage> dispatcher;
-                Controls control;
+                typedef typename SystemStateMessage::StateVector SystemStateVector;
+                typedef typename SystemStateMessage::States SystemStates;
 
-                void updateControl(const SystemState systemState, const ReferenceMessage referenceMessage);
+                Algorithm controller;
+                os::Dispatcher<Self, SystemStateVector, Reference> dispatcher;
+                typename Algorithm::Controls control;
+
+                void updateControl(const SystemStateVector, const Reference);
 
             public:
                 MotionControl();
