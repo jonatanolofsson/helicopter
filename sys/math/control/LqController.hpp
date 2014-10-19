@@ -60,9 +60,9 @@ namespace sys {
                 template<bool isDiscrete>
                 void updateModel(const StateMatrix& A_, const ControlMatrix& B_) {
                     A = A_;
-                    LOG_EVENT(typeid(Self).name(), 50, "A::::::::::::::\n" << A << "\n:::::::::::::::::::::::::::::::::::::");
+                    //LOG_EVENT(typeid(Self).name(), 50, "A::::::::::::::\n" << A << "\n:::::::::::::::::::::::::::::::::::::");
                     B = B_;
-                    LOG_EVENT(typeid(Self).name(), 50, "B::::::::::::::\n" << B << "\n:::::::::::::::::::::::::::::::::::::");
+                    //LOG_EVENT(typeid(Self).name(), 50, "B::::::::::::::\n" << B << "\n:::::::::::::::::::::::::::::::::::::");
                     updateControlMatrices<isDiscrete>();
                 }
 
@@ -107,7 +107,7 @@ namespace sys {
 
                         L = (R + B.transpose()*P*B).ldlt().solve(B.transpose()*P*A);
                     }
-                    LOG_EVENT(typeid(Self).name(), 50, "L::::::::::::::\n" << L << "\n:::::::::::::::::::::::::::::::::::::" << std::endl);
+                    //LOG_EVENT(typeid(Self).name(), 50, "L::::::::::::::\n" << L << "\n:::::::::::::::::::::::::::::::::::::" << std::endl);
                 }
 
                 /*!
@@ -116,9 +116,9 @@ namespace sys {
                  * \return  Optimal control signal, given cost matrices of model
                  */
                 template<typename ExternalStates>
-                const ControlVector& eval(const typename ExternalStates::StateVector& x) {
+                const ControlVector& eval(const typename ExternalStates::StateVector& x_) {
                     /// [2] eq. 9.11: u = L*x, r = 0
-                    u = -L*x;
+                    u = -L * States::template translate<ExternalStates>(x_);
                     return u;
                 }
         };

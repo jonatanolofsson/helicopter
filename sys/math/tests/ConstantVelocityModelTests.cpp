@@ -11,7 +11,7 @@ using namespace Eigen;
 
 typedef math::models::VWXQ_3D States;
 typedef math::GaussianFilter<States> Filter;
-typedef math::models::ConstantVelocities6D MotionModel;
+typedef math::models::Velocity_XQ_3D<States> MotionModel;
 typedef math::EKF Algorithm;
 
 void initializeObserver(Filter& system_state) {

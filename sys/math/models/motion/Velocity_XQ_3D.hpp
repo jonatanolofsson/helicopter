@@ -1,6 +1,6 @@
 #pragma once
-#ifndef SYS_MATH_MODELS_CONSTANT_VELOCITY_6D_HPP_
-#define SYS_MATH_MODELS_CONSTANT_VELOCITY_6D_HPP_
+#ifndef SYS_MATH_MODELS_VELOCITY_XQ_3D_HPP_
+#define SYS_MATH_MODELS_VELOCITY_XQ_3D_HPP_
 
 #include <Eigen/Core>
 #include <sys/math/models/motion.hpp>
@@ -16,21 +16,19 @@ namespace sys {
     namespace math {
         namespace models {
             using namespace Eigen;
-            struct ConstantVelocities6D {
-                typedef ConstantVelocities6D Self;
-                typedef VWXQ_3D States;
-                typedef typename States::StateVector Result;
-                static const int nofStates = States::nofStates;
-                static const bool isDiscrete = true;
+            template<typename States_ = XQ_3D>
+            struct Velocity_XQ_3D : public Model<Velocity_XQ_3D<States_>, States_> {
+                typedef Velocity_XQ_3D<States_> Self;
+                typedef Model<Self, States_> Base;
+                using States = typename Base::States;
+                using StateVector = typename Base::StateVector;
 
                 template<typename ExternalStates>
-                static Result predict(const typename ExternalStates::StateVector& x, const Scalar dT) {
+                static StateVector predict(const typename ExternalStates::StateVector& x, const Scalar dT) {
                     typedef ExternalStates extstates;
-                    Result xnext;
+                    StateVector xnext = States::template translate<ExternalStates>(x);
 
-                    xnext.template segment<3>(States::position) = x.template segment<3>(extstates::position) + x.template segment<3>(extstates::velocity) * dT;
-                    xnext.template segment<3>(States::velocity) = x.template segment<3>(extstates::velocity);
-                    xnext.template segment<3>(States::omega) = x.template segment<3>(extstates::omega);
+                    xnext.template segment<3>(States::position) += x.template segment<3>(extstates::velocity) * dT;
 
                     // Note that this skew-symmetric matrix is diagonally shifted upwards-left compared
                     // to many representations, due to the storage model used by Eigen for quaternions: qx, qy, qz, qw
@@ -50,20 +48,6 @@ namespace sys {
                     }
 
                     return xnext;
-                }
-
-                static Matrix<Scalar, nofStates, nofStates>
-                covariance(const Scalar dT) {
-                    typedef Matrix<Scalar, nofStates, nofStates> RetType;
-                    return RetType::Identity() * dT;
-                }
-
-                template<typename ExternalStates>
-                static void update(typename ExternalStates::StateVector& x, const Scalar dT) {
-                    Result r = predict<ExternalStates>(x, dT);
-                    for(int i=0; i < nofStates; ++i) {
-                        x(States::template statemap<ExternalStates>(i)) = r(i);
-                    }
                 }
             };
         }

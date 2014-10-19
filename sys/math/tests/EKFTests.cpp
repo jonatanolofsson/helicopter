@@ -11,7 +11,7 @@ using namespace sys;
 
 typedef math::models::VWXQ_3D States;
 typedef math::GaussianFilter<States> Filter;
-typedef math::models::ConstantVelocities6D MotionModel;
+typedef math::models::Velocity_XQ_3D<math::models::VWXQ_3D> MotionModel;
 typedef math::EKF Algorithm;
 
 
