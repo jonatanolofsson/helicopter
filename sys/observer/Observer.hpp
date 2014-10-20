@@ -21,7 +21,7 @@ namespace sys {
                 /* Sensors */
                 template<typename Sensor>
                 struct SingleSensorWrapper {
-                    os::Dispatcher<Self, Sensor> d;
+                    os::AsynchronousDispatcher<Self, Sensor> d;
                     explicit SingleSensorWrapper(Self*& self) : d(&Self::measurementUpdate<Sensor>, self) {
                         LOG_EVENT(typeid(Self).name(), 10, "Observing sensor " << os::demangle(typeid(Sensor).name()));
                     }
