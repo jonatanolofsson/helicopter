@@ -18,7 +18,7 @@ namespace sys {
         typedef math::models::Velocity_XQ_3D<math::models::XQ_3D> MotionModel;
         typedef Observer::StateMessage SystemStateMessage;
         typedef ReferenceMessage<States> Reference;
-        typedef ControlMessage<States> ControlMessage;
+        typedef ControlMessage<Controls> ControlMessage;
     }
 
 #define MOTIONCONTROL_CLASS motioncontrol::MotionControl<motioncontrol::Controller, motioncontrol::MotionModel, motioncontrol::SystemStateMessage, motioncontrol::Reference, motioncontrol::ControlMessage>

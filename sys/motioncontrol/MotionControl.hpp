@@ -17,10 +17,10 @@ namespace sys {
                 typedef typename SystemStateMessage::States SystemStates;
 
                 Algorithm controller;
-                os::Dispatcher<Self, SystemStateVector, Reference> dispatcher;
+                os::Dispatcher<Self, SystemStateMessage, Reference> dispatcher;
                 typename Algorithm::Controls control;
 
-                void updateControl(const SystemStateVector, const Reference);
+                void updateControl(const SystemStateMessage, const Reference);
 
             public:
                 MotionControl();
