@@ -1,0 +1,2 @@
+include_rules
+run $(TOP)/apps/tupgen.sh *.hpp

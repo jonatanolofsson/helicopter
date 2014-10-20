@@ -4,7 +4,7 @@ do
     module=${module_config##*/}
     module=${module%.*}
     module=${module,,}
-    if [ -d "${module}" ]; then
-        echo ": ${module}/*.cpp |> !cc -o ${module}.o |> ${module}.o"
+    if [ -d "../../../sys/${module}" ]; then
+        echo ": \$(TOP)/sys/${module}/*.cpp |> !cc -o ${module}.o |> ${module}.o"
     fi
 done
