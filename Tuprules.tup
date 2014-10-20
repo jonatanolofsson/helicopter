@@ -13,6 +13,8 @@ CFLAGS += -I$(TOP)
 CFLAGS += -I$(TOP)/sys/modules
 CFLAGS += -isystem/usr/include/eigen3
 
+LFLAGS  = -lpthread
+
 TEST_LFLAGS  = -lgtest_main -lgtest
 TEST_LFLAGS += -lpthread
 TEST_LFLAGS += -L$(TOP)/os -los
