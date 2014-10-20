@@ -43,6 +43,9 @@ namespace sys {
         void StateMachine<InitialState>::kill() {
             stateMachine.kill();
         }
+
+        template<typename InitialState>
+        StateEngine<InitialState> StateMachine<InitialState>::stateMachine;
     }
 }
 
