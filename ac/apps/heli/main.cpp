@@ -27,10 +27,10 @@
 #include <syrup/comm/i2c.hpp>
 #include <syrup/isr.hpp>
 
-#include "Serial.hpp"
+#include <ac/com/Serial.hpp>
 #include <sys/com/MapleMessages.hpp>
 #include <libmaple/i2c.h>
-#include "types.hpp"
+#include <ac/types.hpp>
 
 #include <syrup/drivers/sensors/MPU6050.hpp>
 /*
@@ -217,7 +217,7 @@ void servoSetup() {
     pwmWrite(motor, 0);
     pwmWrite(cameraServo[0], 4909);
     pwmWrite(cameraServo[1], 4909);
-    
+
     Timer2.setPrescaleFactor(11);
     Timer2.setOverflow(65455); // PPM limit: 6546 for 1ms
     pinMode(motionServo[0], PWM);

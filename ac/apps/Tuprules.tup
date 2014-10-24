@@ -1,0 +1,2 @@
+!elf = |> $(CXX) $(CXXFLAGS) $(INCLUDE_FLAGS) -o %o  -Wl,-Map,mapfile.map %f $(LDFLAGS) |> application.elf | mapfile.map
+!bin = |> $(OBJCOPY) -o %o -v -Obinary %f |> application.bin
