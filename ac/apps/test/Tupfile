@@ -1,0 +1,5 @@
+include_rules
+: *.cpp |> !cxx |>
+: *.o |> !elf |>
+: *.elf |> !bin |>
+: *.elf |> !disas |>
