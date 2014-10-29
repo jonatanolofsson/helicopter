@@ -45,8 +45,7 @@ void sensorResponseHandler(const U8* msg, const std::size_t len) {
 
 class SensorTests : public ::testing::Test {
     public:
-        typedef SerialCommunication<maple::Messages, 50, 10, B460800> Serial;
-        Serial maple;
+        Maple maple;
         SensorTests()
         : maple("/dev/ttyUSB0") // FIXME?
         {
@@ -66,7 +65,7 @@ TEST_F(SensorTests, GetSensorData) {
     IoctlMessage ioctlMsg = { IoctlMessage::SEND_SENSOR_DATA };
     maple.send<>(ioctlMsg);
 
-    //~ printResponse = true;
+    //printResponse = true;
 
     std::unique_lock<std::mutex> l(responseGuard);
     responseCondition.wait_for(l, std::chrono::milliseconds(1000), [](){return (receivedResponse > 10);});
