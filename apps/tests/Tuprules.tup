@@ -1,0 +1,2 @@
+CFLAGS += -I$(TOP)/apps/tests
+

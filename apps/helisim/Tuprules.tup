@@ -1,5 +1,2 @@
 CFLAGS += -I$(TOP)/apps/helisim
-APPLFLAGS += -L$(TOP)/apps/helisim -lhelisim
-APPLFLAGS += -L$(TOP)/sys -lsys
-APPLFLAGS += -L$(TOP)/os -los
 

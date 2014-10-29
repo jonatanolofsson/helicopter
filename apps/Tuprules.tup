@@ -1,2 +1,2 @@
-APPLFLAGS  = $(LFLAGS)
-!ccapp = | $(TOP)/sys/libsys.a $(TOP)/os/libos.a |> $(COMPILER) $(CFLAGS) %f $(APPLFLAGS) -o %B |> %B
+APPLFLAGS  =
+!ccapp = | $(TOP)/sys/libsys.a $(TOP)/os/libos.a |> $(COMPILER) $(CFLAGS) %f $(APPLFLAGS) $(LFLAGS)  -o %o |> %d

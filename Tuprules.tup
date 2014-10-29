@@ -17,6 +17,7 @@ LFLAGS  = -lpthread
 
 TEST_LFLAGS  = -lgtest_main -lgtest
 TEST_LFLAGS += -lpthread
+TEST_LFLAGS += -L$(TOP)/sys -lsys
 TEST_LFLAGS += -L$(TOP)/os -los
 
 COMPILER = ccache clang++ -Qunused-arguments
