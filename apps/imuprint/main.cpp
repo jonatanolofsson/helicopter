@@ -35,12 +35,12 @@ auto wzplot = wwin->add<Line>()->set("b")->set_capacity(count);
 
 void sensorResponseHandler(const U8* msg, const std::size_t) {
     //std::cout << "Got message" << std::endl;
-    SensorMessage* m = (SensorMessage*)msg;
+    SensorMessage m = os::fromBytes<SensorMessage>(msg);
     double imu[6];
     for(int i = 0; i < 6; ++i) {
-        imu[i] = (m->nofImu ? ((double)m->imu[i]) / ((double)m->nofImu) : 0);
+        imu[i] = (m.nofImu ? ((double)m.imu[i]) / ((double)m.nofImu) : 0);
     }
-    
+
     static int t = 0; ++t;
     axplot << std::make_pair(t, imu[0]);
     ayplot << std::make_pair(t, imu[1]);
@@ -51,13 +51,13 @@ void sensorResponseHandler(const U8* msg, const std::size_t) {
 
 
         std::cout
-            << std::setw(8) << imu[0]
-            << std::setw(8) << imu[1]
-            << std::setw(8) << imu[2]
-            << std::setw(8) << imu[3]
-            << std::setw(8) << imu[4]
-            << std::setw(8) << imu[5]
-            << std::setw(8) << m->nofImu
+            << std::setw(8) << m.imu[0]
+            << std::setw(8) << m.imu[1]
+            << std::setw(8) << m.imu[2]
+            << std::setw(8) << m.imu[3]
+            << std::setw(8) << m.imu[4]
+            << std::setw(8) << m.imu[5]
+            << std::setw(8) << m.nofImu
             << std::endl;
 }
 
@@ -65,8 +65,7 @@ void sensorResponseHandler(const U8* msg, const std::size_t) {
 int main(int argc, char* argv[]){
     cpplot::glut::init(argc, argv);
 
-    typedef SerialCommunication<maple::Messages, 100, 10, B460800> Serial;
-    Serial maple("/dev/ttyUSB0");
+    Maple maple("/dev/ttyUSB0");
     maple.registerPackager<maple::Messages::sensorMessage>(sensorResponseHandler);
 
     IoctlMessage ioctlMsg = { IoctlMessage::SEND_SENSOR_DATA };

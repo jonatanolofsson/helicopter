@@ -1,0 +1,4 @@
+APPLFLAGS += -lcpplot
+APPLFLAGS += -lboost_thread
+APPLFLAGS += -lboost_system
+
