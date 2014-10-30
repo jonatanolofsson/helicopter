@@ -25,6 +25,7 @@
 
 
 #include <syrup/comm/i2c.hpp>
+#include <syrup/math/math.hpp>
 #include <syrup/isr.hpp>
 
 #include <ac/com/Serial.hpp>
@@ -85,7 +86,7 @@ ComputerLink computer(&Serial3);
 void timerISR(void*) {
     static int N = 0;
 
-    //~ digitalWrite(BOARD_LED_PIN, !(N%4));
+    //digitalWrite(BOARD_LED_PIN, !(N%4));
 
     // Feed the watchdog
     //~ digitalWrite(WATCHDOG, (N % 5) == 0);
@@ -103,7 +104,7 @@ void timerISR(void*) {
         //~ }
     //~ }
 
-    IMU.measure(message.imu, &message.nofImu, sizeof(message.nofImu));
+    IMU.measure(message.imu, &message.nofImu);
     //~ digitalWrite(BOARD_LED_PIN, message.imu[2] != 0);
     //~ pressureSensor.measure(&message.pressure);
     //~ magnetometer.measure(message.magnetometer);
@@ -125,7 +126,6 @@ void timerISR(void*) {
     //~ RPMSensor.measure(&message.rpm);
 
     if(ioctl & IoctlMessage::SEND_SENSOR_DATA) {
-        //digitalWrite(BOARD_LED_PIN, N%2);
         computer.send<>(message);
     }
 
@@ -135,39 +135,41 @@ void timerISR(void*) {
 
 
 void actuateControl(const U8* msg, const std::size_t len) {
+    static ControlMessage m;
     static bool a = true; a = !a;
     //~ digitalWrite(BOARD_LED_PIN, a);
     if(len == sizeof(ControlMessage)) {
-        ControlMessage *m = (ControlMessage*)msg; // FIXME
+        memcpy(&m, msg, sizeof(m));
         digitalWrite(BOARD_LED_PIN, a);
         a = !a;
         //~ delay(500);
-        pwmWrite(motionServo[0], m->servo[0]);
-        pwmWrite(motionServo[1], m->servo[1]);
-        pwmWrite(motionServo[2], m->servo[2]);
-        pwmWrite(motor, m->rpm);
+        pwmWrite(motionServo[0], m.servo[0]);
+        pwmWrite(motionServo[1], m.servo[1]);
+        pwmWrite(motionServo[2], m.servo[2]);
+        pwmWrite(motor, m.rpm);
         if(ioctl & IoctlMessage::RESPONSETEST) {
             //computer.send<>(*m); // Respond for test application
         }
     }
 }
 void actuateCamera(const U8* msg, const std::size_t len) {
+    CameraControlMessage m;
     if(len == sizeof(CameraControlMessage)) {
-        CameraControlMessage *m = (CameraControlMessage*)msg; // Safe because of requested alignment of msg
-        pwmWrite(cameraServo[0], m->horizontal);
-        pwmWrite(cameraServo[1], m->vertical);
+        memcpy(&m, msg, sizeof(m));
+        pwmWrite(cameraServo[0], m.horizontal);
+        pwmWrite(cameraServo[1], m.vertical);
     }
 }
 
 void stresstest(void*) {
     for(int i = 0; i < 1000; ++i) {
-        //computer.send<>(message);
+        computer.send<>(message);
     }
     ioctl ^= IoctlMessage::STRESSTEST;
 }
 
-void setIoctl(const U8* msg, const std::size_t len) {
-    ioctl = *(U16*)msg;
+void setIoctl(const U8* msg, const std::size_t) {
+    ioctl = bytestou16(msg);
     //digitalWrite(BOARD_LED_PIN, 1);
 
     if(ioctl & IoctlMessage::STRESSTEST) {
@@ -181,7 +183,7 @@ namespace Computer {
             isr::queue(Computer::readBytes);
         }
     }
-    void rxCallback(dma_message*, dma_irq_cause cause) {
+    void rxCallback(dma_message*, dma_irq_cause) {
         isr::queue(Computer::readBytes);
     }
     void setup() {
@@ -233,7 +235,7 @@ void servoSetup() {
 int main(void) {
     Computer::setup();
     timerSetup();
-    servoSetup();
+    //servoSetup();
     isr::serviceLoop();
     while(1) asm volatile ("nop");
     return 0;
