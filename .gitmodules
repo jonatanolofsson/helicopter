@@ -4,3 +4,6 @@
 [submodule "ac/syrup"]
 	path = ac/syrup
 	url = git@github.com:jonatanolofsson/syrup.git
+[submodule "libs/ptam"]
+	path = libs/ptam
+	url = git@github.com:jonatanolofsson/PTAM-GPL.git
