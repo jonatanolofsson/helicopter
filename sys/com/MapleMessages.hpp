@@ -46,16 +46,15 @@ namespace sys {
                 mz = 2
             };
             S32 imu[6];
-            U32 pressure;
+            S32 pressure;
             S32 magnetometer[3];
-            U32 wind[2];
-            U32 distance[4];
+            //U32 wind[2];
+            //U32 distance[4];
             U16 rpm;
             U16 nofImu;
-            U16 nofPressure;
             U16 nofMagnetometer;
-            U16 nofWind[2];
-            U16 nofDistance[4];
+            //U16 nofWind[2];
+            //U16 nofDistance[4];
             U8 buttons;
         };
 

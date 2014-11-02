@@ -34,15 +34,13 @@
 #include <ac/types.hpp>
 
 #include <syrup/drivers/sensors/MPU6050.hpp>
-/*
- *#include <syrup/drivers/sensors/MS5611.hpp>
- *#include <syrup/drivers/sensors/HMC5883L.hpp>
- *#include <syrup/drivers/sensors/ADNS3080.hpp>
- *#include <syrup/drivers/sensors/TCS230.hpp>
- *#include <syrup/drivers/sensors/Button.hpp>
- *#include <syrup/drivers/sensors/SRF04.hpp>
- *#include <syrup/drivers/sensors/AnalogSensor.hpp>
- */
+#include <syrup/drivers/sensors/MS5611.hpp>
+#include <syrup/drivers/sensors/HMC5883L.hpp>
+//#include <syrup/drivers/sensors/ADNS3080.hpp>
+//#include <syrup/drivers/sensors/TCS230.hpp>
+//#include <syrup/drivers/sensors/Button.hpp>
+//#include <syrup/drivers/sensors/SRF04.hpp>
+//#include <syrup/drivers/sensors/AnalogSensor.hpp>
 //~ #define WATCHDOG                (12)
 
 // Force init to be called *first*, i.e. before static object allocation.
@@ -62,8 +60,8 @@ using namespace sys::maple;
 U16 ioctl;
 
 MPU6050 IMU(I2C1, 17);
-//~ MS5611 pressureSensor(I2C1);
-//~ HMC5883L magnetometer(I2C1, 18);
+MS5611 pressureSensor(I2C1);
+HMC5883L magnetometer(I2C1, 18);
 // ADNS3080 opticalFlow(&Spi2);
 //~ SRF04 groundDistance[4] = {{4, Timer3, true},{5, Timer3},{6, Timer3},{7, Timer3}};
 //~ TCS230 RPMSensor(19, Timer4); // Verify args
@@ -83,21 +81,12 @@ static const U8 SEL_PIN = 14;
 
 ComputerLink computer(&Serial3);
 
-void timerISR(void*) {
+void timerMidwayIsr() {
+    pressureSensor.startPressureSample();
+}
+
+void timer10msIsr() {
     static int N = 0;
-
-    //digitalWrite(BOARD_LED_PIN, !(N%4));
-
-    // Feed the watchdog
-    //~ digitalWrite(WATCHDOG, (N % 5) == 0);
-
-    //~ pressureSensor.sample();
-    //~ if(N % 2) {
-        //~ opticalFlow.sample();
-    //~ } else {
-        //~ opticalFlow.measure(d);
-    //~ }
-
     //~ if(!(N % 5)) {
         //~ for(int i = 0; i < 4; ++i) {
             //~ groundDistance[i].measure(&message.distance[i]);
@@ -105,42 +94,49 @@ void timerISR(void*) {
     //~ }
 
     IMU.measure(message.imu, &message.nofImu);
-    //~ digitalWrite(BOARD_LED_PIN, message.imu[2] != 0);
-    //~ pressureSensor.measure(&message.pressure);
-    //~ magnetometer.measure(message.magnetometer);
-    //~ message.buttons = (btn3.pressed() << 3)
-                    //~ | (btn2.pressed() << 2)
-                    //~ | (btn1.pressed() << 1)
-                    //~ | (btn0.pressed() << 0);
+    pressureSensor.measure(&message.pressure);
+    magnetometer.measure(message.magnetometer, &message.nofMagnetometer);
+    // message.buttons = (btn3.pressed() << 3)
+                    // | (btn2.pressed() << 2)
+                    // | (btn1.pressed() << 1)
+                    // | (btn0.pressed() << 0);
 
-    //~ windSensor[0].measure(&message.wind[0]);
-    //~ windSensor[1].measure(&message.wind[1]);
-    //~ Serial3.println('a');
-    //~ for(int i = 0; i < 3; ++i) {
-        //~ print((int)message.imu[i]);
-        //~ Serial3.print("        ");
-    //~ }
-    //~ Serial3.println("");
+    // windSensor[0].measure(&message.wind[0]);
+    // windSensor[1].measure(&message.wind[1]);
 
-    //~ //~// powerSensor.measure(&message.power);
-    //~ RPMSensor.measure(&message.rpm);
+    // powerSensor.measure(&message.power);
+    // RPMSensor.measure(&message.rpm);
 
     if(ioctl & IoctlMessage::SEND_SENSOR_DATA) {
         computer.send<>(message);
     }
 
+    memset(&message, 0, sizeof(message));
+    pressureSensor.startTemperatureSample();
+
+    N = (N+1)%100;
+}
+
+void timerIsr(void*) {
+    static int N = 0;
+    i2c_wait_for_state_change(I2C1, I2C_STATE_XFER_DONE, 0);
+
+    if (N%2) { // 10 ms
+        timer10msIsr();
+    } else { // midway
+        timerMidwayIsr();
+    }
+
     // Wrap each second
-    N = (N+1) % 100;
+    N = (N+1) % 200;
 }
 
 
 void actuateControl(const U8* msg, const std::size_t len) {
     static ControlMessage m;
     static bool a = true; a = !a;
-    //~ digitalWrite(BOARD_LED_PIN, a);
     if(len == sizeof(ControlMessage)) {
         memcpy(&m, msg, sizeof(m));
-        digitalWrite(BOARD_LED_PIN, a);
         a = !a;
         //~ delay(500);
         pwmWrite(motionServo[0], m.servo[0]);
@@ -170,7 +166,6 @@ void stresstest(void*) {
 
 void setIoctl(const U8* msg, const std::size_t) {
     ioctl = bytestou16(msg);
-    //digitalWrite(BOARD_LED_PIN, 1);
 
     if(ioctl & IoctlMessage::STRESSTEST) {
         isr::queue(stresstest);
@@ -196,20 +191,20 @@ namespace Computer {
     }
 }
 
-void timer10msInterrupt() {
-    ////~ static bool a = true; a = !a;
-    ////~ digitalWrite(BOARD_LED_PIN, 1);
-    isr::queue(timerISR);
-}
+void timerInterrupt() {isr::queue(timerIsr);}
 void timerSetup() {
-    Timer4.setPeriod(10000);
-    Timer4.attachInterrupt(1, &timer10msInterrupt);
+    Timer4.pause();
+    Timer4.setPeriod(5000);
+    auto ovf = Timer4.getOverflow();
+    Timer4.setMode(TIMER_CH3, TIMER_OUTPUT_COMPARE);
+    Timer4.setCompare(TIMER_CH3, ovf);
+    Timer4.attachInterrupt(TIMER_CH3, &timerInterrupt);
     Timer4.refresh();
+    Timer4.resume();
 }
 
 void servoSetup() {
     pinMode(SEL_PIN, OUTPUT);
-    digitalWrite(SEL_PIN, 1); // Maple controls the servos
 
     Timer1.setPrescaleFactor(22);
     Timer1.setOverflow(65455); // PPM limit: 6546 for 2ms
