@@ -11,7 +11,7 @@ namespace sys {
     namespace clock {
         Clock::Clock()
         : d(&Clock::tick, this)
-        , nextInvokation(SystemClock::now() + realTimePerTick)
+        , nextInvokation(SystemClock::now())
         {}
 
         void Clock::start() {
@@ -23,6 +23,7 @@ namespace sys {
         }
 
         Clock::~Clock() {
+            LOG_EVENT(typeid(Self).name(), 0, "Stopping time");
             stop();
         }
 

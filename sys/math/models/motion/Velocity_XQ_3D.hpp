@@ -25,6 +25,8 @@ namespace sys {
 
                 template<typename ExternalStates>
                 static StateVector predict(const typename ExternalStates::StateVector& x, const Scalar dT = settings::dT) {
+                    //LOG_EVENT(typeid(Self).name(), 50, "Predicting for x=" << x.transpose());
+                    //LOG_EVENT(typeid(Self).name(), 50, "dT=" << dT);
                     typedef ExternalStates extstates;
                     StateVector xnext = States::template translate<ExternalStates>(x);
 
@@ -46,6 +48,7 @@ namespace sys {
                     } else {
                         xnext.template segment<4>(States::quaternion) = x.template segment<4>(extstates::quaternion);
                     }
+                    //LOG_EVENT(typeid(Self).name(), 50, "--> xnext = " << xnext.transpose());
 
                     return xnext;
                 }

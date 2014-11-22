@@ -30,22 +30,23 @@ namespace sys {
 
         template<typename InitialState>
         void StateMachine<InitialState>::postEvent(const boost::statechart::event_base& e) {
-            stateMachine.process_event(e);
+            stateMachine->process_event(e);
         }
 
         template<typename InitialState>
         void StateMachine<InitialState>::run() {
-            stateMachine.initiate();
-            stateMachine.wait();
+            StateEngine<InitialState> sm;
+            stateMachine = &sm;
+            stateMachine->initiate();
+            stateMachine->wait();
         }
 
         template<typename InitialState>
         void StateMachine<InitialState>::kill() {
-            stateMachine.kill();
+            stateMachine->kill();
         }
-
         template<typename InitialState>
-        StateEngine<InitialState> StateMachine<InitialState>::stateMachine;
+        StateEngine<InitialState>* StateMachine<InitialState>::stateMachine;
     }
 }
 

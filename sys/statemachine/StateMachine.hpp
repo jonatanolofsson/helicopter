@@ -40,7 +40,7 @@ namespace sys {
         template<typename InitialState>
         class StateMachine {
             private:
-                static StateEngine<InitialState> stateMachine;
+                static StateEngine<InitialState>* stateMachine;
 
             public:
                 static void postEvent(const boost::statechart::event_base&);

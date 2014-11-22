@@ -19,7 +19,7 @@ LFLAGS += -L$(TOP)/os -los
 
 TEST_LFLAGS  = -lgtest_main -lgtest
 TEST_LFLAGS += -lpthread
-TEST_LFLAGS += -L$(TOP)/sys -lsys
+#TEST_LFLAGS += -L$(TOP)/sys -lsys
 TEST_LFLAGS += -L$(TOP)/os -los
 
 COMPILER = ccache clang++ -Qunused-arguments
@@ -27,7 +27,7 @@ ifdef USE_GCC
     COMPILER = g++
 endif
 
-!cc = |> ^o^ $(COMPILER) $(CFLAGS) -c %f |> %B.o
-!testcc = | $(TOP)/os/libos.a |> $(COMPILER) $(CFLAGS) %f -o %o $(TEST_LFLAGS) |> %B
+!cc = |> ^c^ $(COMPILER) $(CFLAGS) -c %f |> %B.o
+!testcc = | $(TOP)/os/libos.a |> ^c^ $(COMPILER) $(CFLAGS) %f -o %o $(TEST_LFLAGS) |> %B
 !ar = |> ar crs %o %f |> lib%d.a
 

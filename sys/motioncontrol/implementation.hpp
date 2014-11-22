@@ -44,6 +44,7 @@ namespace sys {
 
             B.template block<MotionModel::nofStates, Algorithm::nofControls>(0,0) =
                     math::template differentiate<MotionModel, typename Algorithm::Controls, SystemStates>(systemState.value);
+            //LOG_EVENT(typeid(Self).name(), 50, "B::::::::::::::\n" << B << "\n:::::::::::::::::::::::::::::::::::::");
             controller.template updateModel<MotionModel::isDiscrete>(F, B);
             LOG_EVENT(typeid(Self).name(), 50, "Controlstate: " << controlState.transpose());
             LOG_EVENT(typeid(Self).name(), 50, "Reference: " << reference.value.transpose());
@@ -56,7 +57,8 @@ namespace sys {
              *static_assert(1 == ExtendedControlState::ColsAtCompileTime, "Wrong size of controlstate!");
              */
             auto u = controller.direct_eval(extendedControlState);
-            os::yield(ControlMessage(u.template segment<ControlMessage::States::nofStates>(0)));
+            LOG_EVENT(typeid(Self).name(), 50, "u: " << u.transpose());
+            os::yield(ControlMessage(u));
         }
 
         template<typename Algorithm, typename MotionModel, typename SystemStates, typename Reference, typename ControlMessage>
