@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SYS_STATES_TOP_HPP_
-#define SYS_STATES_TOP_HPP_
 
 #include <boost/statechart/state.hpp>
 #include <boost/statechart/simple_state.hpp>
@@ -24,6 +22,7 @@ namespace sys {
         struct Fly;
         struct Top : sc::simple_state<Top, statemachine::StateMachineEngine, Fly>
         {
+            Observer::Filter globalFilter;
             Observer observer;
 
             Sensorhub sensorhub;
@@ -31,12 +30,13 @@ namespace sys {
 
             Clock clock;
 
-            Top() : logger("simlog.mat") {}
+            Top()
+            : observer(globalFilter)
+            , logger("simlog.mat")
+            {}
         };
     }
 }
 
 #include <sys/states/Fly.hpp>
-
-#endif
 

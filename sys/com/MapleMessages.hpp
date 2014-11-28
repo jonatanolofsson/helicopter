@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SYS_COM_MAPLEMESSAGES_HPP_
-#define SYS_COM_MAPLEMESSAGES_HPP_
 
 #include <os/types.hpp>
 
@@ -9,23 +7,26 @@ namespace sys {
         using namespace os;
         struct SensorMessage;
         struct ControlMessage;
+        struct SpeedControlMessage;
         struct CameraControlMessage;
         struct IoctlMessage;
         template<int ID> struct Message;
         struct Messages {
-            static const int numberOfMessages = 4;
+            static const int numberOfMessages = 5;
 
             enum Id {
                 sensorMessage = 0,
                 controlMessage = 1,
-                cameraControlMessage = 2,
-                ioctlMessage = 3
+                speedControlMessage = 2,
+                cameraControlMessage = 3,
+                ioctlMessage = 4
             };
             template<Id MID>
             struct ById { typedef typename Message<MID>::Type Type; };
 
             typedef maple::SensorMessage SensorMessage;
             typedef maple::ControlMessage ControlMessage;
+            typedef maple::SpeedControlMessage SpeedControlMessage;
             typedef maple::CameraControlMessage CameraControlMessage;
             typedef maple::IoctlMessage IoctlMessage;
         };
@@ -61,6 +62,10 @@ namespace sys {
         struct ControlMessage {
             static const Messages::Id ID = Messages::controlMessage;
             U16 servo[3];
+        };
+
+        struct SpeedControlMessage {
+            static const Messages::Id ID = Messages::controlMessage;
             U16 rpm;
         };
 
@@ -82,8 +87,9 @@ namespace sys {
 
         template<> struct Message<Messages::sensorMessage> { typedef SensorMessage Type; };
         template<> struct Message<Messages::controlMessage> { typedef ControlMessage Type; };
+        template<> struct Message<Messages::speedControlMessage> { typedef SpeedControlMessage Type; };
         template<> struct Message<Messages::cameraControlMessage> { typedef CameraControlMessage Type; };
         template<> struct Message<Messages::ioctlMessage> { typedef IoctlMessage Type; };
     }
 }
-#endif
+

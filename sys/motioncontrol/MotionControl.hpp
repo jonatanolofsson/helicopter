@@ -7,12 +7,13 @@
 
 namespace sys {
     namespace motioncontrol {
-        template<typename Algorithm, typename MotionModel, typename SystemStateMessage, typename Reference, typename ControlMessage>
+        template<typename GlobalFilter, typename Algorithm, typename MotionModel, typename SystemStateMessage, typename Reference, typename ControlMessage>
         class MotionControl {
             public:
-                typedef MotionControl<Algorithm, MotionModel, SystemStateMessage, Reference, ControlMessage> Self;
+                typedef MotionControl<GlobalFilter, Algorithm, MotionModel, SystemStateMessage, Reference, ControlMessage> Self;
 
             private:
+                GlobalFilter& filter;
                 typedef typename SystemStateMessage::StateVector SystemStateVector;
                 typedef typename SystemStateMessage::States SystemStates;
 
@@ -23,7 +24,7 @@ namespace sys {
                 void updateControl(const SystemStateMessage, const Reference);
 
             public:
-                MotionControl();
+                MotionControl(GlobalFilter&);
         };
     }
 }

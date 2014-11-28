@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SYS_MATH_FILTERING_GAUSSIAN_FILTER_HPP_
-#define SYS_MATH_FILTERING_GAUSSIAN_FILTER_HPP_
 
 #include <os/mem/ProtectedData.hpp>
 #include <sys/math/statistics.hpp>
@@ -20,7 +18,7 @@ namespace sys {
             StateVector state;
 
             explicit GaussianFilter() {
-                state.setZero();
+                States::initializeState(state);
                 covariance.setZero();
             }
 
@@ -68,4 +66,3 @@ namespace sys {
     }
 }
 
-#endif

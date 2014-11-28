@@ -18,8 +18,8 @@
 namespace sys {
     namespace motioncontrol {
         using namespace Eigen;
-        template<typename Algorithm, typename MotionModel, typename SystemStateMessage, typename ReferenceMessage, typename ControlMessage>
-        void MotionControl<Algorithm, MotionModel, SystemStateMessage, ReferenceMessage, ControlMessage>
+        template<typename GlobalFilter, typename Algorithm, typename MotionModel, typename SystemStateMessage, typename ReferenceMessage, typename ControlMessage>
+        void MotionControl<GlobalFilter, Algorithm, MotionModel, SystemStateMessage, ReferenceMessage, ControlMessage>
         ::updateControl(const SystemStateMessage systemState, const ReferenceMessage reference) {
             static const int nofStates = Algorithm::nofStates;
             static const int nofControls = Algorithm::nofControls;
@@ -58,13 +58,15 @@ namespace sys {
              */
             auto u = controller.direct_eval(extendedControlState);
             LOG_EVENT(typeid(Self).name(), 50, "u: " << u.transpose());
+            Algorithm::Controls::template update<typename GlobalFilter::States>(filter.state, u);
             os::yield(ControlMessage(u));
         }
 
-        template<typename Algorithm, typename MotionModel, typename SystemStates, typename Reference, typename ControlMessage>
-        MotionControl<Algorithm, MotionModel, SystemStates, Reference, ControlMessage>
-        ::MotionControl()
-        : dispatcher(&Self::updateControl, this)
+        template<typename GlobalFilter, typename Algorithm, typename MotionModel, typename SystemStates, typename Reference, typename ControlMessage>
+        MotionControl<GlobalFilter, Algorithm, MotionModel, SystemStates, Reference, ControlMessage>
+        ::MotionControl(GlobalFilter& filter_)
+        : filter(filter_)
+        , dispatcher(&Self::updateControl, this)
         {}
     }
 }

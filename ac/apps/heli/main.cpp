@@ -142,7 +142,7 @@ void actuateControl(const U8* msg, const std::size_t len) {
         pwmWrite(motionServo[0], m.servo[0]);
         pwmWrite(motionServo[1], m.servo[1]);
         pwmWrite(motionServo[2], m.servo[2]);
-        pwmWrite(motor, m.rpm);
+        //pwmWrite(motor, m.rpm);
         if(ioctl & IoctlMessage::RESPONSETEST) {
             //computer.send<>(*m); // Respond for test application
         }

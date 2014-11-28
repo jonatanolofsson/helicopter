@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SYS_MATH_MODELS_SENSORS_IMU_HPP_
-#define SYS_MATH_MODELS_SENSORS_IMU_HPP_
 
 #include <sys/math/constants.hpp>
 #include <sys/math/filtering/GaussianFilter.hpp>
@@ -13,75 +11,75 @@ namespace sys {
     namespace math {
         namespace models {
             using namespace Eigen;
-            template<typename ModelDescription>
-            struct Imu {
-                typedef Imu Self;
-                typedef typename ModelDescription::Scalar Scalar;
-                enum state {
-                    ax = 0,
-                    ay = 1,
-                    az = 2,
 
-                    wx = 3,
-                    wy = 4,
-                    wz = 5,
+            struct ImuStraightOff {
+                typedef AW_3D States;
+                typedef States states;
+                typedef States::StateVector Result;
+                using StateVector = States::StateVector;
 
-                    nofMeasurements = 6
-                };
+                template<typename ExternalStates>
+                StateVector predict(ExternalStates& x, Scalar = settings::dT) {
+                    typedef ExternalStates extstates;
+                    Result m;
+                    m[states::ax] = x[extstates::ax];
+                    m[states::ay] = x[extstates::ay];
+                    m[states::az] = x[extstates::az];
 
-                enum states {
-                    acceleration = ax,
-                    rotational_velocity = wx
-                };
-
-                typedef Matrix<Scalar, nofMeasurements, 1> MeasurementVector;
-                typedef Matrix<Scalar, nofMeasurements, nofMeasurements> CovarianceMatrix;
-                static MeasurementVector measurement(const typename ModelDescription::States& state) {
-                    typedef typename ModelDescription::StateDescription states;
-                    MeasurementVector m;
-                    m[ax] = state[states::ax];
-                    m[ay] = state[states::ay];
-                    m[az] = state[states::az];
-
-                    m[wx] = state[states::wx];
-                    m[wy] = state[states::wy];
-                    m[wz] = state[states::wz];
+                    m[states::wx] = x[extstates::wx];
+                    m[states::wy] = x[extstates::wy];
+                    m[states::wz] = x[extstates::wz];
 
                     return m;
                 }
+            };
 
-                static CovarianceMatrix cov;
-                static const CovarianceMatrix& covariance() { return cov; }
+            template<typename MotionModel_ = ImuStraightOff>
+            struct Imu {
+                typedef MotionModel_ MotionModel;
+                typedef Imu Self;
+                typedef AW_3D States;
+                typedef States::StateVector Result;
+                static const int nofStates = States::nofStates;
+                static const int frequency = 100;
 
-                static Matrix<Scalar, nofMeasurements, ModelDescription::nofStates>
-                jacobian(const typename ModelDescription::States&) {
-                    typedef typename ModelDescription::StateDescription states;
-                    typedef Matrix<Scalar, nofMeasurements, ModelDescription::nofStates> JacobianMatrix;
-                    JacobianMatrix J;
-                    J.setZero();
-
-                    J(ax, states::ax) = 1;
-                    J(ay, states::ay) = 1;
-                    J(az, states::az) = 1;
-
-                    J(wx, states::wx) = 1;
-                    J(wy, states::wy) = 1;
-                    J(wz, states::wz) = 1;
-
-                    return J;
+                template<typename ExternalStates>
+                static Result measurement(const typename ExternalStates::StateVector& x) {
+                    Result r = States::template translate<typename MotionModel::States>(MotionModel::template predict<ExternalStates>(x));
+                    return r;
                 }
 
-                static MeasurementVector noise() {
+                static internal::Covariance<nofStates> covariance() {
+                    typedef Matrix<Scalar, nofStates, nofStates> RetType;
+                    return RetType::Identity();
+                }
+
+/*
+ *                template<typename DerivationStates, typename ExternalStates>
+ *                static Matrix<Scalar, nofStates, DerivationStates::nofStates>
+ *                observationMatrix(const typename ExternalStates::StateVector&) {
+ *                    typedef typename ModelDescription::StateDescription states;
+ *                    typedef Matrix<Scalar, nofMeasurements, ModelDescription::nofStates> JacobianMatrix;
+ *                    JacobianMatrix J;
+ *                    J.setZero();
+ *
+ *                    J(ax, states::ax) = 1;
+ *                    J(ay, states::ay) = 1;
+ *                    J(az, states::az) = 1;
+ *
+ *                    J(wx, states::wx) = 1;
+ *                    J(wy, states::wy) = 1;
+ *                    J(wz, states::wz) = 1;
+ *
+ *                    return J;
+ *                }
+ */
+
+                static Result noise() {
                     return math::normalSample(covariance());
                 }
             };
-
-            template<typename ModelDescription> typename Imu<ModelDescription>::CovarianceMatrix
-            Imu<ModelDescription>::cov = (Imu<ModelDescription>::MeasurementVector() <<
-                1.0, 1.0, 1.0, 1.0, 1.0, 1.0
-            ).finished().asDiagonal();
         }
     }
 }
 
-#endif

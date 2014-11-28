@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SYS_SIMULATOR_HPP_
-#define SYS_SIMULATOR_HPP_
 
 #include <os/type_traits.hpp>
 #include <os/com/Dispatcher.hpp>
@@ -10,10 +8,13 @@
 
 namespace sys {
     namespace simulator {
-        template<typename MotionModel, typename ControlMessage, typename... Sensors>
+        template<typename GlobalFilter, typename MotionModel, typename ControlMessage, typename... Sensors>
         class Simulator {
+            private:
+                GlobalFilter& filter;
+
             public:
-                typedef Simulator<MotionModel, ControlMessage, Sensors...> Self;
+                typedef Simulator<GlobalFilter, MotionModel, ControlMessage, Sensors...> Self;
                 typedef typename MotionModel::States States;
 
                 typename MotionModel::StateVector state;
@@ -37,11 +38,10 @@ namespace sys {
                     os::evalVariadic((yieldSensorReading<WSensors>(), 1)...);
                 }
 
-                Simulator();
+                explicit Simulator(GlobalFilter&);
 
                 void simulate(const ControlMessage);
         };
     }
 }
 
-#endif

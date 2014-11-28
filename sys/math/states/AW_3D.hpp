@@ -1,15 +1,13 @@
 #pragma once
-#ifndef SYS_MODELS_VW_3D_HPP_
-#define SYS_MODELS_VW_3D_HPP_
 
 namespace sys {
     namespace math {
         namespace models {
-            struct VW_3D : public State<VW_3D, 6> {
+            struct AW_3D : public State<AW_3D, 6> {
                 enum control {
-                    vx = 0,
-                    vy = 1,
-                    vz = 2,
+                    ax = 0,
+                    ay = 1,
+                    az = 2,
 
                     wx = 3,
                     wy = 4,
@@ -17,7 +15,7 @@ namespace sys {
                 };
 
                 enum states {
-                    velocity = vx,
+                    acceleration = ax,
                     omega = wx
                 };
 
@@ -28,9 +26,9 @@ namespace sys {
                 template<typename ExternalStates>
                 constexpr static int statemap(const int state) {
                     return math::internal::StateMap{
-                        ExternalStates::vx,
-                        ExternalStates::vy,
-                        ExternalStates::vz,
+                        ExternalStates::ax,
+                        ExternalStates::ay,
+                        ExternalStates::az,
                         ExternalStates::wx,
                         ExternalStates::wy,
                         ExternalStates::wz}[state];
@@ -40,4 +38,3 @@ namespace sys {
     }
 }
 
-#endif

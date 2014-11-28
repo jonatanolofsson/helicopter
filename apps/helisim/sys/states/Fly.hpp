@@ -9,13 +9,14 @@
 namespace sys {
     namespace states {
         struct Fly
-        : sc::simple_state<Fly, Top>
+        : sc::state<Fly, Top>
         {
+            typedef sc::state<Fly, Top> Base;
             MotionControl motionController;
             ReferenceGenerator referenceGenerator;
             Simulator simulator;
 
-            Fly();
+            Fly(my_context);
         };
     }
 }

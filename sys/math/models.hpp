@@ -9,13 +9,13 @@ namespace sys {
     namespace math {
         namespace models {
             using namespace Eigen;
-            template<typename Parent_, typename States_>
+            template<typename Parent_, typename States_, bool ISDISCRETE=true>
             struct Model {
                 typedef Parent_ Parent;
                 typedef States_ States;
                 using StateVector = typename States::StateVector;
                 static const int nofStates = States::nofStates;
-                static const bool isDiscrete = true;
+                static const bool isDiscrete = ISDISCRETE;
 
                 static Matrix<Scalar, nofStates, nofStates>
                 covariance(const Scalar dT) {

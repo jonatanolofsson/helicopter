@@ -1,6 +1,4 @@
 #pragma once
-#ifndef APP_SYS_MOTIONCONTROL_HPP_
-#define APP_SYS_MOTIONCONTROL_HPP_
 
 #include <sys/motioncontrol/MotionControl.hpp>
 #include <sys/math/models.hpp>
@@ -11,17 +9,18 @@
 
 namespace sys {
     namespace motioncontrol {
-        typedef math::models::XQ_3D States;
-        typedef math::models::VW_3D Controls;
+        typedef math::models::VW_3D States;
+        typedef math::models::HelicopterControls Controls;
 
+        typedef Observer::Filter GlobalFilter;
         typedef math::LqController<States, Controls, true> Controller;
-        typedef math::models::Velocity_XQ_3D<math::models::XQ_3D> MotionModel;
+        typedef math::models::Helicopter<States> MotionModel;
         typedef Observer::StateMessage SystemStateMessage;
         typedef ReferenceMessage<States> Reference;
         typedef ControlMessage<Controls> ControlMessage;
     }
 
-#define MOTIONCONTROL_CLASS motioncontrol::MotionControl<motioncontrol::Controller, motioncontrol::MotionModel, motioncontrol::SystemStateMessage, motioncontrol::Reference, motioncontrol::ControlMessage>
+#define MOTIONCONTROL_CLASS motioncontrol::MotionControl<motioncontrol::GlobalFilter, motioncontrol::Controller, motioncontrol::MotionModel, motioncontrol::SystemStateMessage, motioncontrol::Reference, motioncontrol::ControlMessage>
     typedef MOTIONCONTROL_CLASS MotionControl;
 }
-#endif
+

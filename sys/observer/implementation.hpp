@@ -11,8 +11,9 @@
 namespace sys {
     namespace observer {
         template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger, typename... Sensors>
-        Observer<Algorithm, Filter, MotionModel, Trigger, Sensors...>::Observer()
-        : dispatcher(&Self::timeUpdate, this)
+        Observer<Algorithm, Filter, MotionModel, Trigger, Sensors...>::Observer(Filter& filter_)
+        : filter(filter_)
+        , dispatcher(&Self::timeUpdate, this)
         , sensors(this)
         {
             MotionModel::States::initialize(filter);

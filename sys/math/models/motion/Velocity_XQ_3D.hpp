@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SYS_MATH_MODELS_VELOCITY_XQ_3D_HPP_
-#define SYS_MATH_MODELS_VELOCITY_XQ_3D_HPP_
 
 #include <Eigen/Core>
 #include <sys/math/models/motion.hpp>
@@ -57,4 +55,3 @@ namespace sys {
     }
 }
 
-#endif

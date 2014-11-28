@@ -1,17 +1,14 @@
 #pragma once
-#ifndef SYS_MODELS_HELICOPTERCONTROLS_HPP_
-#define SYS_MODELS_HELICOPTERCONTROLS_HPP_
 
 namespace sys {
     namespace math {
         namespace models {
-            struct HelicopterControls : public State<HelicopterControls, 5> {
+            struct HelicopterControls : public State<HelicopterControls, 4> {
                 enum state {
                     th_a = 0,
                     th_b = 1,
                     th_c = 2,
-                    th_tail = 3,
-                    N = 4
+                    th_tail = 3
                 };
 
                 /*
@@ -24,12 +21,10 @@ namespace sys {
                         ExternalStates::th_a,
                         ExternalStates::th_b,
                         ExternalStates::th_c,
-                        ExternalStates::th_tail,
-                        ExternalStates::N}[state];
+                        ExternalStates::th_tail}[state];
                 }
             };
         }
     }
 }
 
-#endif

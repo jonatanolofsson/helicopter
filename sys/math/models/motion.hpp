@@ -6,5 +6,6 @@
 #include <sys/math/models/motion/Constant.hpp>
 #include <sys/math/models/motion/Velocity_X_3D.hpp>
 #include <sys/math/models/motion/Velocity_XQ_3D.hpp>
+#include <sys/math/models/motion/Helicopter.hpp>
 
 #endif

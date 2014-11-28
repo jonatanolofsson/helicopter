@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SYS_OBSERVER_HPP_
-#define SYS_OBSERVER_HPP_
 
 #include <os/com/Dispatcher.hpp>
 #include <sys/Observer.hpp>
@@ -9,20 +7,24 @@
 
 namespace sys {
     namespace observer {
-        template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger, typename... Sensors>
+        template<typename Algorithm_, typename Filter_, typename MotionModel_, typename Trigger, typename... Sensors>
         class Observer {
             public:
+                typedef Algorithm_ Algorithm;
+                typedef Filter_ Filter;
+                typedef MotionModel_ MotionModel;
                 typedef Observer<Algorithm, Filter, MotionModel, Trigger, Sensors...> Self;
                 typedef StateMessage<typename Filter::States> StateMessage;
 
             private:
+                Filter& filter;
                 os::Dispatcher<Self, Trigger> dispatcher;
 
                 /* Sensors */
                 template<typename Sensor>
                 struct SingleSensorWrapper {
                     os::AsynchronousDispatcher<Self, Sensor> d;
-                    explicit SingleSensorWrapper(Self*& self) : d(&Self::measurementUpdate<Sensor>, self) {
+                    explicit SingleSensorWrapper(Self*& self) : d(&Self::template measurementUpdate<Sensor>, self) {
                         LOG_EVENT(typeid(Self).name(), 10, "Observing sensor " << os::demangle(typeid(Sensor).name()));
                     }
                 };
@@ -35,12 +37,9 @@ namespace sys {
                     Self*, SensorWrapper<Sensors...>>::type sensors;
 
             public:
-                Filter filter;
-
-                Observer();
+                explicit Observer(Filter&);
 
                 void timeUpdate(const Trigger);
-                //~ FIXME: enable_if: void timeUpdate(const Trigger, typename MotionModel::Controls);
 
                 template<typename Measurement, typename MUFilter = Algorithm>
                 void measurementUpdate(const Measurement m) {
@@ -53,4 +52,3 @@ namespace sys {
     }
 }
 
-#endif

@@ -1,19 +1,20 @@
 #pragma once
-#ifndef SYS_SIMULATOR_API_HPP_
-#define SYS_SIMULATOR_API_HPP_
 
 #include <sys/math/states.hpp>
 #include <sys/math/models.hpp>
 #include <sys/simulator/Simulator.hpp>
 #include <sys/MotionControl.hpp>
+#include <sys/Observer.hpp>
 
 namespace sys {
     namespace simulator {
-        typedef math::models::VWXQ_3D States;
-        typedef math::models::Velocity_XQ_3D<States> MotionModel;
+        typedef math::models::HelicopterStates States;
+        typedef math::models::HelicopterMotion<States> MotionModel;
         typedef motioncontrol::ControlMessage ControlMessage;
+        typedef Observer::Filter GlobalFilter;
+        typedef SimulatedStateMessage<States> SimulatedStateMessage;
     }
-    typedef simulator::Simulator<simulator::MotionModel, simulator::ControlMessage, observer::sensors::Gps> Simulator;
+#define SIMULATOR_CLASS simulator::Simulator<simulator::GlobalFilter, simulator::MotionModel, simulator::ControlMessage, observer::sensors::Gps, observer::sensors::Imu>
+    typedef SIMULATOR_CLASS Simulator;
 }
 
-#endif

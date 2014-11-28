@@ -1,11 +1,9 @@
 #pragma once
-#ifndef SYS_MODELS_HELICOPTER_HPP_
-#define SYS_MODELS_HELICOPTER_HPP_
 
 namespace sys {
     namespace math {
         namespace models {
-            struct Helicopter : public State<Helicopter, 21> {
+            struct HelicopterStates : public State<HelicopterStates, 21> {
                 enum state {
                     vx = 0,
                     vy = 1,
@@ -29,17 +27,16 @@ namespace sys {
                     windZ = 15,
 
                     th_a = 16,
-                    th_b = 7,
+                    th_b = 17,
                     th_c = 18,
                     th_tail = 19,
                     N = 20
                 };
                 enum states {
                     position = x,
+                    omega = wx,
                     velocity = vx,
-                    velocities = wx,
                     quaternion = qx,
-                    rotationalVelocity = wx,
                 };
 
                 /*
@@ -76,6 +73,7 @@ namespace sys {
                 static void initializeState(T& state) {
                     state.setZero();
                     state[qw] = 1.0;
+                    state[N] = 500; //FIXME
                 }
 
                 template<typename T>
@@ -89,4 +87,3 @@ namespace sys {
     }
 }
 
-#endif
