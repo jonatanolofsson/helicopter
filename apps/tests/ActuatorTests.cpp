@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
+#include <os/com/getSignal.hpp>
 #include <os/com/SerialCommunication.hpp>
-#include <sys/Actuator.hpp>
 #include <sys/com/Maple.hpp>
 #include <sys/com/MotionControlSignal.hpp>
 #include <sys/com/CameraControlSignal.hpp>
@@ -10,6 +10,22 @@
 #include <chrono>
 #include <sys/types.hpp>
 #include <termios.h>
+
+INSTANTIATE_SIGNAL(sys::MotionControlSignal);
+
+
+namespace sys {
+    namespace actuator {
+        typedef Maple Serial;
+        typedef MotionControlSignal ControlMessage;
+    }
+}
+#include <sys/actuator/Actuator.hpp>
+
+namespace sys {
+    typedef actuator::Actuator<actuator::Serial, actuator::ControlMessage> Actuator;
+}
+
 
 using namespace sys;
 using namespace sys::maple;

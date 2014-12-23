@@ -1,2 +1,5 @@
-ActuatorTests
-SensorTests
+*
+!*.cpp
+!Tup*
+!math
+!sys
