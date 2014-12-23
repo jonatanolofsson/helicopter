@@ -4,6 +4,7 @@
 
 #include <os/com/Dispatcher.hpp>
 #include <sys/Observer.hpp>
+#include <fstream>
 
 namespace sys {
     namespace motioncontrol {
@@ -14,6 +15,7 @@ namespace sys {
 
             private:
                 GlobalFilter& filter;
+                std::ofstream logfile;
                 typedef typename SystemStateMessage::StateVector SystemStateVector;
                 typedef typename SystemStateMessage::States SystemStates;
 

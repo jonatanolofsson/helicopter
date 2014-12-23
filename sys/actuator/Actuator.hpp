@@ -1,30 +1,28 @@
 #pragma once
-#ifndef SYS_ACTUATOR_HPP_
-#define SYS_ACTUATOR_HPP_
 
 #include <os/com/Dispatcher.hpp>
-#include <sys/Motioncontrol.hpp>
-#include <sys/Actuator.hpp>
 
 namespace sys {
     namespace actuator {
-        template<typename Serial>
+        template<typename Serial, typename ControlSignal>
         class Actuator {
             public:
-                typedef Actuator<Serial> Self;
+                typedef Actuator<Serial, ControlSignal> Self;
 
             private:
-                void actuateControl(const MotionControlSignal u);
+                void actuateControl(const ControlSignal) {}
 
                 Serial& mcu;
 
-                os::Dispatcher<Self, MotionControlSignal> controlActuator;
+                os::Dispatcher<Self, ControlSignal> controlActuator;
 
                 Actuator();
 
             public:
-                explicit Actuator(Serial&);
+                explicit Actuator(Serial& mcu_)
+                : mcu(mcu_)
+                , controlActuator(&Self::actuateControl, this)
+                {}
         };
     }
 }
-#endif

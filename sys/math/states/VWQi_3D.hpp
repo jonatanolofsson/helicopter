@@ -3,7 +3,7 @@
 namespace sys {
     namespace math {
         namespace models {
-            struct VW_3D : public State<VW_3D, 6> {
+            struct VWQi_3D : public State<VWQi_3D, 9> {
                 enum control {
                     vx = 0,
                     vy = 1,
@@ -11,12 +11,17 @@ namespace sys {
 
                     wx = 3,
                     wy = 4,
-                    wz = 5
+                    wz = 5,
+
+                    qx = 6,
+                    qy = 7,
+                    qz = 8
                 };
 
                 enum states {
                     velocity = vx,
-                    omega = wx
+                    omega = wx,
+                    quaternion = qx
                 };
 
                 /*
@@ -31,7 +36,10 @@ namespace sys {
                         ExternalStates::vz,
                         ExternalStates::wx,
                         ExternalStates::wy,
-                        ExternalStates::wz}[state];
+                        ExternalStates::wz,
+                        ExternalStates::qx,
+                        ExternalStates::qy,
+                        ExternalStates::qz}[state];
                 }
             };
         }

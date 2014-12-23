@@ -7,6 +7,7 @@
 #include <sys/math/states.hpp>
 #include <sys/settings.hpp>
 #include <cmath>
+#include <os/utils/eventlog.hpp>
 
 #include <iostream>
 
@@ -75,6 +76,7 @@ namespace sys {
                             - eta_M_rotor * r_rotor.cross(Vector3(0,0,D * N2))
                             + eta_M_tail * r_tail.cross(Vector3(0, N2 * sin2Th_tail, 0))
                         );
+                    LOG_EVENT(typeid(Self).name(), 50, "xdot: " << xdot.transpose());
 
                     return xdot;
                 }

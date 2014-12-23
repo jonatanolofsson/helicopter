@@ -67,6 +67,7 @@ namespace sys {
 #include <sys/math/states/VWXQ_3D.hpp>
 #include <sys/math/states/VW_1D.hpp>
 #include <sys/math/states/VW_3D.hpp>
+#include <sys/math/states/VWQi_3D.hpp>
 #include <sys/math/states/AW_3D.hpp>
 #include <sys/math/states/V_3D.hpp>
 #include <sys/math/states/XQ_3D.hpp>

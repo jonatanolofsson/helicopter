@@ -15,6 +15,8 @@
 #include <sys/Observer.hpp>
 #include <sys/MotionControl.hpp>
 
+#include <sys/Logger.hpp>
+
 namespace sys {
     namespace motioncontrol {
         using namespace Eigen;
@@ -32,6 +34,7 @@ namespace sys {
             static const int linState = Algorithm::linState;
 
             auto A = math::template differentiate<MotionModel, typename Algorithm::States, SystemStates>(systemState.value);
+            LOG_EVENT(typeid(Self).name(), 50, "A::::::::::::::\n" << A << "\n:::::::::::::::::::::::::::::::::::::");
             F.template block<MotionModel::nofStates, MotionModel::nofStates>(0,0) = A;
             F.template block<MotionModel::nofStates, 1>(0, linState) =
                     MotionModel::template predict<SystemStates>(systemState.value)
@@ -44,7 +47,7 @@ namespace sys {
 
             B.template block<MotionModel::nofStates, Algorithm::nofControls>(0,0) =
                     math::template differentiate<MotionModel, typename Algorithm::Controls, SystemStates>(systemState.value);
-            //LOG_EVENT(typeid(Self).name(), 50, "B::::::::::::::\n" << B << "\n:::::::::::::::::::::::::::::::::::::");
+            LOG_EVENT(typeid(Self).name(), 50, "B::::::::::::::\n" << B << "\n:::::::::::::::::::::::::::::::::::::");
             controller.template updateModel<MotionModel::isDiscrete>(F, B);
             LOG_EVENT(typeid(Self).name(), 50, "Controlstate: " << controlState.transpose());
             LOG_EVENT(typeid(Self).name(), 50, "Reference: " << reference.value.transpose());
@@ -57,7 +60,16 @@ namespace sys {
              *static_assert(1 == ExtendedControlState::ColsAtCompileTime, "Wrong size of controlstate!");
              */
             auto u = controller.direct_eval(extendedControlState);
+            logger::Formatter<decltype(F)>::format(logfile, F);
+            logger::Formatter<decltype(B)>::format(logfile, B);
+            logfile << std::endl;
             LOG_EVENT(typeid(Self).name(), 50, "u: " << u.transpose());
+
+
+            // FIXME:
+            u.setZero();
+
+
             Algorithm::Controls::template update<typename GlobalFilter::States>(filter.state, u);
             os::yield(ControlMessage(u));
         }
@@ -66,6 +78,7 @@ namespace sys {
         MotionControl<GlobalFilter, Algorithm, MotionModel, SystemStates, Reference, ControlMessage>
         ::MotionControl(GlobalFilter& filter_)
         : filter(filter_)
+        , logfile("motioncontrol.mat")
         , dispatcher(&Self::updateControl, this)
         {}
     }
