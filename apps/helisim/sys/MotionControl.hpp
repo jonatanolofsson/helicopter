@@ -9,7 +9,7 @@
 
 namespace sys {
     namespace motioncontrol {
-        typedef math::models::VW_3D States;
+        typedef math::models::VWQi_3D States;
         typedef math::models::HelicopterControls Controls;
 
         typedef Observer::Filter GlobalFilter;
