@@ -120,7 +120,7 @@ namespace sys {
                 template<typename ExternalStates>
                 const ControlVector& eval(const typename ExternalStates::StateVector& x) {
                     /// [2] eq. 9.11: u = L*x, r = 0
-                    u = -L * States::template translate<ExternalStates>(x);
+                    u = -L * States::template translateFrom<ExternalStates>(x);
                     return u;
                 }
 

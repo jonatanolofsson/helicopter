@@ -25,7 +25,7 @@ namespace sys {
                 template<typename ExternalStates>
                 static StateVector predict(const typename ExternalStates::StateVector& x, const Scalar dT) {
                     typedef ExternalStates extstates;
-                    StateVector xnext = States::template translate<ExternalStates>(x);
+                    StateVector xnext = States::template translateFrom<ExternalStates>(x);
 
                     xnext.template segment<3>(States::position) += x.template segment<3>(extstates::velocity) * dT;
                     return xnext;

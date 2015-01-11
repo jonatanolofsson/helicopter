@@ -18,7 +18,7 @@ namespace sys {
                 typedef StateMessage<StateVector> StateMessage;
 
                 template<typename ExternalStates>
-                static StateVector translate(const typename ExternalStates::StateVector& x) {
+                static StateVector translateFrom(const typename ExternalStates::StateVector& x) {
                     StateVector res; res.setZero();
                     for(int i = 0; i < nofStates; ++i) {
                         res(i) = x(Parent::template statemap<ExternalStates>(i));
@@ -26,8 +26,17 @@ namespace sys {
                     return res;
                 }
 
+                template<typename ExternalStates, typename ColStates>
+                static Matrix<Scalar, nofStates, ColStates::nofStates> translateColumns(const typename Eigen::Matrix<Scalar, ExternalStates::nofStates, ColStates::nofStates>& X) {
+                    Matrix<Scalar, nofStates, ColStates::nofStates> res; res.setZero();
+                    for(int i = 0; i < ColStates::nofStates; ++i) {
+                        res.col(i) = translateFrom<ExternalStates>(X.col(i));
+                    }
+                    return res;
+                }
+
                 template<typename ExternalStates>
-                static Covariance translate(const typename ExternalStates::Covariance& x) {
+                static Covariance translateCovariance(const typename ExternalStates::Covariance& x) {
                     Covariance res; res.setZero();
                     for(int i = 0; i < nofStates; ++i) {
                         for(int j = 0; j < nofStates; ++i) {

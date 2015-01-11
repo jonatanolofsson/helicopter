@@ -30,7 +30,7 @@ namespace sys {
             typedef Matrix<Scalar, nofStates, 1> ExtendedControlState;
             ExtendedStateMatrix F; F.setZero();
             ExtendedControlMatrix B; B.setZero();
-            auto controlState = Algorithm::States::template translate<SystemStates>(systemState.value);
+            auto controlState = Algorithm::States::template translateFrom<SystemStates>(systemState.value);
             static const int linState = Algorithm::linState;
 
             auto A = math::template differentiate<MotionModel, typename Algorithm::States, SystemStates>(systemState.value);

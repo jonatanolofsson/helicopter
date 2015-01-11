@@ -26,7 +26,7 @@ namespace sys {
                     //LOG_EVENT(typeid(Self).name(), 50, "Predicting for x=" << x.transpose());
                     //LOG_EVENT(typeid(Self).name(), 50, "dT=" << dT);
                     typedef ExternalStates extstates;
-                    StateVector xnext = States::template translate<ExternalStates>(x);
+                    StateVector xnext = States::template translateFrom<ExternalStates>(x);
 
                     xnext.template segment<3>(States::position) += x.template segment<3>(extstates::velocity) * dT;
 

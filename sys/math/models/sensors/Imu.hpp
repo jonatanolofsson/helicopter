@@ -45,7 +45,7 @@ namespace sys {
 
                 template<typename ExternalStates>
                 static Result measurement(const typename ExternalStates::StateVector& x) {
-                    Result r = States::template translate<typename MotionModel::States>(MotionModel::template predict<ExternalStates>(x));
+                    Result r = States::template translateFrom<typename MotionModel::States>(MotionModel::template predict<ExternalStates>(x));
                     return r;
                 }
 
@@ -54,26 +54,12 @@ namespace sys {
                     return RetType::Identity();
                 }
 
-/*
- *                template<typename DerivationStates, typename ExternalStates>
- *                static Matrix<Scalar, nofStates, DerivationStates::nofStates>
- *                observationMatrix(const typename ExternalStates::StateVector&) {
- *                    typedef typename ModelDescription::StateDescription states;
- *                    typedef Matrix<Scalar, nofMeasurements, ModelDescription::nofStates> JacobianMatrix;
- *                    JacobianMatrix J;
- *                    J.setZero();
- *
- *                    J(ax, states::ax) = 1;
- *                    J(ay, states::ay) = 1;
- *                    J(az, states::az) = 1;
- *
- *                    J(wx, states::wx) = 1;
- *                    J(wy, states::wy) = 1;
- *                    J(wz, states::wz) = 1;
- *
- *                    return J;
- *                }
- */
+                template<typename ExternalStates>
+                static Matrix<Scalar, nofStates, ExternalStates::nofStates>
+                observationMatrix(const typename ExternalStates::StateVector& x) {
+                    auto J = math::differentiate<MotionModel, ExternalStates, ExternalStates>(x);
+                    return States::translateColumns<typename MotionModel::States, ExternalStates>(J);
+                }
 
                 static Result noise() {
                     return math::normalSample(covariance());

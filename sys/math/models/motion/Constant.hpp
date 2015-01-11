@@ -23,7 +23,7 @@ namespace sys {
 
                 template<typename ExternalStates>
                 static StateVector predict(const typename ExternalStates::StateVector& x, const Scalar dT __attribute__((unused))) {
-                    StateVector xnext = States::template translate<ExternalStates>(x);
+                    StateVector xnext = States::template translateFrom<ExternalStates>(x);
                     return xnext;
                 }
             };

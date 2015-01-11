@@ -42,22 +42,16 @@ namespace sys {
                     return RetType::Identity();
                 }
 
-                template<typename DerivationStates, typename ExternalStates>
-                static Matrix<Scalar, nofStates, DerivationStates::nofStates>
+                template<typename ExternalStates>
+                static Matrix<Scalar, nofStates, ExternalStates::nofStates>
                 observationMatrix(const typename ExternalStates::StateVector&) {
-                    typedef Matrix<Scalar, nofStates, DerivationStates::nofStates> JacobianMatrix;
+                    typedef Matrix<Scalar, nofStates, ExternalStates::nofStates> JacobianMatrix;
                     JacobianMatrix J;
                     J.setZero();
 
-                    J(States::x, DerivationStates::x) = 1;
-                    J(States::y, DerivationStates::y) = 1;
-                    J(States::z, DerivationStates::z) = 1;
-
-                    /*
-                     *J(States::vx, States::vx) = 1;
-                     *J(States::vy, States::vy) = 1;
-                     *J(States::vz, States::vz) = 1;
-                     */
+                    J(States::x, ExternalStates::x) = 1;
+                    J(States::y, ExternalStates::y) = 1;
+                    J(States::z, ExternalStates::z) = 1;
 
                     return J;
                 }

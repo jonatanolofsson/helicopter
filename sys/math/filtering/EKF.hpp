@@ -20,7 +20,7 @@ namespace sys {
             template<typename Filter, typename Measurement>
             static void measurementUpdate(Filter& filter, const Measurement& measurement) {
                 auto h = Measurement::Sensor::template measurement<typename Filter::States>(filter.state);
-                auto H = Measurement::Sensor::template observationMatrix<typename Filter::States, typename Filter::States>(filter.state);
+                auto H = Measurement::Sensor::template observationMatrix<typename Filter::States>(filter.state);
 
                 auto KA = filter.covariance * H.transpose();
 
