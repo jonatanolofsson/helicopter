@@ -16,6 +16,7 @@ CFLAGS += -isystem/usr/include/eigen3
 LFLAGS  = -lpthread
 LFLAGS += -L$(TOP)/sys -lsys
 LFLAGS += -L$(TOP)/os -los
+LFLAGS += -L$(TOP)/os -lboost_program_options
 
 TEST_LFLAGS  = -lgtest_main -lgtest
 TEST_LFLAGS += -lpthread
