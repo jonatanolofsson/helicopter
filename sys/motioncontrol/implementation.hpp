@@ -67,7 +67,7 @@ namespace sys {
 
 
             // FIXME:
-            u.setZero();
+            //u.setZero();
 
 
             Algorithm::Controls::template update<typename GlobalFilter::States>(filter.state, u);

@@ -1,20 +1,20 @@
 function data = loadData(filename)
     rawData = load(filename);
     C = 1;
-    N = 1; data.time = rawData(:,C:C + N - 1) ; C += N;
+    N = 1; data.time = rawData(:,C:C + N - 1)/100 ; C += N;
     N = 3; data.V    = rawData(:,C:C + N - 1)'; C += N;
     N = 3; data.W    = rawData(:,C:C + N - 1)'; C += N;
     N = 3; data.X    = rawData(:,C:C + N - 1)'; C += N;
     N = 4; data.Q    = rawData(:,C:C + N - 1)'; C += N;
     N = 3; data.wind = rawData(:,C:C + N - 1)'; C += N;
-    N = 2; data.th   = rawData(:,C:C + N - 1)'; C += N;
+    N = 3; data.th   = rawData(:,C:C + N - 1)'; C += N;
     N = 1; data.tht  = rawData(:,C:C + N - 1)'; C += N;
     N = 1; data.N    = rawData(:,C:C + N - 1)'; C += N;
     N = 3; data.rV   = rawData(:,C:C + N - 1)'; C += N;
     N = 3; data.rW   = rawData(:,C:C + N - 1)'; C += N;
+    N = 3; data.rQ   = rawData(:,C:C + N - 1)'; C += N;
     N = 3; data.uth  = rawData(:,C:C + N - 1)'; C += N;
     N = 1; data.utht = rawData(:,C:C + N - 1)'; C += N;
-    N = 1; data.uN   = rawData(:,C:C + N - 1)'; C += N;
     N = 3; data.sV   = rawData(:,C:C + N - 1)'; C += N;
     N = 3; data.sW   = rawData(:,C:C + N - 1)'; C += N;
     N = 3; data.sX   = rawData(:,C:C + N - 1)'; C += N;

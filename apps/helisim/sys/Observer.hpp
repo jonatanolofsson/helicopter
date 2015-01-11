@@ -25,7 +25,7 @@ namespace sys {
 #include <sys/observer/Observer.hpp>
 
 namespace sys {
-#define OBSERVER_CLASS observer::Observer<observer::Algorithm, observer::Filter, observer::MotionModel, observer::TriggerType, observer::sensors::Gps>
+#define OBSERVER_CLASS observer::Observer<observer::Algorithm, observer::Filter, observer::MotionModel, observer::TriggerType, observer::sensors::Gps, observer::sensors::Imu>
     typedef OBSERVER_CLASS Observer;
 }
 
