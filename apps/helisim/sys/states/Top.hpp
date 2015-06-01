@@ -12,6 +12,7 @@
 #include <sys/states/events.hpp>
 
 #include <sys/StateMachine.hpp>
+#include <os/utils/params.hpp>
 
 
 namespace sys {
@@ -33,6 +34,7 @@ namespace sys {
             Top()
             : observer(globalFilter)
             , logger("simlog.mat")
+            , clock(os::parameters["Simulator"]["stoptime"].GetUint())
             {}
         };
     }

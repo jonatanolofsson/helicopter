@@ -8,6 +8,7 @@
 #include <sys/settings.hpp>
 #include <cmath>
 #include <os/utils/eventlog.hpp>
+#include <os/utils/params.hpp>
 
 #include <iostream>
 
@@ -15,35 +16,88 @@ namespace sys {
     namespace math {
         namespace models {
             using namespace Eigen;
+            namespace helicopter {
+                template<bool A = false>
+                struct Parameters {
+                    static Scalar eta_F_tail;
+                    static Scalar eta_F_rotor;
+                    static Scalar eta_M_tail;
+                    static Scalar eta_M_rotor;
+                    static Scalar mass;
+
+                    static Eigen::Matrix<Scalar, 3, 3> I_g_inv;
+                    static Vector3 r_rotor;
+                    static Vector3 r_tail;
+
+                    static Scalar r_tilt;
+                    static Vector2 r_A;
+                    static Vector2 r_B;
+                    static Vector2 r_C;
+
+                    static void initializeFromParams() {
+                        eta_F_tail     = os::parameters["Helicopter"]["eta_F_tail"].GetDouble();
+                        eta_F_rotor    = os::parameters["Helicopter"]["eta_F_rotor"].GetDouble();
+                        eta_M_tail     = os::parameters["Helicopter"]["eta_M_tail"].GetDouble();
+                        eta_M_rotor    = os::parameters["Helicopter"]["eta_M_rotor"].GetDouble();
+                        mass           = os::parameters["Helicopter"]["mass"].GetDouble();
+
+                        Eigen::Matrix<Scalar, 3, 3> I_g;
+                        for(int i = 0; i < 3; ++i) {
+                            for(int j = 0; j < 3; ++j) {
+                                I_g(i, j) = os::parameters["Helicopter"]["Ig"][i*3 + j].GetDouble();
+                            }
+                        }
+                        I_g_inv = I_g.inverse();
+                        for(int i = 0; i < 3; ++i) {
+                           r_rotor[i] = os::parameters["Helicopter"]["r_rotor"][i].GetDouble();
+                        }
+                        for(int i = 0; i < 3; ++i) {
+                            r_tail[i] = os::parameters["Helicopter"]["r_tail"][i].GetDouble();
+                        }
+
+                        r_tilt = os::parameters["Helicopter"]["r_tilt"].GetDouble();
+                        for(int i = 0; i < 2; ++i) {
+                            r_A[i] = os::parameters["Helicopter"]["r_A"][i].GetDouble();
+                        }
+                        for(int i = 0; i < 2; ++i) {
+                            r_B[i] = os::parameters["Helicopter"]["r_B"][i].GetDouble();
+                        }
+                        for(int i = 0; i < 2; ++i) {
+                            r_C[i] = os::parameters["Helicopter"]["r_C"][i].GetDouble();
+                        }
+                    }
+                };
+
+                template<bool A> Scalar Parameters<A>::eta_F_tail;
+                template<bool A> Scalar Parameters<A>::eta_F_rotor;
+                template<bool A> Scalar Parameters<A>::eta_M_tail;
+                template<bool A> Scalar Parameters<A>::eta_M_rotor;
+                template<bool A> Scalar Parameters<A>::mass;
+
+                template<bool A> Eigen::Matrix<Scalar, 3, 3> Parameters<A>::I_g_inv;
+                template<bool A> Vector3 Parameters<A>::r_rotor;
+                template<bool A> Vector3 Parameters<A>::r_tail;
+
+                template<bool A> Scalar Parameters<A>::r_tilt;
+                template<bool A> Vector2 Parameters<A>::r_A;
+                template<bool A> Vector2 Parameters<A>::r_B;
+                template<bool A> Vector2 Parameters<A>::r_C;
+
+            }
+
             template<typename States_ = VW_3D>
             struct Helicopter : public Model<Helicopter<States_>, States_, false> {
                 typedef Helicopter<States_> Self;
                 typedef Model<Self, States_, false> Base;
                 using States = typename Base::States;
                 using StateVector = typename Base::StateVector;
+                using p = helicopter::Parameters<>;
                 typedef States states;
 
                 template<typename ExternalStates>
                 static StateVector predict(const typename ExternalStates::StateVector& x, const Scalar = settings::dT) {
-                    static const Scalar eta_F_tail     = 0.1;
-                    static const Scalar eta_F_rotor    = 0.1;
-                    static const Scalar eta_M_tail     = 0.1;
-                    static const Scalar eta_M_rotor    = 0.1;
-                    static const Scalar mass           = 4.0;
-
-                    static const Scalar I_g_values[] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-                    static const Eigen::Matrix<Scalar, 3, 3> I_g(I_g_values);
-                    static const Eigen::Matrix<Scalar, 3, 3> I_g_inv(I_g.inverse());
-                    static const Vector3 r_rotor(0, 0, -0.2);
-                    static const Vector3 r_tail(-0.75, 0, -0.05);
-
-                    static const Scalar r_tilt = 0.032;
-                    static const Vector2 r_A(0.02, 0.034641);
-                    static const Vector2 r_B(0.02, -0.034641);
-                    static const Vector2 r_C(-0.04, 0);
-
                     typedef ExternalStates extstates;
-                    StateVector xdot;
+                    StateVector xdot; xdot.setZero();
 
                     Eigen::Quaternion<Scalar> qwb(
                         x(extstates::qw),
@@ -53,30 +107,41 @@ namespace sys {
                     );
                     qwb.normalize();
 
-                    auto bf2ned = qwb.toRotationMatrix(); // q^{wb}
-                    //auto ned2bf = bf2ned.transpose(); // Orthonormal matrix
+                    auto bf2ned = qwb.toRotationMatrix();
 
-                    Vector3 A; A << r_A, -r_tilt*sin(x[extstates::th_a]);
-                    Vector3 B; B << r_B, -r_tilt*sin(x[extstates::th_b]);
-                    Vector3 C; C << r_C,  r_tilt*sin(x[extstates::th_c]);
+                    Vector3 A; A << p::r_A, -p::r_tilt*sin(x[extstates::th_a]);
+                    Vector3 B; B << p::r_B, -p::r_tilt*sin(x[extstates::th_b]);
+                    Vector3 C; C << p::r_C,  p::r_tilt*sin(x[extstates::th_c]);
+                    std::cout << "A: " << A.transpose() << std::endl;
+                    std::cout << "B: " << B.transpose() << std::endl;
+                    std::cout << "C: " << C.transpose() << std::endl;
 
                     auto AB = B-A;
                     auto AC = C-A;
                     auto abc = AB.cross(AC);
                     auto D = abc.dot(A) / abc.z();
 
+                    std::cout << "abc: " << abc.transpose() << std::endl;
+                    std::cout << "D: " << D << std::endl;
+
                     auto sin2Th_tail = std::sin(2*x[extstates::th_tail]);
                     auto N2 = SQUARE(x[extstates::N]);
-                    xdot.template segment<3>(states::velocity) = bf2ned * Vector3(0, eta_F_tail * N2 * sin2Th_tail / mass, -eta_F_rotor * D * N2 / mass) + Vector3(0, 0, math::constants::g);
+                    xdot.template segment<3>(states::velocity) = \
+                        bf2ned * Vector3(0,
+                                         p::eta_F_tail * N2 * sin2Th_tail / p::mass,
+                                         -p::eta_F_rotor * D * N2 / p::mass)
+                        + Vector3(0, 0, math::constants::g);
 
                     static const Scalar cosPhi_adj = 1;
                     static const Scalar sinPhi_adj = 0;
-                    xdot.template segment<3>(states::omega) = bf2ned * I_g_inv * (
-                            Vector3(abc.x()*sinPhi_adj + abc.y()*cosPhi_adj, abc.x()*sinPhi_adj-abc.y()*cosPhi_adj, 0) * eta_M_rotor / abc.z()
-                            - eta_M_rotor * r_rotor.cross(Vector3(0,0,D * N2))
-                            + eta_M_tail * r_tail.cross(Vector3(0, N2 * sin2Th_tail, 0))
+                    xdot.template segment<3>(states::omega) = bf2ned * p::I_g_inv * (
+                            Vector3(abc.x()*sinPhi_adj + abc.y()*cosPhi_adj,
+                                    abc.x()*sinPhi_adj-abc.y()*cosPhi_adj,
+                                    0) * p::eta_M_rotor / abc.z()
+                            - p::eta_M_rotor * p::r_rotor.cross(Vector3(0,0,D * N2))
+                            + p::eta_M_tail * p::r_tail.cross(Vector3(0, N2 * sin2Th_tail, 0))
                         );
-                    LOG_EVENT(typeid(Self).name(), 50, "xdot: " << xdot.transpose());
+                    //LOG_EVENT(typeid(Self).name(), 50, "xdot: " << xdot.transpose());
 
                     return xdot;
                 }

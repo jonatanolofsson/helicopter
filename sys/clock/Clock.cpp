@@ -9,8 +9,9 @@
 
 namespace sys {
     namespace clock {
-        Clock::Clock()
+        Clock::Clock(const unsigned stoptime_)
         : d(&Clock::tick, this)
+        , stoptime(stoptime_)
         , nextInvokation(SystemClock::now())
         {}
 
@@ -23,19 +24,29 @@ namespace sys {
         }
 
         Clock::~Clock() {
-            LOG_EVENT(typeid(Self).name(), 0, "Stopping time");
+            //LOG_EVENT(typeid(Self).name(), 0, "Stopping time");
             stop();
         }
 
-        void Clock::tick(const os::Jiffy j) {
-            std::this_thread::sleep_until(nextInvokation);
-            if(time.value >= 1000) {
+        void Clock::setStopTime(const unsigned stoptime_) {
+            stoptime = stoptime_;
+            if(stoptime && (time.value >= stoptime)) {
+                stop();
+                StateMachine::kill();
+            }
+        }
+
+        void Clock::tick(const os::Jiffy) {
+            if(stoptime && (time.value >= stoptime)) {
                 stop();
                 StateMachine::kill();
                 return;
             }
+            std::this_thread::sleep_until(nextInvokation);
             os::yield(++time);
-            LOG_EVENT(typeid(Self).name(), 0, "Upped time: " << time << "(" << j.value << ")");
+            /*
+             *LOG_EVENT(typeid(Self).name(), 0, "Upped time: " << time << "(" << j.value << ")");
+             */
             nextInvokation = SystemClock::now() + realTimePerTick;
         }
     }

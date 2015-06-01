@@ -1,7 +1,4 @@
 #pragma once
-#ifndef SYS_MOTIONCONTROL_IMPLEMENTATION_HPP_
-#define SYS_MOTIONCONTROL_IMPLEMENTATION_HPP_
-
 #include <Eigen/Core>
 
 #include <os/com/Dispatcher.hpp>
@@ -14,8 +11,6 @@
 
 #include <sys/Observer.hpp>
 #include <sys/MotionControl.hpp>
-
-#include <sys/Logger.hpp>
 
 namespace sys {
     namespace motioncontrol {
@@ -46,20 +41,20 @@ namespace sys {
 
             B.template block<MotionModel::nofStates, Algorithm::nofControls>(0,0) =
                     math::template differentiate<MotionModel, typename Algorithm::Controls, SystemStates>(systemState.value);
+            //LOG_EVENT(typeid(Self).name(), 50, "B::::::::::::::\n" << B << "\n:::::::::::::::::::::::::::::::::::::");
             controller.template updateModel<MotionModel::isDiscrete>(F, B);
-            //LOG_EVENT(typeid(Self).name(), 50, "Controlstate: " << controlState.transpose());
-            //LOG_EVENT(typeid(Self).name(), 50, "Reference: " << reference.value.transpose());
+            LOG_EVENT(typeid(Self).name(), 50, "Controlstate: " << controlState.transpose());
+            LOG_EVENT(typeid(Self).name(), 50, "Reference: " << reference.value.transpose());
 
             ExtendedControlState extendedControlState; extendedControlState << controlState - reference.value, 1;
-
+            /*
+             *static_assert(12 == ControllerType::StateVector::RowsAtCompileTime, "Wrong size of controlmodel!");
+             *static_assert(12 == ExtendedControlState::RowsAtCompileTime, "Wrong size of controlstate!");
+             *static_assert(1 == ControllerType::StateVector::ColsAtCompileTime, "Wrong size of controlmodel!");
+             *static_assert(1 == ExtendedControlState::ColsAtCompileTime, "Wrong size of controlstate!");
+             */
             auto u = controller.direct_eval(extendedControlState);
-            logger::Formatter<decltype(F)>::format(logfile, F);
-            logfile << ",";
-            logger::Formatter<decltype(B)>::format(logfile, B);
-            logfile << std::endl;
-            LOG_EVENT(typeid(Self).name(), 50, "Controlstate: " << extendedControlState.transpose());
             LOG_EVENT(typeid(Self).name(), 50, "u: " << u.transpose());
-
             Algorithm::Controls::template update<typename GlobalFilter::States>(filter.state, u);
             os::yield(ControlMessage(u));
         }
@@ -68,41 +63,8 @@ namespace sys {
         MotionControl<GlobalFilter, Algorithm, MotionModel, SystemStates, Reference, ControlMessage>
         ::MotionControl(GlobalFilter& filter_)
         : filter(filter_)
-        , logfile("motioncontrol.mat")
         , dispatcher(&Self::updateControl, this)
         {}
-
-        template<typename GlobalFilter, typename Algorithm, typename MotionModel, typename SystemStateMessage, typename ReferenceMessage, typename ControlMessage>
-        void MotionControl<GlobalFilter, Algorithm, MotionModel, SystemStateMessage, ReferenceMessage, ControlMessage>
-        ::updateWeights(const typename Algorithm::StateWeightMatrix& Q, const typename Algorithm::ControlWeightMatrix& R, bool recalc) {
-            controller.template setWeights<MotionModel::isDiscrete>(Q, R, recalc);
-        }
-
-        template<typename GlobalFilter, typename Algorithm, typename MotionModel, typename SystemStateMessage, typename ReferenceMessage, typename ControlMessage>
-        void MotionControl<GlobalFilter, Algorithm, MotionModel, SystemStateMessage, ReferenceMessage, ControlMessage>
-        ::initializeFromParams() {
-            typedef motioncontrol::Controller::StateWeightMatrix StateWeights;
-            StateWeights Q;
-            Q.setZero();
-            Q(StateWeights::RowsAtCompileTime-1, StateWeights::ColsAtCompileTime-1) = 1;
-
-            for(int i = 0; i < StateWeights::RowsAtCompileTime-1; ++i) {
-                for(int j = 0; j < StateWeights::ColsAtCompileTime-1; ++j) {
-                    Q(i, j) = os::parameters["MotionControl"]["Q"][i*(StateWeights::RowsAtCompileTime-1) + j].GetDouble();
-                }
-            }
-
-            typedef motioncontrol::Controller::ControlWeightMatrix ControlWeights;
-            ControlWeights R;
-            for(int i = 0; i < ControlWeights ::RowsAtCompileTime; ++i) {
-                for(int j = 0; j < ControlWeights::ColsAtCompileTime; ++j) {
-                    R(i, j) = os::parameters["MotionControl"]["R"][i*ControlWeights::RowsAtCompileTime + j].GetDouble();
-                }
-            }
-
-            updateWeights(Q, R, false);
-        }
     }
 }
 
-#endif

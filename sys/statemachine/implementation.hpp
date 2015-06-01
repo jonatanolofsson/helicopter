@@ -16,10 +16,10 @@ namespace sys {
         template<typename InitialState>
         void StateEngine<InitialState>::wait() {
             std::unique_lock<std::mutex> l(m);
-            LOG_EVENT(typeid(Self).name(), 0, "Waiting to die");
+            //LOG_EVENT(typeid(Self).name(), 0, "Waiting to die");
             while(!dying) {
                 waitingForDeath.wait(l);
-                LOG_EVENT(typeid(Self).name(), 0, "Woke up to die");
+                //LOG_EVENT(typeid(Self).name(), 0, "Woke up to die");
             }
         }
 

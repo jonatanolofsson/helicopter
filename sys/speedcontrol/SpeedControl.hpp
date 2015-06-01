@@ -1,21 +1,16 @@
 #pragma once
-#ifndef SYS_MOTIONCONTROL_HPP_
-#define SYS_MOTIONCONTROL_HPP_
 
 #include <os/com/Dispatcher.hpp>
-#include <sys/Observer.hpp>
-#include <fstream>
 
 namespace sys {
-    namespace motioncontrol {
+    namespace speedcontrol {
         template<typename GlobalFilter, typename Algorithm, typename MotionModel, typename SystemStateMessage, typename Reference, typename ControlMessage>
-        class MotionControl {
+        class SpeedControl {
             public:
-                typedef MotionControl<GlobalFilter, Algorithm, MotionModel, SystemStateMessage, Reference, ControlMessage> Self;
+                typedef SpeedControl<GlobalFilter, Algorithm, MotionModel, SystemStateMessage, Reference, ControlMessage> Self;
 
             private:
                 GlobalFilter& filter;
-                std::ofstream logfile;
                 typedef typename SystemStateMessage::StateVector SystemStateVector;
                 typedef typename SystemStateMessage::States SystemStates;
 
@@ -27,11 +22,6 @@ namespace sys {
 
             public:
                 MotionControl(GlobalFilter&);
-                void updateWeights(const typename Algorithm::StateWeightMatrix&, const typename Algorithm::ControlWeightMatrix&, bool=true);
-                void initializeFromParams();
         };
-
     }
 }
-
-#endif

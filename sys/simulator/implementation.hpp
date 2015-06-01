@@ -22,7 +22,7 @@ namespace sys {
         void Simulator<GlobalFilter, MotionModel, ControlMessage, Sensors...>::simulate(const ControlMessage u) {
             ControlMessage::States::template update<typename MotionModel::States>(state, u.value);
             state = MotionModel::template predict<States>(state, settings::dT);
-            LOG_EVENT(typeid(Self).name(), 50, "Simulated state: " << state.transpose());
+            //LOG_EVENT(typeid(Self).name(), 50, "Simulated state: " << state.transpose());
             yieldSensorReadings<Sensors...>();
             os::yield(SimulatedStateMessage(state));
         }

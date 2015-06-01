@@ -7,6 +7,6 @@ INSTANTIATE_SIGNAL(sys::observer::sensors::Gps);
 
 namespace sys {
     namespace observer {
-        template class OBSERVER_CLASS;
+        template struct OBSERVER_CLASS;
     }
 }

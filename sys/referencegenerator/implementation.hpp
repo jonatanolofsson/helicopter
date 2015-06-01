@@ -16,7 +16,7 @@ namespace sys {
         template<typename ReferenceMessage, typename Trigger>
         void ReferenceGenerator<ReferenceMessage, Trigger>::yieldReference(const Trigger t) {
             while(((i+1) < nofReferences) && (t.value >= reference[i+1].time)) ++i;
-            LOG_EVENT(typeid(Self).name(), 0, "Reference at time " << t.value);
+            //LOG_EVENT(typeid(Self).name(), 0, "Reference at time " << t.value);
             os::yield(ReferenceMessage(reference[i].reference));
         }
     }

@@ -29,6 +29,7 @@ namespace sys {
                 static const int linState = States::nofStates;
 
                 typedef Matrix<Scalar, nofStates, nofStates> StateMatrix; ///< A state propagation matrix describes how the model state evolves in time, given no control
+                typedef Matrix<Scalar, nofStates, nofStates> StateWeightMatrix; ///< A state propagation matrix describes how the model state evolves in time, given no control
                 typedef Matrix<Scalar, nofStates, nofControls> ControlMatrix; ///<
                 typedef Matrix<Scalar, nofStates, 1> StateVector; ///< A state vector describes the state in which the system is (currently) in
                 typedef Matrix<Scalar, nofControls, 1> ControlVector; ///< A state vector describes the state in which the system is (currently) in
@@ -37,13 +38,14 @@ namespace sys {
 
             private:
                 Scalar alpha;
+                FeedbackMatrix L;
+                StateMatrix A, P, deltaP;
+                ControlMatrix B;
+                StateWeightMatrix Q;
+                ControlWeightMatrix R;
 
             public:
                 ControlVector u;
-                FeedbackMatrix L;
-                StateMatrix A, P, deltaP, Q;
-                ControlMatrix B;
-                ControlWeightMatrix R;
 
                 LqController() : alpha(1.0) {
                     A.setZero();
@@ -110,6 +112,15 @@ namespace sys {
                         L = (R + B.transpose()*P*B).ldlt().solve(B.transpose()*P*A);
                     }
                     //LOG_EVENT(typeid(Self).name(), 50, "L::::::::::::::\n" << L << "\n:::::::::::::::::::::::::::::::::::::" << std::endl);
+                }
+
+                template<bool isDiscrete>
+                void setWeights(const StateWeightMatrix& Q_, const ControlWeightMatrix& R_, bool recalc = true) {
+                    Q = Q_;
+                    R = R_;
+                    if(recalc) {
+                        updateControlMatrices<isDiscrete>();
+                    }
                 }
 
                 /*!

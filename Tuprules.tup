@@ -7,16 +7,17 @@ CFLAGS += -Wno-unknown-pragmas
 CFLAGS += -pedantic-errors
 CFLAGS += -Wextra
 CFLAGS += -Wcast-align
-CFLAGS += -ggdb
-CFLAGS += -O0
+#CFLAGS += -ggdb
+CFLAGS += -O3
 CFLAGS += -I$(TOP)
 CFLAGS += -I$(TOP)/sys/modules
 CFLAGS += -isystem/usr/include/eigen3
+CFLAGS += -isystem$(TOP)/os/libs/rapidjson/include
 
 LFLAGS  = -lpthread
 LFLAGS += -L$(TOP)/sys -lsys
 LFLAGS += -L$(TOP)/os -los
-LFLAGS += -L$(TOP)/os -lboost_program_options
+LFLAGS += -lboost_program_options
 
 TEST_LFLAGS  = -lgtest_main -lgtest
 TEST_LFLAGS += -lpthread

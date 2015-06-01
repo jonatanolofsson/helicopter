@@ -73,7 +73,6 @@ namespace sys {
                 static void initializeState(T& state) {
                     state.setZero();
                     state[qw] = 1.0;
-                    state[N] = 500; //FIXME
                 }
 
                 template<typename T>

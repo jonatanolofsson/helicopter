@@ -17,14 +17,14 @@ namespace sys {
         , sensors(this)
         {
             MotionModel::States::initialize(filter);
-            LOG_EVENT(typeid(Self).name(), 10, "Initialized observer with " << sizeof...(Sensors) << " sensors.");
+            //LOG_EVENT(typeid(Self).name(), 10, "Initialized observer with " << sizeof...(Sensors) << " sensors.");
         }
 
         template<typename Algorithm, typename Filter, typename MotionModel, typename Trigger, typename... Sensors>
         void Observer<Algorithm, Filter, MotionModel, Trigger, Sensors...>::timeUpdate(const Trigger) {
             auto l = filter.retrieve_lock();
             Algorithm::template timeUpdate<MotionModel>(filter, settings::dT);
-            LOG_EVENT(typeid(Self).name(), 10, "Updated observer: " << filter.state.transpose());
+            //LOG_EVENT(typeid(Self).name(), 10, "Updated observer: " << filter.state.transpose());
             os::yield(StateMessage(filter.state));
         }
 

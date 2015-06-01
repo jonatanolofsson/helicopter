@@ -4,6 +4,6 @@
 
 namespace sys {
     namespace simulator {
-        template class SIMULATOR_CLASS;
+        template struct SIMULATOR_CLASS;
     }
 }

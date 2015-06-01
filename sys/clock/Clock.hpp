@@ -16,14 +16,16 @@ namespace sys {
             private:
                 os::Dispatcher<Clock, os::Jiffy> d;
                 void tick(const os::Jiffy);
+                unsigned stoptime;
                 os::SystemTime time;
                 SystemClock::time_point nextInvokation;
 
             public:
-                Clock();
+                Clock(const unsigned = 0);
                 ~Clock();
                 void start();
                 void stop();
+                void setStopTime(const unsigned);
         };
     }
 }
