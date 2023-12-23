@@ -1,13 +1,10 @@
-#include <sys/States.hpp>
-#include <os/clock.hpp>
-
-namespace sys {
-    StateMachine stateMachine;
-}
+#include <os/core/init.hpp>
+#include <sys/StateMachine.hpp>
 
 
-int main(int, char*[]) {
-    sys::runStateMachine();
+int main(int argc, char** argv) {
+    os::init(argc, argv);
+    sys::StateMachine::run();
 
     return 0;
 }

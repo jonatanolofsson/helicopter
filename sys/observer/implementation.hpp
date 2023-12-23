@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SYS_OBSERVER_IMPLEMENTATION_HPP_
-#define SYS_OBSERVER_IMPLEMENTATION_HPP_
 
 #include <os/com/Dispatcher.hpp>
 #include <sys/Observer.hpp>
@@ -36,5 +34,3 @@ namespace sys {
         //~ }
     }
 }
-
-#endif

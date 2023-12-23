@@ -25,8 +25,7 @@ namespace sys {
         U16 position[3];
         U16 orientation[4];
         template<class Archive>
-        void serialize(Archive & ar, const unsigned int version)
-        {
+        void serialize(Archive & ar, const unsigned int version) {
             ar & timestamp;
             ar & position;
             ar & orientation;
@@ -39,8 +38,7 @@ namespace sys {
         U16 position[3];
         U16 velocity[3];
         template<class Archive>
-        void serialize(Archive & ar, const unsigned int version)
-        {
+        void serialize(Archive & ar, const unsigned int version) {
             ar & timestamp;
             ar & position;
             ar & velocity;
@@ -50,8 +48,7 @@ namespace sys {
         static const ImageProcessorMessages::Id ID = ImageProcessorMessages::ipCtlMessage;
         U16 message;
         template<class Archive>
-        void serialize(Archive & ar, const unsigned int version)
-        {
+        void serialize(Archive & ar, const unsigned int version) {
             ar & message;
         }
     };

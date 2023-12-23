@@ -1,5 +1,4 @@
 #pragma once
-
 #include <sys/statemachine/StateMachine.hpp>
 
 namespace sys {

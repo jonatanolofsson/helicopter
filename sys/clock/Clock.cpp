@@ -49,5 +49,5 @@ namespace sys {
              */
             nextInvokation = SystemClock::now() + realTimePerTick;
         }
-    }
-}
+    }  // namespace clock
+}  // namespace clock

@@ -44,6 +44,7 @@ CXXFLAGS += -fno-rtti
 CXXFLAGS += -fno-exceptions
 
 LDFLAGS  = $(TARGET_FLAGS)
+LDFLAGS += --specs=nosys.specs
 LDFLAGS += -L$(LDDIR)
 LDFLAGS += -L$(LDDIR)/toolchains/generic
 LDFLAGS += -L$(LDDIR)/stm32/series/stm32f1/@(MCU_F1_LINE)
@@ -58,12 +59,12 @@ LDFLAGS += -fno-exceptions
 LDFLAGS += -fno-rtti
 LDFLAGS += -L$(TUP_CWD)/syrup -lsyrup
 
-INCLUDE_FLAGS  = -I$(AC_TOP)/syrup/libmaple/libmaple/include
-INCLUDE_FLAGS += -I$(AC_TOP)/syrup/libmaple/wirish/include
-INCLUDE_FLAGS += -I$(AC_TOP)/syrup/libmaple/libraries
-INCLUDE_FLAGS += -I$(AC_TOP)/syrup/syrup/include
-INCLUDE_FLAGS += -I$(AC_TOP)/syrup/libmaple/libmaple/stm32f1/include
-INCLUDE_FLAGS += -I$(AC_TOP)/syrup/libmaple/wirish/boards/maple_mini/include
-INCLUDE_FLAGS += -I$(AC_TOP)/..
+INCLUDE_FLAGS  = -isystem$(AC_TOP)/syrup/libmaple/libmaple/include
+INCLUDE_FLAGS += -isystem$(AC_TOP)/syrup/libmaple/wirish/include
+INCLUDE_FLAGS += -isystem$(AC_TOP)/syrup/libmaple/libraries
+INCLUDE_FLAGS += -isystem$(AC_TOP)/syrup/syrup/include
+INCLUDE_FLAGS += -isystem$(AC_TOP)/syrup/libmaple/libmaple/stm32f1/include
+INCLUDE_FLAGS += -isystem$(AC_TOP)/syrup/libmaple/wirish/boards/maple_mini/include
+INCLUDE_FLAGS += -isystem$(AC_TOP)/..
 
 !cxx = |> ^o^ $(CXX) $(CXXFLAGS) $(INCLUDE_FLAGS) -c %f -o %o |> %B.o

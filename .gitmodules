@@ -7,3 +7,6 @@
 [submodule "libs/ptam"]
 	path = libs/ptam
 	url = git@github.com:jonatanolofsson/PTAM-GPL.git
+[submodule "libs/gptam"]
+	path = libs/gptam
+	url = git@github.com:terzakig/gptam.git

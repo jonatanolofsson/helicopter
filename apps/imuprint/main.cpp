@@ -77,23 +77,23 @@ void sensorResponseHandler(const U8* msg, const std::size_t) {
 
 
 
-        std::cout
-            << std::setw(8) << m.imu[0]
-            << std::setw(8) << m.imu[1]
-            << std::setw(8) << m.imu[2]
-            << std::setw(8) << m.imu[3]
-            << std::setw(8) << m.imu[4]
-            << std::setw(8) << m.imu[5]
-            << std::setw(8) << m.nofImu
-            << std::setw(8) << "|"
-            << std::setw(8) << m.magnetometer[0]
-            << std::setw(8) << m.magnetometer[1]
-            << std::setw(8) << m.magnetometer[2]
-            << std::setw(8) << m.nofMagnetometer
-            << std::setw(8) << "|"
-            << std::setw(8) << m.pressure
-            << std::setw(8) << alt
-            << std::endl;
+    std::cout
+        << std::setw(8) << m.imu[0]
+        << std::setw(8) << m.imu[1]
+        << std::setw(8) << m.imu[2]
+        << std::setw(8) << m.imu[3]
+        << std::setw(8) << m.imu[4]
+        << std::setw(8) << m.imu[5]
+        << std::setw(8) << m.nofImu
+        << std::setw(8) << "|"
+        << std::setw(8) << m.magnetometer[0]
+        << std::setw(8) << m.magnetometer[1]
+        << std::setw(8) << m.magnetometer[2]
+        << std::setw(8) << m.nofMagnetometer
+        << std::setw(8) << "|"
+        << std::setw(8) << m.pressure
+        << std::setw(8) << alt
+        << std::endl;
 }
 
 
@@ -103,12 +103,14 @@ int main(int argc, char* argv[]){
     Maple maple("/dev/ttyUSB0");
     maple.registerPackager<maple::Messages::sensorMessage>(sensorResponseHandler);
 
-    IoctlMessage ioctlMsg = { IoctlMessage::SEND_SENSOR_DATA };
-    maple.send<>(ioctlMsg);
-
     std::cout << "Wait for messages.." << std::endl;
 
-    while(true) std::this_thread::sleep_for(std::chrono::seconds(60));
+    while(true) {
+        IoctlMessage ioctlMsg = { IoctlMessage::SEND_SENSOR_DATA };
+        maple.send<>(ioctlMsg);
+
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+    }
 
     return 0;
 }

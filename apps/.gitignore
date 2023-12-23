@@ -1,1 +1,10 @@
 simlog.mat
+**/*
+!**/Tupfile
+!**/Tuprules
+!**/.akefile
+!**/*.*
+!**/*/
+
+*.o
+*.so

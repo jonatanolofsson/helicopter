@@ -1,2 +1,3 @@
 APPLFLAGS  =
+TEST_LFLAGS += -lboost_program_options
 !ccapp = | $(TOP)/sys/libsys.a $(TOP)/os/libos.a |> ^c^ $(COMPILER) $(CFLAGS) %f $(APPLFLAGS) $(LFLAGS)  -o %o |> %d

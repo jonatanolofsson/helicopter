@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SYS_STATEMACHINE_HPP_
-#define SYS_STATEMACHINE_HPP_
 
 #include <mutex>
 #include <condition_variable>
@@ -49,5 +47,3 @@ namespace sys {
         };
     }
 }
-
-#endif

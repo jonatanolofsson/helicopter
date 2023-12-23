@@ -1,3 +1,4 @@
 APPLFLAGS += -lcpplot
+APPLFLAGS += -lglut
 APPLFLAGS += -lboost_system
 

@@ -7,17 +7,17 @@ namespace sys {
         using namespace os;
         struct SensorMessage;
         struct ControlMessage;
-        struct SpeedControlMessage;
         struct CameraControlMessage;
         struct IoctlMessage;
+        struct ErrorMessage;
         template<int ID> struct Message;
         struct Messages {
             static const int numberOfMessages = 5;
 
             enum Id {
-                sensorMessage = 0,
-                controlMessage = 1,
-                speedControlMessage = 2,
+                errorMessage = 0,
+                sensorMessage = 1,
+                controlMessage = 2,
                 cameraControlMessage = 3,
                 ioctlMessage = 4
             };
@@ -26,9 +26,8 @@ namespace sys {
 
             typedef maple::SensorMessage SensorMessage;
             typedef maple::ControlMessage ControlMessage;
-            typedef maple::SpeedControlMessage SpeedControlMessage;
             typedef maple::CameraControlMessage CameraControlMessage;
-            typedef maple::IoctlMessage IoctlMessage;
+            typedef maple::ErrorMessage ErrorMessage;
         };
 
         struct SensorMessage {
@@ -61,11 +60,7 @@ namespace sys {
 
         struct ControlMessage {
             static const Messages::Id ID = Messages::controlMessage;
-            U16 servo[3];
-        };
-
-        struct SpeedControlMessage {
-            static const Messages::Id ID = Messages::controlMessage;
+            U16 servo[4];
             U16 rpm;
         };
 
@@ -85,9 +80,17 @@ namespace sys {
             };
         };
 
+        struct ErrorMessage {
+            static const Messages::Id ID = Messages::errorMessage;
+            U16 type;
+            U32 error;
+            enum Type {
+                I2C = (1 << 0),
+            };
+        };
+
         template<> struct Message<Messages::sensorMessage> { typedef SensorMessage Type; };
         template<> struct Message<Messages::controlMessage> { typedef ControlMessage Type; };
-        template<> struct Message<Messages::speedControlMessage> { typedef SpeedControlMessage Type; };
         template<> struct Message<Messages::cameraControlMessage> { typedef CameraControlMessage Type; };
         template<> struct Message<Messages::ioctlMessage> { typedef IoctlMessage Type; };
     }

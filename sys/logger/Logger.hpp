@@ -39,17 +39,20 @@ namespace sys {
 
             private:
                 void logWriteHelper() { logfile << std::endl; }
+
                 template<typename First, typename... Other>
                 void logWriteHelper(const First first, const Other... others) {
                     logfile << ",";
                     Formatter<First>::format(logfile, first);
                     logWriteHelper(others...);
                 }
+
                 template<typename First, typename... Other>
                 void logWriteHelper1(const First first, const Other... others) {
                     Formatter<First>::format(logfile, first);
                     logWriteHelper(others...);
                 }
+
                 void log(const DataTypes... parameters);
 
             public:

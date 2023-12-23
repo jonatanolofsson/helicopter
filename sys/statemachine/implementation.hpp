@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SYS_STATEMACHINE_IMPLEMENTATION_HPP_
-#define SYS_STATEMACHINE_IMPLEMENTATION_HPP_
 
 #include <sys/statemachine/StateMachine.hpp>
 
@@ -49,5 +47,3 @@ namespace sys {
         StateEngine<InitialState>* StateMachine<InitialState>::stateMachine;
     }
 }
-
-#endif
